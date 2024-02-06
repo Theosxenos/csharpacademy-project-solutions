@@ -63,7 +63,7 @@ static void NewHabitView()
             var habitRepository = new HabitRepository();
             habitRepository.AddHabit(new(){HabitName = habitName, Unit = habitUnit});
 
-            Console.WriteLine($"Your habit ${habitName} has been created! Press a key to return to the main menu.");
+            Console.WriteLine($"Your habit {habitName} has been created! Press a key to return to the main menu.");
             Console.ReadKey();
 
             endHabitView = true;
