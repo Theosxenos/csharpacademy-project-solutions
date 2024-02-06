@@ -1,11 +1,10 @@
-using System.Data;
 using Microsoft.Data.Sqlite;
 
 namespace HabitLogger;
 
 public class HabitLoggerDatabase
 {
-    public static SqliteConnection GetConnection()
+    public SqliteConnection GetConnection()
     {
         var connectionString = "Data Source=habits.db";
         var connection = new SqliteConnection(connectionString);
@@ -23,9 +22,9 @@ public class HabitLoggerDatabase
         return connection;
     }
 
-    public static void CreateDatabase()
+    public void CreateDatabase()
     {
-        var connection = GetConnection();
+        using var connection = GetConnection();
 
         try
         {
