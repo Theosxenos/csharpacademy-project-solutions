@@ -39,4 +39,16 @@ public class HabitRepository
         insertHabitCommand.Parameters.AddWithValue("$unit", habit.Unit);
         insertHabitCommand.ExecuteNonQuery();
     }
+
+    public void UpdateHabit(HabitModel habit, int toUpdateHabitId)
+    {
+        using var connection = db.GetConnection();
+
+        var updateHabitCommand = connection.CreateCommand();
+        updateHabitCommand.CommandText = "UPDATE Habits SET HabitName = $name AND Unit = $unit WHERE ID = $id";
+        updateHabitCommand.Parameters.AddWithValue("id", toUpdateHabitId);
+        updateHabitCommand.Parameters.AddWithValue("name", habit.HabitName);
+        updateHabitCommand.Parameters.AddWithValue("unit", habit.Unit);
+        updateHabitCommand.ExecuteNonQuery();
+    }
 }
