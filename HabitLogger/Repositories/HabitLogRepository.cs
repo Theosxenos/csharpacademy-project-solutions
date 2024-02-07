@@ -1,4 +1,5 @@
 using HabitLogger.Models;
+using Microsoft.Data.Sqlite;
 
 namespace HabitLogger.Repositories;
 
@@ -10,8 +11,7 @@ public class HabitLogRepository
     {
         var logs = new List<HabitLogModel>();
         using var connection = db.GetConnection();
-        var selectLogsCommand = connection.CreateCommand();
-        selectLogsCommand.CommandText = "SELECT * FROM HabitLogs WHERE HabitID = $habitid";
+        var selectLogsCommand = new SqliteCommand("SELECT * FROM HabitLogs WHERE HabitID = $habitid", connection);
         selectLogsCommand.Parameters.AddWithValue("$habitid", habitId);
 
         using var reader = selectLogsCommand.ExecuteReader();
@@ -19,10 +19,10 @@ public class HabitLogRepository
         {
             var habitLog = new HabitLogModel()
             {
-                LogId = reader.GetInt32(0),
-                HabitId = reader.GetInt32(1),
-                Quantity = reader.GetInt32(2),
-                Date = DateTime.Parse(reader.GetString(3))
+                LogId = reader.GetInt32(reader.GetOrdinal("LogId")),
+                HabitId = reader.GetInt32(reader.GetOrdinal("HabitId")),
+                Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                Date = reader.GetDateTime(reader.GetOrdinal("Date"))
             };
 
             logs.Add(habitLog);
