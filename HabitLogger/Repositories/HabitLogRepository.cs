@@ -1,3 +1,4 @@
+using System.Globalization;
 using HabitLogger.Models;
 using Microsoft.Data.Sqlite;
 
@@ -29,5 +30,22 @@ public class HabitLogRepository
         }
 
         return logs;
+    }
+
+    public void UpdateHabitLog(HabitLogModel habitLog)
+    {
+        var connection = db.GetConnection();
+        var updateLogCommand = new SqliteCommand("UPDATE HabitLogs SET Quantity = $quantity WHERE HabitID = $habitid AND Date = $date", connection);
+        updateLogCommand.Parameters.AddWithValue("$quantity", habitLog.Quantity);
+        updateLogCommand.Parameters.AddWithValue("$habitid", habitLog.HabitId);
+        updateLogCommand.Parameters.AddWithValue("$date", habitLog.Date.ToString("O"));
+
+        var updateResult = updateLogCommand.ExecuteNonQuery();
+
+        if (updateResult == 1) return;
+
+        updateLogCommand.CommandText =
+            "INSERT INTO HabitLogs (HabitID, Quantity, Date) VALUES ($habitid, $quantity, $date)";
+        updateLogCommand.ExecuteNonQuery();
     }
 }

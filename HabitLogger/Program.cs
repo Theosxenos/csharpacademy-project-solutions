@@ -209,16 +209,20 @@ static void UpdateLogView(HabitModel habit)
         if (isDateValid && isQuantityValid)
         {
             endUpdateLogView = true;
+            var habitLog = new HabitLogModel()
+            {
+                HabitId = habit.Id,
+                Date = parsedDate,
+                Quantity = parsedQuantity
+            };
+            var habitLogRepository = new HabitLogRepository();
+            habitLogRepository.UpdateHabitLog(habitLog);
         }
         else
         {
             endUpdateLogView = false;
         }
-
     } while (!endUpdateLogView);
-
-
-
 }
 
 static void HabitUpdateView(HabitModel habit)
