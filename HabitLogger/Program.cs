@@ -146,6 +146,7 @@ static void HabitMenuView(HabitModel habit)
                     break;
                 case 3:
                     HabitUpdateView(habit);
+                    habit = new HabitRepository().GetHabitById(habit.Id);
                     break;
                 case 4:
                     break;

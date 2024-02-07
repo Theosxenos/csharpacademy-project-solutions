@@ -1,4 +1,5 @@
 using HabitLogger.Models;
+using Microsoft.Data.Sqlite;
 
 namespace HabitLogger.Repositories;
 
@@ -29,6 +30,23 @@ public class HabitRepository
         return habits;
     }
 
+    public HabitModel GetHabitById(int habitId)
+    {
+        HabitModel habit = new();
+        using var connection = db.GetConnection();
+        var selectHabitCommand = new SqliteCommand("SELECT * FROM Habits WHERE ID = $id", connection);
+        selectHabitCommand.Parameters.AddWithValue("$id", habitId);
+
+        using var reader = selectHabitCommand.ExecuteReader();
+        if (!reader.Read()) return habit;
+
+        habit.Id = reader.GetInt32(reader.GetOrdinal("ID"));
+        habit.HabitName = reader.GetString(reader.GetOrdinal("HabitName"));;
+        habit.Unit = reader.GetString(reader.GetOrdinal("Unit"));;
+
+        return habit;
+    }
+
     public void AddHabit(HabitModel habit)
     {
         using var connection = db.GetConnection();
@@ -44,11 +62,11 @@ public class HabitRepository
     {
         using var connection = db.GetConnection();
 
-        var updateHabitCommand = connection.CreateCommand();
-        updateHabitCommand.CommandText = "UPDATE Habits SET HabitName = $name AND Unit = $unit WHERE ID = $id";
-        updateHabitCommand.Parameters.AddWithValue("id", toUpdateHabitId);
-        updateHabitCommand.Parameters.AddWithValue("name", habit.HabitName);
-        updateHabitCommand.Parameters.AddWithValue("unit", habit.Unit);
+        var updateHabitCommand =
+            new SqliteCommand("UPDATE Habits SET HabitName = $name, Unit = $unit WHERE ID = $id", connection);
+        updateHabitCommand.Parameters.AddWithValue("$id", toUpdateHabitId);
+        updateHabitCommand.Parameters.AddWithValue("$name", habit.HabitName);
+        updateHabitCommand.Parameters.AddWithValue("$unit", habit.Unit);
         updateHabitCommand.ExecuteNonQuery();
     }
 }
