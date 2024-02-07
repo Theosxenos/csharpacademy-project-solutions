@@ -76,7 +76,8 @@ static void NewHabitView()
 
 static void ListHabitsView()
 {
-    var habits = new HabitRepository().GetAllHabits();
+    var habitRepository = new HabitRepository();
+    var habits = habitRepository.GetAllHabits();
     bool endListHabitsView;
 
     do
@@ -101,6 +102,7 @@ static void ListHabitsView()
             {
                 case >= 1 when userChoice <= habits.Count:
                     HabitMenuView(habits[userChoice - 1]);
+                    habits = habitRepository.GetAllHabits();;
                     break;
                 case 0:
                     endListHabitsView = true;
