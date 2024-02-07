@@ -1,4 +1,5 @@
-﻿using HabitLogger;
+﻿using System.Globalization;
+using HabitLogger;
 using HabitLogger.Models;
 using HabitLogger.Repositories;
 
@@ -141,6 +142,7 @@ static void HabitMenuView(HabitModel habit)
                     HabitLogView(habit);
                     break;
                 case 2:
+                    UpdateLogView(habit);
                     break;
                 case 3:
                     HabitUpdateView(habit);
@@ -185,9 +187,35 @@ static void HabitLogView(HabitModel habit)
     Console.ReadKey();
 }
 
-static void updateLogView(HabitModel habit)
+static void UpdateLogView(HabitModel habit)
 {
-    Console.WriteLine();
+    var currentCulture = CultureInfo.CurrentCulture;
+    var dateFormat = currentCulture.DateTimeFormat.ShortDatePattern;
+    Console.WriteLine($"Update {habit.HabitName} log");
+    Console.WriteLine($"What date ({dateFormat})?");
+    var date = Console.ReadLine();
+    Console.WriteLine($"What quantity (in {habit.Unit})?");
+    var quantity = Console.ReadLine();
+
+    bool endUpdateLogView;
+    do
+    {
+        var isDateValid = DateTime.TryParse(date, out var parsedDate);
+        var isQuantityValid = int.TryParse(quantity, out var parsedQuantity);
+
+        if (isDateValid && isQuantityValid)
+        {
+            endUpdateLogView = true;
+        }
+        else
+        {
+            endUpdateLogView = false;
+        }
+
+    } while (!endUpdateLogView);
+
+
+
 }
 
 static void HabitUpdateView(HabitModel habit)
