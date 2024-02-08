@@ -151,6 +151,8 @@ static void HabitMenuView(HabitModel habit)
                     habit = new HabitRepository().GetHabitById(habit.Id);
                     break;
                 case 4:
+                    // TODO Implement
+                    Console.WriteLine("Buy our $99,99 DLC to unlock this feature!");
                     break;
                 case 0:
                     endHabitMenuView = true;
