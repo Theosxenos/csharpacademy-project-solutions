@@ -183,7 +183,7 @@ static void HabitLogView(HabitModel habit)
 
     foreach (var log in logs)
     {
-        Console.WriteLine($"{log.Date} - {log.Quantity} {habit.Unit}");
+        Console.WriteLine($"{log.Date:d} - {log.Quantity} {habit.Unit}");
     }
 
     Console.WriteLine("Press any key to return to the habit menu.");
