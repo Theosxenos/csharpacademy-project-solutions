@@ -2,6 +2,7 @@
 using HabitLogger;
 using HabitLogger.Models;
 using HabitLogger.Repositories;
+using HabitLogger.Views;
 
 if (!File.Exists("habits.db"))
 {
@@ -9,33 +10,35 @@ if (!File.Exists("habits.db"))
     db.CreateDatabase();
 }
 
+
 var endApp = false;
 while (!endApp)
 {
-    Console.Clear();
-    Console.WriteLine("Habit Logger Main Menu");
-    Console.WriteLine("1. New Habit");
-    Console.WriteLine("2. List Habits");
-    Console.WriteLine("0. Exit Habit Logger");
-    Console.Write("Your choice? ");
+    var v = new MenuView();
+    v.Title = "Habit Logger Main Menu";
 
-    var isUserChoiceNumeric = int.TryParse(Console.ReadLine(), out var userChoice);
-    if (!isUserChoiceNumeric || userChoice is >= 3 and <= 9)
-    {
-        Console.WriteLine("Wrong input. Press any key to try again.");
-        Console.ReadKey();
-    }
+    MenuItem[] menu =
+    [
+        new MenuItem()
+        {
+            Text = "New Habit",
+            View = NewHabitView,
+        },
+        new MenuItem()
+        {
+            Text = "List Habits",
+            View = ListHabitsView,
+        },
+    ];
 
+    var userChoice = v.ShowMenu(menu.Select(m => m.Text).ToArray());
     switch (userChoice)
     {
-        case 1:
-            NewHabitView();
-            break;
-        case 2:
-            ListHabitsView();
-            break;
-        case 0:
+        case -1:
             endApp = true;
+            break;
+        default:
+            menu[userChoice].View();
             break;
     }
 }
@@ -82,39 +85,30 @@ static void ListHabitsView()
 
     do
     {
-        Console.Clear();
-        Console.WriteLine("A List of All Your Habits");
-
+        List<MenuItem> menu = [];
         for (int i = 0; i < habits.Count; i++)
         {
-            Console.WriteLine($"{i + 1}. {habits[i].HabitName}");
-        }
-
-        Console.WriteLine("0. Back to main menu");
-        Console.Write("Your choice? ");
-        var isUserChoiceNumeric = int.TryParse(Console.ReadLine(), out var userChoice);
-
-        if (isUserChoiceNumeric)
-        {
-            endListHabitsView = false;
-
-            switch (userChoice)
+            var index = i;
+            menu.Add(new()
             {
-                case >= 1 when userChoice <= habits.Count:
-                    HabitMenuView(habits[userChoice - 1]);
-                    habits = habitRepository.GetAllHabits();;
-                    break;
-                case 0:
-                    endListHabitsView = true;
-                    break;
-            }
+                Text = habits[i].HabitName,
+                View = () => HabitMenuView(habits[index])
+            });
         }
-        else
-        {
-            Console.WriteLine("Wrong input. Press a key to try again.");
-            Console.ReadKey();
 
-            endListHabitsView = false;
+        var view = new MenuView();
+        view.Title = "A List of All Your Habits";
+
+        var userChoice = view.ShowMenu(menu.Select(m => m.Text).ToArray());
+        switch (userChoice)
+        {
+            case -1:
+                endListHabitsView = true;
+                break;
+            default:
+                menu[userChoice].View();
+                endListHabitsView = false;
+                break;
         }
 
     } while (!endListHabitsView);
@@ -122,60 +116,51 @@ static void ListHabitsView()
 
 static void HabitMenuView(HabitModel habit)
 {
+    var habitRepository = new HabitRepository();
     bool endHabitMenuView;
+
     do
     {
-        Console.WriteLine($"{habit.HabitName} Menu");
-        Console.WriteLine("1. Show Log");
-        Console.WriteLine("2. Update Log");
-        Console.WriteLine("3. Update Habit");
-        Console.WriteLine("4. Stats");
-        Console.WriteLine("0. Habit Menu");
-        Console.Write("Your choice? ");
-        var isUserChoiceNumeric = int.TryParse(Console.ReadLine(), out var userChoice);
-
-        if (isUserChoiceNumeric && userChoice is >= 0 and <= 4)
+        var menu = new List<MenuItem>
         {
-            endHabitMenuView = false;
+            new() { Text = "Show Log", View = () => HabitLogView(habit) },
+            new() { Text = "Update Log", View = () => UpdateLogView(habit) },
+            new()
+            { Text = "Update Habit", View = () => {
+                HabitUpdateView(habit);
+                habit = habitRepository.GetHabitById(habit.Id); // Refresh the habit details
+            }},
+            new()
+            { Text = "Stats", View = () => {
+                // TODO: Implement Stats View
+                Console.WriteLine("Buy our $99,99 DLC to unlock this feature!");
+            }}
+        };
 
-            switch (userChoice)
-            {
-                case 1:
-                    HabitLogView(habit);
-                    break;
-                case 2:
-                    UpdateLogView(habit);
-                    break;
-                case 3:
-                    HabitUpdateView(habit);
-                    habit = new HabitRepository().GetHabitById(habit.Id);
-                    break;
-                case 4:
-                    // TODO Implement
-                    Console.WriteLine("Buy our $99,99 DLC to unlock this feature!");
-                    break;
-                case 0:
-                    endHabitMenuView = true;
-                    break;
-            }
+        var view = new MenuView();
+        view.Title = $"{habit.HabitName} Menu";
 
-        }
-        else
+        var userChoice = view.ShowMenu(menu.Select(m => m.Text).ToArray());
+        switch (userChoice)
         {
-            Console.WriteLine("Wrong input. Press a key to try again.");
-            Console.ReadKey();
-
-            endHabitMenuView = false;
+            case -1:
+                endHabitMenuView = true;
+                break;
+            default:
+                menu[userChoice].View();
+                endHabitMenuView = false;
+                break;
         }
-
     } while (!endHabitMenuView);
 }
+
 
 static void HabitLogView(HabitModel habit)
 {
     var habitLogRepository = new HabitLogRepository();
     var logs = habitLogRepository.GetAllLogsForHabitId(habit.Id);
 
+    Console.Clear();
     Console.WriteLine($"{habit.HabitName} Logs");
 
     if (logs.Count == 0)
