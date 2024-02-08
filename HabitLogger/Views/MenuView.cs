@@ -3,64 +3,23 @@ namespace HabitLogger.Views;
 public class MenuView
 {
     public string Title { get; set; } = string.Empty;
+    private int pageNumber;
+    private readonly int pageSize = 8;
+    private int totalPages;
 
     public int ShowMenu(IList<string> menuItems)
     {
-        var pageNumber = 0;
-        var pageSize = 8;
+        totalPages = (int)Math.Ceiling(menuItems.Count / (double)pageSize);
 
         while (true)
         {
-            DisplayMenu(menuItems, pageNumber, pageSize);
-            HandleUserInput();
+            DisplayMenu(menuItems);
+            var result = HandleUserInput(menuItems.Count);
+            if (result.HasValue) return result.Value;
         }
     }
 
-    private void HandleUserInput()
-    {
-        var userInput = GetUserInput();
-        var isUserChoiceNumeric = int.TryParse(userInput, out var menuChoice);
-
-        if (isUserChoiceNumeric)
-        {
-            switch (menuChoice)
-            {
-                case >= 1 and <= 9:
-                    return pageNumber * pageSize + menuChoice;
-                case 0:
-                    return 0;
-            }
-        }
-        else if (!isUserChoiceNumeric)
-        {
-            HandlePagination(userInput);
-        }
-    }
-
-    private static void HandlePagination(string userInput)
-    {
-        switch (userInput)
-        {
-            case "p" when pageNumber > 0:
-                pageNumber--;
-                break;
-            case "p" when pageNumber == 0:
-                Console.WriteLine("You already are on the first page.");
-                Console.WriteLine("Press any key to continue.");
-                Console.ReadKey();
-                break;
-            case "n" when pageNumber < totalPages:
-                pageNumber++;
-                break;
-            case "n" when pageNumber == totalPages:
-                Console.WriteLine("You already are on the last page.");
-                Console.WriteLine("Press any key to continue.");
-                Console.ReadKey();
-                break;
-        }
-    }
-
-    private void DisplayMenu(IList<string> menuItems, int pageNumber, int pageSize)
+    private void DisplayMenu(IList<string> menuItems)
     {
         Console.Clear();
         Console.WriteLine(Title);
@@ -69,12 +28,12 @@ public class MenuView
         var amountOfItemsToList = Math.Min(pageSize, menuItems.Count - pageNumber * pageSize);
         for (var i = 0; i < amountOfItemsToList; i++)
         {
-            var index = pageNumber * pageSize + i;
-            Console.WriteLine($"{i + 1}. {menuItems[index]}");
+            var menuItemIndex = pageNumber * pageSize + i;
+            Console.WriteLine($"{i + 1}. {menuItems[menuItemIndex]}");
         }
-        Console.WriteLine("0. Back to previous menu.");
 
-        if ((int)Math.Ceiling(menuItems.Count / (double)pageSize) > 1)
+        Console.WriteLine("\n0. Back to previous menu");
+        if (totalPages > 1)
         {
             Console.WriteLine("N. Next Page, P. Previous Page");
         }
@@ -82,17 +41,57 @@ public class MenuView
         Console.WriteLine("\nYour Choice: ");
     }
 
-    private string GetUserInput()
+    private int? HandleUserInput(int itemCount)
     {
-        while (true)
+        var userInput = GetUserInput();
+        if (int.TryParse(userInput, out var menuChoice))
         {
-            var userInput = Console.ReadLine()?.ToLower().Trim();
+            if (menuChoice >= 1 && menuChoice <= pageSize)
+            {
+                var itemIndex = pageNumber * pageSize + menuChoice - 1;
+                if (itemIndex < itemCount) return itemIndex;
+            }
+            else if (menuChoice == 0)
+            {
+                return -1; // Indicate that the user wants to go back
+            }
+        }
+        else
+        {
+            HandlePagination(userInput);
+        }
 
-            if (!string.IsNullOrEmpty(userInput)) return userInput;
+        return null; // Indicate no valid selection was made
+    }
 
-            Console.WriteLine("Please enter a value.");
-            Console.WriteLine("Press any key to try again.");
+    private void HandlePagination(string userInput)
+    {
+        if (userInput == "n" && pageNumber < totalPages - 1)
+        {
+            pageNumber++;
+        }
+        else if (userInput == "p" && pageNumber > 0)
+        {
+            pageNumber--;
+        }
+        else if (userInput is not ("p" or "n"))
+        {
+            Console.WriteLine("Wrong input detected.");
+            Console.WriteLine("Press any key to retry.");
             Console.ReadKey();
         }
+        else
+        {
+            Console.WriteLine(userInput == "n"
+                ? "You already are on the last page."
+                : "You already are on the first page.");
+            Console.WriteLine("Press any key to continue.");
+            Console.ReadKey();
+        }
+    }
+
+    private static string GetUserInput()
+    {
+        return Console.ReadLine()?.ToLower().Trim();
     }
 }
