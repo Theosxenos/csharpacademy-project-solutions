@@ -19,16 +19,16 @@ while (!endApp)
 
     MenuItem[] menu =
     [
-        new MenuItem()
+        new MenuItem
         {
             Text = "New Habit",
-            View = NewHabitView,
+            View = NewHabitView
         },
-        new MenuItem()
+        new MenuItem
         {
             Text = "List Habits",
-            View = ListHabitsView,
-        },
+            View = ListHabitsView
+        }
     ];
 
     var userChoice = v.ShowMenu(menu.Select(m => m.Text).ToArray());
@@ -67,7 +67,7 @@ static void NewHabitView()
         else
         {
             var habitRepository = new HabitRepository();
-            habitRepository.AddHabit(new(){HabitName = habitName, Unit = habitUnit});
+            habitRepository.AddHabit(new HabitModel { HabitName = habitName, Unit = habitUnit });
 
             Console.WriteLine($"Your habit {habitName} has been created! Press a key to return to the main menu.");
             Console.ReadKey();
@@ -86,10 +86,10 @@ static void ListHabitsView()
     do
     {
         List<MenuItem> menu = [];
-        for (int i = 0; i < habits.Count; i++)
+        for (var i = 0; i < habits.Count; i++)
         {
             var index = i;
-            menu.Add(new()
+            menu.Add(new MenuItem
             {
                 Text = habits[i].HabitName,
                 View = () => HabitMenuView(habits[index])
@@ -110,7 +110,6 @@ static void ListHabitsView()
                 endListHabitsView = false;
                 break;
         }
-
     } while (!endListHabitsView);
 }
 
@@ -126,15 +125,21 @@ static void HabitMenuView(HabitModel habit)
             new() { Text = "Show Log", View = () => HabitLogView(habit) },
             new() { Text = "Update Log", View = () => UpdateLogView(habit) },
             new()
-            { Text = "Update Habit", View = () => {
-                HabitUpdateView(habit);
-                habit = habitRepository.GetHabitById(habit.Id); // Refresh the habit details
-            }},
+            {
+                Text = "Update Habit", View = () =>
+                {
+                    HabitUpdateView(habit);
+                    habit = habitRepository.GetHabitById(habit.Id); // Refresh the habit details
+                }
+            },
             new()
-            { Text = "Stats", View = () => {
-                // TODO: Implement Stats View
-                Console.WriteLine("Buy our $99,99 DLC to unlock this feature!");
-            }}
+            {
+                Text = "Stats", View = () =>
+                {
+                    // TODO: Implement Stats View
+                    Console.WriteLine("Buy our $99,99 DLC to unlock this feature!");
+                }
+            }
         };
 
         var view = new MenuView();
@@ -163,15 +168,9 @@ static void HabitLogView(HabitModel habit)
     Console.Clear();
     Console.WriteLine($"{habit.HabitName} Logs");
 
-    if (logs.Count == 0)
-    {
-        Console.WriteLine("No logs found.");
-    }
+    if (logs.Count == 0) Console.WriteLine("No logs found.");
 
-    foreach (var log in logs)
-    {
-        Console.WriteLine($"{log.Date:d} - {log.Quantity} {habit.Unit}");
-    }
+    foreach (var log in logs) Console.WriteLine($"{log.Date:d} - {log.Quantity} {habit.Unit}");
 
     Console.WriteLine("Press any key to return to the habit menu.");
     Console.ReadKey();
@@ -193,17 +192,14 @@ static void UpdateLogView(HabitModel habit)
         var parsedDate = DateTime.Today;
         var isDateValid = true;
 
-        if (!string.IsNullOrEmpty(date?.Trim()))
-        {
-            isDateValid = DateTime.TryParse(date, out parsedDate);
-        }
+        if (!string.IsNullOrEmpty(date?.Trim())) isDateValid = DateTime.TryParse(date, out parsedDate);
 
         var isQuantityValid = int.TryParse(quantity, out var parsedQuantity);
 
         if (isDateValid && isQuantityValid)
         {
             endUpdateLogView = true;
-            var habitLog = new HabitLogModel()
+            var habitLog = new HabitLogModel
             {
                 HabitId = habit.Id,
                 Date = parsedDate,
@@ -224,6 +220,7 @@ static void UpdateLogView(HabitModel habit)
 
 static void HabitUpdateView(HabitModel habit)
 {
+    Console.Clear();
     Console.WriteLine($"Updating Habit: {habit.HabitName}");
     Console.WriteLine("Keep the values empty to keep the current value.");
     Console.WriteLine($"Update the name ({habit.HabitName})?");

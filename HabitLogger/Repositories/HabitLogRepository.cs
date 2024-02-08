@@ -1,4 +1,3 @@
-using System.Globalization;
 using HabitLogger.Models;
 using Microsoft.Data.Sqlite;
 
@@ -6,7 +5,7 @@ namespace HabitLogger.Repositories;
 
 public class HabitLogRepository
 {
-    private HabitLoggerDatabase db = new();
+    private readonly HabitLoggerDatabase db = new();
 
     public List<HabitLogModel> GetAllLogsForHabitId(int habitId)
     {
@@ -18,7 +17,7 @@ public class HabitLogRepository
         using var reader = selectLogsCommand.ExecuteReader();
         while (reader.Read())
         {
-            var habitLog = new HabitLogModel()
+            var habitLog = new HabitLogModel
             {
                 LogId = reader.GetInt32(reader.GetOrdinal("LogId")),
                 HabitId = reader.GetInt32(reader.GetOrdinal("HabitId")),
@@ -35,7 +34,9 @@ public class HabitLogRepository
     public void UpdateHabitLog(HabitLogModel habitLog)
     {
         var connection = db.GetConnection();
-        var updateLogCommand = new SqliteCommand("UPDATE HabitLogs SET Quantity = $quantity WHERE HabitID = $habitid AND Date = $date", connection);
+        var updateLogCommand =
+            new SqliteCommand("UPDATE HabitLogs SET Quantity = $quantity WHERE HabitID = $habitid AND Date = $date",
+                connection);
         updateLogCommand.Parameters.AddWithValue("$quantity", habitLog.Quantity);
         updateLogCommand.Parameters.AddWithValue("$habitid", habitLog.HabitId);
         updateLogCommand.Parameters.AddWithValue("$date", habitLog.Date.ToString("O"));

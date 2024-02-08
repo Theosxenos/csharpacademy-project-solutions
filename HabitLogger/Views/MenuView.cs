@@ -2,10 +2,10 @@ namespace HabitLogger.Views;
 
 public class MenuView
 {
-    public string Title { get; set; } = string.Empty;
-    private int pageNumber;
     private readonly int pageSize = 8;
+    private int pageNumber;
     private int totalPages;
+    public string Title { get; set; } = string.Empty;
 
     public int ShowMenu(IList<string> menuItems)
     {
@@ -33,10 +33,7 @@ public class MenuView
         }
 
         Console.WriteLine("\n0. Back to previous menu");
-        if (totalPages > 1)
-        {
-            Console.WriteLine("N. Next Page, P. Previous Page");
-        }
+        if (totalPages > 1) Console.WriteLine("N. Next Page, P. Previous Page");
 
         Console.WriteLine("\nYour Choice: ");
     }
