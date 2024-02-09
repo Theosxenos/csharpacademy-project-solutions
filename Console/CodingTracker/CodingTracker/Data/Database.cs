@@ -18,7 +18,7 @@ public class Database
 
     public void Initialize()
     {
-        // if (File.Exists(databasePath)) return;
+        if (File.Exists(databasePath)) return;
 
         SeedDatabase();
     }
@@ -48,7 +48,7 @@ public class Database
             """
                 CREATE TABLE IF NOT EXISTS Sessions (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Day TEXT NOT NULL
+                    Day TEXT NOT NULL UNIQUE 
                 );
             
                 CREATE TABLE IF NOT EXISTS Logs (
@@ -67,12 +67,12 @@ public class Database
             """
                 -- Seed sessions
                 INSERT INTO Sessions (Day) VALUES
-                ('2024-01-01'),
-                ('2024-01-02'),
-                ('2024-01-03');
+                ('1-1-24'),
+                ('2-1-24'),
+                ('10-2-24');
                 
                 -- Seed logs
-                INSERT INTO Logs (SessionId, TimeStart, TimeEnd) VALUES
+                INSERT INTO Logs (SessionId, StartTime, EndTime) VALUES
                 (1, '09:00', '10:00'),
                 (1, '10:00', '11:00'),
                 (2, '11:00', '12:00'),
