@@ -54,8 +54,8 @@ public class Database
                 CREATE TABLE IF NOT EXISTS Logs (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     SessionId INTEGER NOT NULL,
-                    TimeStart TEXT,
-                    TimeEnd TEXT,
+                    StartTime TEXT,
+                    EndTime TEXT,
                     FOREIGN KEY (SessionId) REFERENCES Sessions(Id)
                 );
             """;
@@ -80,8 +80,8 @@ public class Database
                 (3, '13:00', '14:00');
             """;
 
-        var seedSessionsCommand = new SqliteCommand(seedDataQuery, connection);
-        seedSessionsCommand.ExecuteNonQuery();
+        var seedDataCommand = new SqliteCommand(seedDataQuery, connection);
+        seedDataCommand.ExecuteNonQuery();
     }
 
 }
