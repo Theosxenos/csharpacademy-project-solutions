@@ -1,3 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using CodingTracker.Data;
 
-Console.WriteLine("Hello, World!");
+var db = new Database();
+db.Initialize();
