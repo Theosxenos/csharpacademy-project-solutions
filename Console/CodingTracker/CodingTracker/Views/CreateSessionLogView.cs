@@ -1,8 +1,10 @@
+using CodingTracker.Models;
+
 namespace CodingTracker.Views;
 
 public class CreateSessionLogView
 {
-    public (TimeOnly startTime, TimeOnly stopTime) Prompt()
+    public SessionLog Prompt()
     {
         // AnsiConsole.Clear(); // Uncomment if you want to clear the console.
 
@@ -12,9 +14,13 @@ public class CreateSessionLogView
         var startTime = AskForTime("At what time did you start? [grey](HH:mm)[/]");
 
         // Get stop time with the same validation logic
-        var stopTime = AskForTime("At what time did you stop? [grey](HH:mm)[/]");
+        var endTime = AskForTime("At what time did you stop? [grey](HH:mm)[/]");
 
-        return (startTime, stopTime);
+        return new()
+        {
+            StartTime = startTime,
+            EndTime = endTime
+        };
     }
 
     private TimeOnly AskForTime(string promptMessage)

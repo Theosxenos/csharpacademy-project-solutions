@@ -7,26 +7,23 @@ public class MainController
         var exitMenu = false;
         var view = new MainMenuView();
         var sessionController = new SessionController();
-        // TODO use MenuItems
-        string[] menuItems = ["Start Session", "Update Session", "List Sessions", "Exit"];
+        var sessionLogController = new SessionLogController();
+
+        Dictionary<string, Action> menuItems = new()
+        {
+            { "Create Session Log", sessionLogController.CreateSession },
+            { "Start Session", sessionController.StartSession },
+            { "List Sessions", sessionController.UpdateSession },
+            { "Exit", () => exitMenu = true }
+        };
 
         do
         {
             exitMenu = false;
 
-            var choice = view.ShowMenu(menuItems);
-            switch (choice)
-            {
-                case "Start Session":
-                    sessionController.StartSession();
-                    break;
-                case "Update Session":
-                    sessionController.UpdateSession();
-                    break;
-                case "Exit":
-                    exitMenu = true;
-                    break;
-            }
+            var choice = view.ShowMenu(menuItems.Keys.ToArray());
+            menuItems[choice].Invoke();
+
         } while (!exitMenu);
     }
 }
