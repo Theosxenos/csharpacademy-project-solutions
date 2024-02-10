@@ -21,15 +21,3 @@ public class SessionView : BaseView
         return DateOnly.ParseExact(startDate, dateFormat);
     }
 }
-
-public abstract class BaseView
-{
-    public void ShowSuccess(string message)
-    {
-        AnsiConsole.MarkupLine($"[green]{message}[/]");
-    }
-    public void ShowError(string message)
-    {
-        AnsiConsole.MarkupLine($"[red]{message}[/]");
-    }
-}

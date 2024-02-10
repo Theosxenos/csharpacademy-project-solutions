@@ -1,59 +1,32 @@
-using Microsoft.Data.Sqlite;
-
 namespace CodingTracker.Controllers;
 
 public class MainController
 {
     public void ShowMainMenu()
     {
+        var exitMenu = false;
         var view = new MainMenuView();
         var sessionController = new SessionController();
+        // TODO use MenuItems
         string[] menuItems = ["Start Session", "Update Session", "List Sessions", "Exit"];
-        var choice = view.ShowMenu(menuItems);
 
-        switch (choice)
+        do
         {
-            case "Start Session":
-                sessionController.StartSession();
-                break;
-            case "Update Session":
-                sessionController.UpdateSession();
-                break;
-        }
-    }
-}
+            exitMenu = false;
 
-public class SessionController
-{
-    public void StartSession()
-    {
-        var view = new SessionView();
-        var result = view.PromptStartSession();
-        try
-        {
-            new Repository().CreateSession(result);
-            view.ShowSuccess("Session is created.");
-        }
-        catch (SqliteException sqliteException)
-        {
-            if (sqliteException.SqliteErrorCode == 19)
+            var choice = view.ShowMenu(menuItems);
+            switch (choice)
             {
-                view.ShowError($"A session with the date {result} already exists.");
+                case "Start Session":
+                    sessionController.StartSession();
+                    break;
+                case "Update Session":
+                    sessionController.UpdateSession();
+                    break;
+                case "Exit":
+                    exitMenu = true;
+                    break;
             }
-            else
-            {
-                throw;
-            }
-        }
-        catch (Exception e)
-        {
-            view.ShowError(e.Message);
-            throw;
-        }
-    }
-
-    public void UpdateSession()
-    {
-
+        } while (!exitMenu);
     }
 }
