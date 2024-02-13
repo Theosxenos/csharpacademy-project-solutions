@@ -13,23 +13,52 @@ public class BreweryDbContext(DbContextOptions<BreweryDbContext> options) : DbCo
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Seed data for breweries, including more global ones
-        modelBuilder.Entity<Brewery>().HasData(
-            new Brewery { Id = 1, Name = "Heineken" },
-            new Brewery { Id = 2, Name = "Amstel" },
-            new Brewery { Id = 3, Name = "Brouwerij 't IJ" },
-            new Brewery { Id = 4, Name = "Budweiser" },
-            new Brewery { Id = 5, Name = "Coors Brewing Company" },
-            new Brewery { Id = 6, Name = "Guinness" },
-            new Brewery { Id = 7, Name = "Stella Artois" },
-            new Brewery { Id = 8, Name = "Corona" },
-            new Brewery { Id = 9, Name = "Pilsner Urquell" },
-            new Brewery
-            {
-                Id = 10, Name = "SABMiller"
-            } // Note: As of my last update, SABMiller was merged with AB InBev. You might want to use a brand like "Hoegaarden" or another specific beer brand from their portfolio.
-        );
+        ConfigureBrewery(modelBuilder);
+        ConfigureBeer(modelBuilder);
+        ConfigureWholesalers(modelBuilder);
+        ConfigureInventoryItem(modelBuilder);
 
+        base.OnModelCreating(modelBuilder);
+    }
+
+    private void ConfigureInventoryItem(ModelBuilder modelBuilder)
+    {
+        // TODO
+    }
+
+    private void ConfigureWholesalers(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Wholesaler>().HasData([
+            new Wholesaler
+            {
+                Id = 1,
+                Name = "Global Trade Alliance Ltd."
+            },
+            new Wholesaler
+            {
+                Id = 2,
+                Name = "International MegaMart Inc."
+            },
+            new Wholesaler
+            {
+                Id = 3,
+                Name = "Universal Distribution Network Corp."
+            },
+            new Wholesaler
+            {
+                Id = 4,
+                Name = "Worldwide Supply Solutions LLC."
+            },
+            new Wholesaler
+            {
+                Id = 5,
+                Name = "Global Reach Enterprises Ltd."
+            }
+        ]);
+    }
+
+    private void ConfigureBeer(ModelBuilder modelBuilder)
+    {
         // Seed data for beers from these breweries
         modelBuilder.Entity<Beer>().HasData(
             new Beer
@@ -56,8 +85,26 @@ public class BreweryDbContext(DbContextOptions<BreweryDbContext> options) : DbCo
                 RetailPrice = 1.20m
             }
         );
+    }
 
-        base.OnModelCreating(modelBuilder);
+    private void ConfigureBrewery(ModelBuilder modelBuilder)
+    {
+        // Seed data for breweries, including more global ones
+        modelBuilder.Entity<Brewery>().HasData(
+            new Brewery { Id = 1, Name = "Heineken" },
+            new Brewery { Id = 2, Name = "Amstel" },
+            new Brewery { Id = 3, Name = "Brouwerij 't IJ" },
+            new Brewery { Id = 4, Name = "Budweiser" },
+            new Brewery { Id = 5, Name = "Coors Brewing Company" },
+            new Brewery { Id = 6, Name = "Guinness" },
+            new Brewery { Id = 7, Name = "Stella Artois" },
+            new Brewery { Id = 8, Name = "Corona" },
+            new Brewery { Id = 9, Name = "Pilsner Urquell" },
+            new Brewery
+            {
+                Id = 10, Name = "SABMiller"
+            } // Note: As of my last update, SABMiller was merged with AB InBev. You might want to use a brand like "Hoegaarden" or another specific beer brand from their portfolio.
+        );
     }
 }
 
