@@ -13,7 +13,7 @@ public class BreweriesController(IRepository<Brewery> repository, IBeerRepositor
         };
     }
 
-    [HttpGet("/{breweryId}/Beers")]
+    [HttpGet("{breweryId}/Beers")]
     public async Task<ListResponse<Beer>> GetAllBeersForBreweryById(int breweryId)
     {
         return new()
