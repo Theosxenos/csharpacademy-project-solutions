@@ -11,6 +11,9 @@ builder.Services.AddDbContext<BreweryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+builder.Services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IBeerRepository, BeerRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
