@@ -4,3 +4,6 @@ global using System.ComponentModel.DataAnnotations.Schema;
 global using BreweryAPI.DTOs.Responses;
 global using Microsoft.EntityFrameworkCore;
 global using BreweryAPI.Data;
+global using BreweryAPI.Services;
+global using BreweryAPI.DTOs.Requests;
+global using System.ComponentModel.DataAnnotations;
