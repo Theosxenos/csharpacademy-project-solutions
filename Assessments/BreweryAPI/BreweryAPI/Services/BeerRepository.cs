@@ -1,6 +1,6 @@
 namespace BreweryAPI.Services;
 
-public class BeerRepository (BreweryDbContext breweryDbContext) : Repository<Beer>(breweryDbContext), IBeerRepository
+public class BeerRepository (BreweryDbContext breweryDbContext, IMapper mapper) : Repository<Beer>(breweryDbContext), IBeerRepository
 {
     public async Task<List<Beer>> GetAllBeers()
     {
@@ -26,6 +26,18 @@ public class BeerRepository (BreweryDbContext breweryDbContext) : Repository<Bee
         breweryDbContext.Remove(toDeleteBeer);
         await breweryDbContext.SaveChangesAsync();
         return toDeleteBeer;
+    }
+
+    public async Task<Beer> UpdateBeer(BeerRequest updatedBeer, int beerId)
+    {
+        var beerToUpdate = await GetBeerById(beerId);
+        ArgumentNullException.ThrowIfNull(beerToUpdate);
+
+        mapper.Map(updatedBeer, beerToUpdate);
+        breweryDbContext.Beers.Update(beerToUpdate);
+        await breweryDbContext.SaveChangesAsync();
+
+        return beerToUpdate;
     }
 
 }

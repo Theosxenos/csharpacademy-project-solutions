@@ -15,6 +15,12 @@ public class BeersController (IBeerRepository beerRepository) : ControllerBase
         };
     }
 
+    [HttpGet("{beerId:int}")]
+    public async Task<ActionResult<Beer>> GetBeerById(int beerId)
+    {
+        return await beerRepository.GetBeerById(beerId);
+    }
+
     [HttpPost]
     public async Task<ActionResult<Beer>> AddBeer(BeerRequest beer)
     {
@@ -29,7 +35,7 @@ public class BeersController (IBeerRepository beerRepository) : ControllerBase
         return result;
     }
 
-    [HttpDelete("/{beerId}")]
+    [HttpDelete("{beerId:int}")]
     public async Task<ActionResult<Beer>> DeleteBeer(int beerId)
     {
         var result = await beerRepository.DeleteBeerById(beerId);
@@ -37,9 +43,11 @@ public class BeersController (IBeerRepository beerRepository) : ControllerBase
         return result;
     }
 
-    [HttpPut("/{beerId}")]
+    [HttpPut("{beerId:int}")]
     public async Task<ActionResult<Beer>> UpdateBeer(BeerRequest beer, int beerId)
     {
-        return new Beer();
+        var result = await beerRepository.UpdateBeer(beer, beerId);
+
+        return result;
     }
 }
