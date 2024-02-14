@@ -32,7 +32,7 @@ public class BeersController (IBeerRepository beerRepository) : ControllerBase
             WholesalePrice = beer.WholesalePrice
         });
 
-        return result;
+        return CreatedAtAction(nameof(GetBeerById), new{beerId = result.Id}, result);
     }
 
     [HttpDelete("{beerId:int}")]
