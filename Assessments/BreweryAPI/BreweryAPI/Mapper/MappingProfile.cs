@@ -1,5 +1,3 @@
-using AutoMapper;
-
 namespace BreweryAPI.Mapper;
 
 public class MappingProfile : Profile
