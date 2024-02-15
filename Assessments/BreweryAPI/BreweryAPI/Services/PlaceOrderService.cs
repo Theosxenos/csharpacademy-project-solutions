@@ -25,14 +25,8 @@ public class PlaceOrderService(IOrderRepository orderRepository, IBeerRepository
         {
             var beer = await beerRepository.GetBeerById(orderDetail.BeerId!.Value);
 
-            orderDetail.Discount = orderDetail.Amount switch
-                                   {
-                                       >= 20 => 0.2f,
-                                       >= 10 => 0.1f,
-                                       _ => 0
-                                   };
             orderDetail.Price = beer.WholesalePrice;
-            orderDetail.TotalPrice = orderDetail.Amount * beer.WholesalePrice * (1 - (decimal)orderDetail.Discount);
+            orderDetail.TotalPrice = orderDetail.Amount * beer.WholesalePrice;
         }
     }
 }
