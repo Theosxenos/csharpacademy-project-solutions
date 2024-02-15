@@ -17,8 +17,28 @@ public class BreweryDbContext(DbContextOptions<BreweryDbContext> options) : DbCo
         ConfigureBeer(modelBuilder);
         ConfigureWholesalers(modelBuilder);
         ConfigureInventoryItem(modelBuilder);
+        ConfigureOrder(modelBuilder);
+        ConfigureOrderDetail(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
+    }
+
+    private void ConfigureOrder(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Order>().HasOne(o => o.Brewery).WithMany().HasForeignKey(o => o.BreweryId)
+            .OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<Order>().HasOne(o => o.Wholesaler).WithMany().HasForeignKey(o => o.WholesalerId)
+            .OnDelete(DeleteBehavior.NoAction);
+    }
+
+    private void ConfigureOrderDetail(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<OrderDetail>().HasKey(od => od.Id);
+        modelBuilder.Entity<OrderDetail>()
+            .HasOne(od => od.Beer)
+            .WithMany() // If you don't have a navigation property in Beer for OrderDetails, otherwise use .WithMany(b => b.OrderDetails)
+            .HasForeignKey(od => od.BeerId) // This explicitly sets BeerId as the foreign key
+            .OnDelete(DeleteBehavior.SetNull);
     }
 
     private void ConfigureInventoryItem(ModelBuilder modelBuilder)
