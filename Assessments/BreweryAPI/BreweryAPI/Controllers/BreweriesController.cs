@@ -2,14 +2,14 @@ namespace BreweryAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BreweriesController(IRepository<Brewery> repository, IBeerRepository beerRepository, IOrderService orderService) : ControllerBase
+public class BreweriesController(IRepository<Brewery> breweryRepository, IBeerRepository beerRepository, IPlaceOrderService placeOrderService, IOrderService orderService) : ControllerBase
 {
     [HttpGet]
     public async Task<ListResponse<Brewery>> GetAllBreweries()
     {
         return new()
         {
-            Data = await repository.GetAll().ToListAsync()
+            Data = await breweryRepository.GetAll().ToListAsync()
         };
     }
 
@@ -25,6 +25,12 @@ public class BreweriesController(IRepository<Brewery> repository, IBeerRepositor
     [HttpPost("orders")]
     public async Task<ActionResult<OrderResponse>> CreateBuyOrder(WholesalerBuyOrderRequest buyOrder)
     {
-        return Ok(await orderService.PlaceWholesalerOrder(buyOrder));
+        return Ok(await placeOrderService.PlaceWholesalerOrder(buyOrder));
+    }
+
+    [HttpGet("orders")]
+    public async Task<ActionResult<List<OrderResponse>>> GetAllOrders()
+    {
+        return Ok(await orderService.GetOrderResponsesFromAllOrders());
     }
 }

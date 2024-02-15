@@ -11,6 +11,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderedBeers));
         CreateMap<OrderedBeerRequest, OrderDetail>();
 
+        CreateMap<Beer, BeerResponse>().ReverseMap();
         CreateMap<Order, OrderResponse>();
         CreateMap<OrderDetail, OrderDetailResponse>();
     }
