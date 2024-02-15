@@ -1,4 +1,4 @@
-namespace BreweryAPI.Services;
+namespace BreweryAPI.Services.Repositories;
 
 public class OrderRepository(BreweryDbContext breweryDbContext) : Repository<Order>(breweryDbContext), IOrderRepository
 {

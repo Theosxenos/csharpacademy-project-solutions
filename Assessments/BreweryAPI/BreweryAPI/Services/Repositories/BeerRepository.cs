@@ -1,4 +1,4 @@
-namespace BreweryAPI.Services;
+namespace BreweryAPI.Services.Repositories;
 
 public class BeerRepository (BreweryDbContext breweryDbContext, IMapper mapper) : Repository<Beer>(breweryDbContext), IBeerRepository
 {

@@ -1,4 +1,4 @@
-namespace BreweryAPI.Services;
+namespace BreweryAPI.Services.Repositories;
 
 public interface IBeerRepository :  IRepository<Beer>
 {

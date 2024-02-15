@@ -8,3 +8,4 @@ global using BreweryAPI.Services;
 global using BreweryAPI.DTOs.Requests;
 global using System.ComponentModel.DataAnnotations;
 global using AutoMapper;
+global using BreweryAPI.Services.Repositories;

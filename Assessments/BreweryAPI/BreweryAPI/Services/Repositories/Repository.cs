@@ -1,4 +1,4 @@
-namespace BreweryAPI.Services;
+namespace BreweryAPI.Services.Repositories;
 
 public class Repository<TEntity> (BreweryDbContext breweryDbContext) : IRepository<TEntity> where TEntity : class, new()
 {
