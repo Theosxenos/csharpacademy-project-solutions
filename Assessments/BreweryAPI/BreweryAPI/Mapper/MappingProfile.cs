@@ -12,5 +12,7 @@ public class MappingProfile : Profile
         CreateMap<Beer, BeerResponse>().ReverseMap();
         CreateMap<Order, OrderResponse>();
         CreateMap<OrderDetail, OrderDetailResponse>();
+
+        CreateMap<InventoryItem, InventoryItemResponse>();
     }
 }

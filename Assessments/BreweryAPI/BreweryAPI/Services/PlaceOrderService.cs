@@ -1,6 +1,6 @@
 namespace BreweryAPI.Services;
 
-public class PlaceOrderService(IOrderRepository orderRepository, IBeerRepository beerRepository, IRepository<InventoryItem> inventoryRepository, IMapper mapper) : IPlaceOrderService
+public class PlaceOrderService(IOrderRepository orderRepository, IBeerRepository beerRepository, IWholesalerInventoryService wholesalerInventoryService, IMapper mapper) : IPlaceOrderService
 {
     public async Task<OrderResponse> PlaceWholesalerOrder(WholesalerBuyOrderRequest buyOrder)
     {
@@ -10,6 +10,12 @@ public class PlaceOrderService(IOrderRepository orderRepository, IBeerRepository
         CalculateOrderTotalPrice(order);
 
         var result = await orderRepository.AddAsync(order);
+
+        foreach (var orderedBeer in buyOrder.OrderedBeers)
+        {
+            await wholesalerInventoryService.UpsertWholesalerInventoryItem(buyOrder.WholesalerId, orderedBeer.BeerId,
+                orderedBeer.Amount);
+        }
 
         return mapper.Map<OrderResponse>(result);;
     }
