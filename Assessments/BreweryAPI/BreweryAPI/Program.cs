@@ -18,6 +18,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IPlaceOrderService, PlaceOrderService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IWholesalerInventoryService, WholesalerInventoryService>();
+builder.Services.AddScoped<IQuoteService, QuoteService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

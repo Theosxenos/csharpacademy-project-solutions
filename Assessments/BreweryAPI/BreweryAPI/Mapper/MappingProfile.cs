@@ -14,5 +14,8 @@ public class MappingProfile : Profile
         CreateMap<OrderDetail, OrderDetailResponse>();
 
         CreateMap<InventoryItem, InventoryItemResponse>();
+
+        CreateMap<QuoteRequest, Quote>();
+        CreateMap<QuoteDetailRequest, QuoteDetail>();
     }
 }
