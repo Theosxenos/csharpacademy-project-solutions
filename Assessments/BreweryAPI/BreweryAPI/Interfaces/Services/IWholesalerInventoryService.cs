@@ -1,4 +1,4 @@
-namespace BreweryAPI.Services;
+namespace BreweryAPI.Interfaces.Services;
 
 public interface IWholesalerInventoryService
 {
