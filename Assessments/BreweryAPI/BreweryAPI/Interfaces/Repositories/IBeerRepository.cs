@@ -6,5 +6,5 @@ public interface IBeerRepository :  IRepository<Beer>
     Task<List<Beer>> GetBeersByBreweryId(int breweryId);
     Task<Beer> DeleteBeerById(int beerId);
     Task<Beer> UpdateBeer(BeerRequest updatedBeer, int beerId);
-    Task<Beer?> GetBeerById(int beerId);
+    Task<Beer> GetBeerById(int beerId);
 }

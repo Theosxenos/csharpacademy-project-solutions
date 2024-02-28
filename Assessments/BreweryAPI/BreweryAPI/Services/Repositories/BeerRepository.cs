@@ -1,6 +1,6 @@
 namespace BreweryAPI.Services.Repositories;
 
-public class BeerRepository (IDbContextFactory<BreweryDbContext> breweryDbFactory, BreweryDbContext dbContext, IMapper mapper) : Repository<Beer>(dbContext), IBeerRepository
+public class BeerRepository (IDbContextFactory<BreweryDbContext> breweryDbFactory, BreweryDbContext dbContext, IBreweryRepository breweryRepository, IMapper mapper) : Repository<Beer>(dbContext), IBeerRepository
 {
     public async Task<List<Beer>> GetAllBeers()
     {
@@ -8,17 +8,25 @@ public class BeerRepository (IDbContextFactory<BreweryDbContext> breweryDbFactor
         return await breweryDbContext.Beers.Include(b => b.Brewery).ToListAsync();
     }
 
-    public async Task<Beer?> GetBeerById(int beerId)
+    public async Task<Beer> GetBeerById(int beerId)
     {
         await using var breweryDbContext = await breweryDbFactory.CreateDbContextAsync();
 
-        return await breweryDbContext.Beers.FirstOrDefaultAsync(b => b.Id == beerId);
+        var beer = await breweryDbContext.Beers.FirstOrDefaultAsync(b => b.Id == beerId);
+
+        return beer ?? throw new EntityIdNotFoundException<Beer>(beerId);
     }
 
     public async Task<List<Beer>> GetBeersByBreweryId(int breweryId)
     {
         await using var breweryDbContext = await breweryDbFactory.CreateDbContextAsync();
 
+        var isBreweryValid = await breweryRepository.DoesBreweryExist(breweryId);
+        if (!isBreweryValid)
+        {
+            throw new EntityIdNotFoundException<Brewery>(breweryId);
+        }
+        
         return await breweryDbContext.Beers.Where(b => b.BreweryId == breweryId).ToListAsync();
     }
 
@@ -27,9 +35,7 @@ public class BeerRepository (IDbContextFactory<BreweryDbContext> breweryDbFactor
         await using var breweryDbContext = await breweryDbFactory.CreateDbContextAsync();
 
         var toDeleteBeer = await GetBeerById(beerId);
-
-        if (toDeleteBeer == null) return null; //TODO Return null or handle the case where beer is not found
-
+        
         breweryDbContext.Remove(toDeleteBeer);
         await breweryDbContext.SaveChangesAsync();
         return toDeleteBeer;
@@ -40,7 +46,6 @@ public class BeerRepository (IDbContextFactory<BreweryDbContext> breweryDbFactor
         await using var breweryDbContext = await breweryDbFactory.CreateDbContextAsync();
 
         var beerToUpdate = await GetBeerById(beerId);
-        ArgumentNullException.ThrowIfNull(beerToUpdate);
 
         mapper.Map(updatedBeer, beerToUpdate);
         breweryDbContext.Beers.Update(beerToUpdate);

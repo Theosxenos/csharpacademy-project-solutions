@@ -12,3 +12,5 @@ global using BreweryAPI.Services.Repositories;
 global using BreweryAPI.Interfaces.Repositories;
 global using BreweryAPI.Interfaces.Services;
 global using BreweryAPI.Filters.ActionFilters;
+global using BreweryAPI.Exceptions;
+global using BreweryAPI.Filters.ExceptionFilters;
