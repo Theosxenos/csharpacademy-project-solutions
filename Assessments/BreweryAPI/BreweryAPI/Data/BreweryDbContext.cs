@@ -43,7 +43,29 @@ public class BreweryDbContext(DbContextOptions<BreweryDbContext> options) : DbCo
 
     private void ConfigureInventoryItem(ModelBuilder modelBuilder)
     {
-        // TODO
+        modelBuilder.Entity<InventoryItem>().HasData([
+            new()
+            {
+                Id = 1,
+                WholesalerId = 1,
+                BeerId = 1,
+                Amount = 10,
+            },
+            new()
+            {
+                Id = 2,
+                WholesalerId = 1,
+                BeerId = 2,
+                Amount = 20,
+            },
+            new()
+            {
+                Id = 3,
+                WholesalerId = 2,
+                BeerId = 12,
+                Amount = 420
+            }
+        ]);
     }
 
     private void ConfigureWholesalers(ModelBuilder modelBuilder)
