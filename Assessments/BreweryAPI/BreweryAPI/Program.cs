@@ -7,6 +7,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContextFactory<BreweryDbContext>((options) =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DebianConnection"))
+);
 builder.Services.AddDbContext<BreweryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DebianConnection"))
 );
