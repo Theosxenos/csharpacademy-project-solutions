@@ -2,6 +2,8 @@ namespace BreweryAPI.DTOs.Requests;
 
 public class QuoteDetailRequest
 {
-    public int BeerId { get; set; }
-    public int Amount { get; set; }
+    [Required]
+    public int? BeerId { get; set; }
+    [Required]
+    public int? Amount { get; set; }
 }

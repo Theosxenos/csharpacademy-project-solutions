@@ -19,14 +19,14 @@ public class QuoteService(IRepository<Quote> quoteRepository, IBeerRepository be
 
     private async Task<QuoteDetail> CreateQuoteDetail(QuoteDetailRequest quoteDetailRequest)
     {
-        var beer = await beerRepository.GetBeerById(quoteDetailRequest.BeerId);
-        var discount = CalculateDiscount(quoteDetailRequest.Amount);
-        var totalPrice = CalculateTotalPrice(quoteDetailRequest.Amount, beer.RetailPrice, discount);
+        var beer = await beerRepository.GetBeerById(quoteDetailRequest.BeerId.Value);
+        var discount = CalculateDiscount(quoteDetailRequest.Amount.Value);
+        var totalPrice = CalculateTotalPrice(quoteDetailRequest.Amount.Value, beer.RetailPrice, discount);
         return new QuoteDetail
         {
             // Assign necessary fields here
             BeerId = beer.Id,
-            Amount = quoteDetailRequest.Amount,
+            Amount = quoteDetailRequest.Amount.Value,
             Discount = (float)discount,
             TotalPrice = totalPrice
         };

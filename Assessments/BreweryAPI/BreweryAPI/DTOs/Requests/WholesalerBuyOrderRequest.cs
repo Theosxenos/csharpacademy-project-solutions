@@ -2,7 +2,10 @@ namespace BreweryAPI.DTOs.Requests;
 
 public class WholesalerBuyOrderRequest
 {
-    public int WholesalerId { get; set; }
-    public int BreweryId { get; set; }
-    public List<OrderedBeerRequest> OrderedBeers { get; set; } = [];
+    [Required]
+    public int? WholesalerId { get; set; }
+    [Required]
+    public int? BreweryId { get; set; }
+    [Required]
+    public List<OrderedBeerRequest>? OrderedBeers { get; set; } = [];
 }

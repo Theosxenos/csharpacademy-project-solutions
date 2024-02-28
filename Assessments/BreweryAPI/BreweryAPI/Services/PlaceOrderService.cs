@@ -13,8 +13,8 @@ public class PlaceOrderService(IOrderRepository orderRepository, IBeerRepository
 
         foreach (var orderedBeer in buyOrder.OrderedBeers)
         {
-            await wholesalerInventoryService.UpsertWholesalerInventoryItem(buyOrder.WholesalerId, orderedBeer.BeerId,
-                orderedBeer.Amount);
+            await wholesalerInventoryService.UpsertWholesalerInventoryItem(buyOrder.WholesalerId.Value, orderedBeer.BeerId.Value,
+                orderedBeer.Amount.Value);
         }
 
         return mapper.Map<OrderResponse>(result);;

@@ -27,7 +27,7 @@ public class BeersController (IBeerRepository beerRepository) : ControllerBase
         var result = await beerRepository.AddAsync(new()
         {
             Name = beer.Name,
-            BreweryId = beer.BreweryId,
+            BreweryId = beer.BreweryId.Value,
             RetailPrice = beer.RetailPrice,
             WholesalePrice = beer.WholesalePrice
         });

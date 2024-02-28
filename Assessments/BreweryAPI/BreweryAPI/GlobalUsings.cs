@@ -11,3 +11,4 @@ global using AutoMapper;
 global using BreweryAPI.Services.Repositories;
 global using BreweryAPI.Interfaces.Repositories;
 global using BreweryAPI.Interfaces.Services;
+global using BreweryAPI.Filters.ActionFilters;
