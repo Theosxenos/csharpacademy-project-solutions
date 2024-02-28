@@ -5,14 +5,15 @@ namespace BreweryAPI.Controllers;
 public class QuotesController(IQuoteService quoteService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult> GetAllQuotes()
+    public async Task<ActionResult<List<Quote>>> GetAllQuotes()
     {
-        throw new NotImplementedException();
+        // TODO change to QuoteResponse
+        return Ok(await quoteService.GetAllQuotes());
     }
 
     [HttpPost]
     public async Task<ActionResult> CreateQuote(QuoteRequest quoteRequest)
     {
-        throw new NotImplementedException();
+        return Ok(await quoteService.CreateQuote(quoteRequest));
     }
 }

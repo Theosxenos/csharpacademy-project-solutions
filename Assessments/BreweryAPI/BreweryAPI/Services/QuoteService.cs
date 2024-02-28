@@ -2,30 +2,42 @@ namespace BreweryAPI.Services;
 
 public class QuoteService(IRepository<Quote> quoteRepository, IBeerRepository beerRepository, IMapper mapper) : IQuoteService
 {
-    public Task<Quote> CreateQuote(QuoteRequest quoteRequest)
+    public async Task<Quote> CreateQuote(QuoteRequest quoteRequest)
     {
+        var quoteDetails = await Task.WhenAll(quoteRequest.QuoteDetails.Select(async qd => await CreateQuoteDetail(qd)));
         var quote = mapper.Map<Quote>(quoteRequest);
-        quote.TotalPrice = CalculateQuoteTotalPrice(quote.QuoteDetails);
-        quote.QuoteDetails.ForEach((d) => CalculateDiscount(d));
-        return quoteRepository.AddAsync(quote);
+        quote.QuoteDetails = quoteDetails.ToList();
+        quote.TotalPrice = quoteDetails.Sum(qd => qd.TotalPrice);
+        
+        return await quoteRepository.AddAsync(quote);
     }
 
-    public async Task<List<Quote>> GetAllQuotes()
+    public Task<List<Quote>> GetAllQuotes()
     {
-        return await quoteRepository.GetAll().ToListAsync();
+        return quoteRepository.GetAll().ToListAsync();
+    }
+
+    private async Task<QuoteDetail> CreateQuoteDetail(QuoteDetailRequest quoteDetailRequest)
+    {
+        var beer = await beerRepository.GetBeerById(quoteDetailRequest.BeerId);
+        var discount = CalculateDiscount(quoteDetailRequest.Amount);
+        var totalPrice = CalculateTotalPrice(quoteDetailRequest.Amount, beer.RetailPrice, discount);
+        return new QuoteDetail
+        {
+            // Assign necessary fields here
+            BeerId = beer.Id,
+            Amount = quoteDetailRequest.Amount,
+            Discount = (float)discount,
+            TotalPrice = totalPrice
+        };
     }
     
-    private decimal CalculateQuoteTotalPrice(List<QuoteDetail> quoteDetails)
-    {
-        return quoteDetails.Sum(od => od.TotalPrice);
-    }
-
     private decimal CalculateDiscount(int amount)
     {
         return amount switch
         {
-            >= 20 => 0.2f,
-            >= 10 => 0.1f,
+            >= 20 => 0.2m,
+            >= 10 => 0.1m,
             _ => 0
         };
     }
