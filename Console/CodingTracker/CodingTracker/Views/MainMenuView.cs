@@ -5,7 +5,7 @@ public class MainMenuView
     public string ShowMenu(string[] menuItems)
     {
         AnsiConsole.Clear();
-        AnsiConsole.MarkupLine("[bold yellow]Spectre.Console Demo Application[/]");
+        AnsiConsole.Write(new FigletText("Coding Tracker").Centered().Color(Color.Red));
 
         return AnsiConsole.Prompt(
             new SelectionPrompt<string>()
