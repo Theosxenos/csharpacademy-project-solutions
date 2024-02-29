@@ -54,7 +54,7 @@ public class Database
                     SessionId INTEGER NOT NULL,
                     StartTime TEXT,
                     EndTime TEXT,
-                    FOREIGN KEY (SessionId) REFERENCES Sessions(Id)
+                    FOREIGN KEY (SessionId) REFERENCES Sessions(Id) ON DELETE CASCADE 
                 );
             """;
 
