@@ -44,7 +44,7 @@ public class Repository()
                 sessions.Add(new()
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                    Day = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("Day")))
+                    Day = DateOnly.Parse(reader.GetString(reader.GetOrdinal("Day")))
                 });
             }
         }
@@ -58,14 +58,22 @@ public class Repository()
 
     public void CreateLog(SessionLog sessionLog)
     {
-        throw new NotImplementedException();
+        if (sessionLog.EndTime < sessionLog.StartTime)
+        {
+            throw new ArgumentException("Log not created due to: End Time must be greater than Start Time.", nameof(sessionLog));
+        }
+        
         try
         {
             using var connection = db.GetConnection();
 
-            var query = "INSERT INTO Logs ()";
+            var query = "INSERT INTO Logs (SessionId, StartTime, EndTime) VALUES ($1,$2,$3)";
             var command = new SqliteCommand(query, connection);
-            // command.Parameters.AddWithValue("");
+            command.Parameters.AddWithValue("$1", sessionLog.SessionId);
+            command.Parameters.AddWithValue("$2", sessionLog.StartTime.ToString("t"));
+            command.Parameters.AddWithValue("$3", sessionLog.EndTime.ToString("t"));
+
+            command.ExecuteNonQuery();
         }
         catch (Exception e)
         {

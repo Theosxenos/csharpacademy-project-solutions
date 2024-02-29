@@ -14,7 +14,7 @@ public class MainController
         {
             { "Start Session", sessionController.StartSession },
             { "Log Session", sessionLogController.CreateSessionLog },
-            { "List Sessions", sessionController.UpdateSession },
+            { "List Sessions", sessionController.ListSessions },
             { "Exit", () => exitMenu = true }
         };
         do

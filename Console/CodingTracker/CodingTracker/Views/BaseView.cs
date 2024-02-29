@@ -1,6 +1,6 @@
 namespace CodingTracker.Views;
 
-public abstract class BaseView
+public class BaseView
 {
     public void ShowSuccess(string message)
     {
