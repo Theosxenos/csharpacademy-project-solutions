@@ -1,6 +1,3 @@
-using CodingTracker.Models;
-using Microsoft.Data.Sqlite;
-
 namespace CodingTracker.Repositories;
 
 public class Repository()

@@ -1,5 +1,3 @@
-using CodingTracker.Models;
-
 namespace CodingTracker.Views;
 
 public class CreateSessionLogView

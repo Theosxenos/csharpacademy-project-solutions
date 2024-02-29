@@ -1,6 +1,3 @@
-using System.Collections;
-using CodingTracker.Models;
-
 namespace CodingTracker.Views;
 
 public class CreateSessionView: BaseView
