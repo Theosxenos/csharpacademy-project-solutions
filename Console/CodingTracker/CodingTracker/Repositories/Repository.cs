@@ -6,7 +6,7 @@ public class Repository()
 
     public void CreateSession(DateOnly day)
     {
-        var dayString = day.ToString("d-M-yy");
+        var dayString = DateToString(day);
         try
         {
             using var connection = db.GetConnection();
@@ -105,5 +105,38 @@ public class Repository()
         }
 
         return sessionLogs;
+    }
+
+    public void UpdateSession(Session updatedSession)
+    {
+        try
+        {
+            using var connection = db.GetConnection();
+            var query = "UPDATE Sessions SET Day = $day WHERE Id = $id";
+            var command = new SqliteCommand(query, connection);
+
+            command.Parameters.AddWithValue("$day", DateToString(updatedSession.Day));
+            command.Parameters.AddWithValue("$id", updatedSession.Id);
+            command.ExecuteNonQuery();
+        }
+        catch (Exception e)
+        {
+            throw new CodingTrackerException("An unexpected error occurred while getting the sessions.", e);
+        }
+    }
+
+    public void DeleteSession(int sessionId)
+    {
+        using var connection = db.GetConnection();
+        var sessionsQuery = "DELETE FROM Sessions WHERE Id = $id";
+        var command = new SqliteCommand(sessionsQuery, connection);
+
+        command.Parameters.AddWithValue("$id", sessionId);
+        command.ExecuteNonQuery();
+    }
+
+    private string DateToString(DateOnly date)
+    {
+        return date.ToString("d-M-yy");
     }
 }
