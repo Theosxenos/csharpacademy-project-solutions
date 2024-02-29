@@ -77,4 +77,33 @@ public class Repository()
             throw new CodingTrackerException("An unexpected error occurred while creating the log.", e);
         }
     }
+
+    public List<SessionLog> GetAllSessionLogs()
+    {
+        var sessionLogs = new List<SessionLog>();
+        try
+        {
+            using var connection = db.GetConnection();
+
+            var query = "SELECT * FROM Logs";
+            var command = new SqliteCommand(query, connection);
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                sessionLogs.Add(new()
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    SessionId = reader.GetInt32(reader.GetOrdinal("SessionId")),
+                    StartTime = TimeOnly.Parse(reader.GetString(reader.GetOrdinal("StartTime"))),
+                    EndTime = TimeOnly.Parse(reader.GetString(reader.GetOrdinal("EndTime")))
+                });
+            }
+        }
+        catch (Exception e)
+        {
+            throw new CodingTrackerException("An unexpected error occurred while getting the sessions.", e);
+        }
+
+        return sessionLogs;
+    }
 }

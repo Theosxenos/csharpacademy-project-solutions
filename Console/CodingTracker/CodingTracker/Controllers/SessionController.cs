@@ -17,8 +17,14 @@ public class SessionController
         }
     }
 
-    public void UpdateSession()
+    public void ListSessions()
     {
-
+        var view = new SessionView();
+        
+        var repository = new Repository();
+        var sessions = repository.GetAllSessions();
+        var sessionLogs = repository.GetAllSessionLogs();
+        
+        view.ShowSessionTree(sessions, sessionLogs);
     }
 }
