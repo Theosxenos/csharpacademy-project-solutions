@@ -9,14 +9,14 @@ public class MainController
         var sessionController = new SessionController();
         var sessionLogController = new SessionLogController();
 
+
         Dictionary<string, Action> menuItems = new()
         {
-            { "Create Session Log", sessionLogController.CreateSession },
             { "Start Session", sessionController.StartSession },
+            { "Log Session", sessionLogController.CreateSessionLog },
             { "List Sessions", sessionController.UpdateSession },
             { "Exit", () => exitMenu = true }
         };
-
         do
         {
             exitMenu = false;
