@@ -15,7 +15,7 @@ public class SessionLogController
         
         var createSessionLogView = new CreateSessionLogView();
         
-        var sessionListView = new CreateSessionView();
+        var sessionListView = new SessionSelectionView();
         var session = sessionListView.Prompt(sessions);
         
         var result = createSessionLogView.Prompt();

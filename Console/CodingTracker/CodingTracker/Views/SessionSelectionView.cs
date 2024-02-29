@@ -1,6 +1,6 @@
 namespace CodingTracker.Views;
 
-public class CreateSessionView: BaseView
+public class SessionSelectionView: BaseView
 {
     public Session Prompt(List<Session> sessions)
     {
