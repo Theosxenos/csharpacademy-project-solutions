@@ -40,9 +40,4 @@ public class CreateSessionLogView
         // Since the input has been validated, directly parse it to TimeOnly
         return TimeOnly.ParseExact(timeAsString, "HH:mm", CultureInfo.InvariantCulture);
     }
-
-    public void ShowError(string message)
-    {
-        AnsiConsole.MarkupLine($"[red] {message}[/]");
-    }
 }
