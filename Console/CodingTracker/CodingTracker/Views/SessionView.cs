@@ -10,10 +10,7 @@ public class SessionView : BaseView
                 .ValidationErrorMessage($"[red]Invalid time format. Use a correct format ({dateFormat}).[/]")
                 .Validate(input =>
                 {
-                    if (DateOnly.TryParseExact(input, dateFormat, out _))
-                    {
-                        return ValidationResult.Success();
-                    }
+                    if (DateOnly.TryParseExact(input, dateFormat, out _)) return ValidationResult.Success();
 
                     return ValidationResult.Error($"[red]Invalid date format. Use a correct format ({dateFormat}).[/]");
                 }));
@@ -24,23 +21,21 @@ public class SessionView : BaseView
     public void ShowSessionTree(List<Session> sessions, List<SessionLog> sessionLogs)
     {
         AnsiConsole.MarkupLine("Your sessions.");
-        
+
         var rootNodes = new List<Tree>();
         var orderedSessionLogs = sessionLogs.OrderBy(l => l.StartTime).ToArray();
-        
+
         foreach (var session in sessions.OrderBy(s => s.Day))
         {
             var root = new Tree(session.ToString());
             rootNodes.Add(root);
-            
+
             foreach (var sessionLog in orderedSessionLogs.Where(l => l.SessionId == session.Id))
-            {
                 root.AddNode($"{sessionLog.StartTime} - {sessionLog.EndTime}");
-            }
         }
 
         rootNodes.ForEach(AnsiConsole.Write);
-        
+
         AnsiConsole.MarkupLine("[grey]Press any key to go back to the menu.[/]");
         Console.ReadKey();
     }

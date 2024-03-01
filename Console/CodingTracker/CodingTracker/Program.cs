@@ -1,6 +1,4 @@
-﻿
-
-var db = new Database();
+﻿var db = new Database();
 db.Initialize();
 
 var controller = new MainController();

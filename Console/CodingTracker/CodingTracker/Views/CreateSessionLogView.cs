@@ -14,7 +14,7 @@ public class CreateSessionLogView
         // Get stop time with the same validation logic
         var endTime = AskForTime("At what time did you stop? [grey](HH:mm)[/]");
 
-        return new()
+        return new SessionLog
         {
             StartTime = startTime,
             EndTime = endTime
@@ -29,10 +29,8 @@ public class CreateSessionLogView
                 .Validate(input =>
                 {
                     // Attempt to parse the input string as TimeOnly in 24-hour format
-                    if (TimeOnly.TryParseExact(input, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
-                    {
-                        return ValidationResult.Success();
-                    }
+                    if (TimeOnly.TryParseExact(input, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None,
+                            out _)) return ValidationResult.Success();
 
                     return ValidationResult.Error("[red]Invalid time format. Use 24-hour format (HH:mm).[/]");
                 }));

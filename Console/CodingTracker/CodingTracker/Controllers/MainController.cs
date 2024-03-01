@@ -24,7 +24,6 @@ public class MainController
 
             var choice = view.ShowMenu(menuItems.Keys.ToArray());
             menuItems[choice].Invoke();
-
         } while (!exitMenu);
     }
 }

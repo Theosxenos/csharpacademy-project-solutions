@@ -1,5 +1,3 @@
-using NotImplementedException = System.NotImplementedException;
-
 namespace CodingTracker.Controllers;
 
 public class SessionController
@@ -22,11 +20,11 @@ public class SessionController
     public void ListSessions()
     {
         var view = new SessionView();
-        
+
         var repository = new Repository();
         var sessions = repository.GetAllSessions();
         var sessionLogs = repository.GetAllSessionLogs();
-        
+
         view.ShowSessionTree(sessions, sessionLogs);
     }
 
@@ -40,17 +38,17 @@ public class SessionController
             new BaseView().ShowError("No sessions found. Create a session before managing.");
             return;
         }
-        
+
         var sessionSelectionView = new SessionSelectionView();
         var session = sessionSelectionView.Prompt(sessions);
 
         var sessionManagingView = new SessionManagingView();
-        
-        var menu = new Dictionary<string, Action>()
+
+        var menu = new Dictionary<string, Action>
         {
-            {"Update",() => UpdateSession(session)},
-            {"Delete",() => DeleteSession(session)},
-            {"Exit", () => { } }
+            { "Update", () => UpdateSession(session) },
+            { "Delete", () => DeleteSession(session) },
+            { "Exit", () => { } }
         };
         var menuSelection = sessionManagingView.ShowManagingMenu(session.ToString(), menu.Keys.ToArray());
         menu[menuSelection]();
@@ -61,16 +59,15 @@ public class SessionController
         var view = new SessionView();
         var updatedDate = view.PromptStartSession();
         var repository = new Repository();
-        repository.UpdateSession(new(){Id = session.Id, Day = updatedDate});
+        repository.UpdateSession(new Session { Id = session.Id, Day = updatedDate });
     }
 
     public void DeleteSession(Session session)
     {
         var baseView = new BaseView();
         var choice = baseView.AskConfirm($"[red]Are you sure you want to delete session: [green]{session}[/][/]");
-        
+
         if (choice)
-        {
             try
             {
                 new Repository().DeleteSession(session.Id);
@@ -81,6 +78,5 @@ public class SessionController
                 baseView.ShowError(e.Message);
                 throw;
             }
-        }
     }
 }

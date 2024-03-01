@@ -7,4 +7,3 @@ global using CodingTracker.Repositories;
 global using CodingTracker.Exceptions;
 global using Microsoft.Data.Sqlite;
 global using CodingTracker.Models;
-

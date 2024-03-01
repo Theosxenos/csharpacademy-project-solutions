@@ -12,15 +12,15 @@ public class SessionLogController
             new BaseView().ShowError("No sessions found. Create a session before logging.");
             return;
         }
-        
+
         var createSessionLogView = new CreateSessionLogView();
-        
+
         var sessionListView = new SessionSelectionView();
         var session = sessionListView.Prompt(sessions);
-        
+
         var result = createSessionLogView.Prompt();
         result.SessionId = session.Id;
-        
+
         repository.CreateLog(result);
     }
 }

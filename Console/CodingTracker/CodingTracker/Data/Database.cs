@@ -2,13 +2,13 @@ namespace CodingTracker.Data;
 
 public class Database
 {
-    private Configuration appConfiguration;
-    private string connectionString;
-    private string databasePath;
+    private readonly Configuration appConfiguration;
+    private readonly string connectionString;
+    private readonly string databasePath;
 
     public Database()
     {
-        appConfiguration = new();
+        appConfiguration = new Configuration();
         databasePath = appConfiguration.GetConfigurationItemByKey("DatabasePath");
         var configConnectionString = appConfiguration.GetConfigurationItemByKey("ConnectionString");
         connectionString = configConnectionString + databasePath;
@@ -46,7 +46,7 @@ public class Database
             """
                 CREATE TABLE IF NOT EXISTS Sessions (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Day TEXT NOT NULL UNIQUE 
+                    Day TEXT NOT NULL UNIQUE
                 );
             
                 CREATE TABLE IF NOT EXISTS Logs (
@@ -54,7 +54,7 @@ public class Database
                     SessionId INTEGER NOT NULL,
                     StartTime TEXT,
                     EndTime TEXT,
-                    FOREIGN KEY (SessionId) REFERENCES Sessions(Id) ON DELETE CASCADE 
+                    FOREIGN KEY (SessionId) REFERENCES Sessions(Id) ON DELETE CASCADE
                 );
             """;
 
@@ -81,5 +81,4 @@ public class Database
         var seedDataCommand = new SqliteCommand(seedDataQuery, connection);
         seedDataCommand.ExecuteNonQuery();
     }
-
 }

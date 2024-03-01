@@ -1,6 +1,6 @@
 namespace CodingTracker.Repositories;
 
-public class Repository()
+public class Repository
 {
     private readonly Database db = new();
 
@@ -37,13 +37,11 @@ public class Repository()
             var command = new SqliteCommand(query, connection);
             using var reader = command.ExecuteReader();
             while (reader.Read())
-            {
-                sessions.Add(new()
+                sessions.Add(new Session
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("Id")),
                     Day = DateOnly.Parse(reader.GetString(reader.GetOrdinal("Day")))
                 });
-            }
         }
         catch (Exception e)
         {
@@ -56,10 +54,9 @@ public class Repository()
     public void CreateLog(SessionLog sessionLog)
     {
         if (sessionLog.EndTime < sessionLog.StartTime)
-        {
-            throw new ArgumentException("Log not created due to: End Time must be greater than Start Time.", nameof(sessionLog));
-        }
-        
+            throw new ArgumentException("Log not created due to: End Time must be greater than Start Time.",
+                nameof(sessionLog));
+
         try
         {
             using var connection = db.GetConnection();
@@ -89,15 +86,13 @@ public class Repository()
             var command = new SqliteCommand(query, connection);
             using var reader = command.ExecuteReader();
             while (reader.Read())
-            {
-                sessionLogs.Add(new()
+                sessionLogs.Add(new SessionLog
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("Id")),
                     SessionId = reader.GetInt32(reader.GetOrdinal("SessionId")),
                     StartTime = TimeOnly.Parse(reader.GetString(reader.GetOrdinal("StartTime"))),
                     EndTime = TimeOnly.Parse(reader.GetString(reader.GetOrdinal("EndTime")))
                 });
-            }
         }
         catch (Exception e)
         {

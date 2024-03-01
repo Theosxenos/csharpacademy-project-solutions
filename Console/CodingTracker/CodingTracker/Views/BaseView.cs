@@ -7,6 +7,7 @@ public class BaseView
         AnsiConsole.MarkupLine($"[green]{message}[/]");
         Console.ReadKey();
     }
+
     public void ShowError(string message)
     {
         AnsiConsole.MarkupLine($"[red]{message}[/]");
