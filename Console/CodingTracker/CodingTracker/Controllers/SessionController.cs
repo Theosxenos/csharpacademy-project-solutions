@@ -66,24 +66,21 @@ public class SessionController
 
     public void DeleteSession(Session session)
     {
-        var menu = new Dictionary<string, Action>()
-        {
-            { "Yes", () => new Repository().DeleteSession(session.Id) },
-            { "No", () => { } }
-        };
-        //TODO TEMP!
-        var choice = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title($"[red]Are you sure you want to delete session: [green]{session}[/][/]")
-                .AddChoices(menu.Keys.ToArray())
-            );
-
-        menu[choice]();
-
-        if (choice == "Yes")
-        {
-            new BaseView().ShowSuccess($"[white]{session}[/] successfully deleted.");
-        }
+        var baseView = new BaseView();
+        var choice = baseView.AskConfirm($"[red]Are you sure you want to delete session: [green]{session}[/][/]");
         
+        if (choice)
+        {
+            try
+            {
+                new Repository().DeleteSession(session.Id);
+                baseView.ShowSuccess($"[white]{session}[/] successfully deleted.");
+            }
+            catch (Exception e)
+            {
+                baseView.ShowError(e.Message);
+                throw;
+            }
+        }
     }
 }

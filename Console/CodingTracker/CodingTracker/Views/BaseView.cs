@@ -12,4 +12,9 @@ public class BaseView
         AnsiConsole.MarkupLine($"[red]{message}[/]");
         Console.ReadKey();
     }
+
+    public bool AskConfirm(string message)
+    {
+        return AnsiConsole.Confirm(message);
+    }
 }
