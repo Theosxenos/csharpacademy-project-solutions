@@ -20,8 +20,6 @@ public class MainController
         };
         do
         {
-            exitMenu = false;
-
             var choice = view.ShowMenu(menuItems.Keys.ToArray());
             menuItems[choice].Invoke();
         } while (!exitMenu);
