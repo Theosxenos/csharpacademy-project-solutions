@@ -21,6 +21,13 @@ public class SessionLogController
         var result = createSessionLogView.Prompt();
         result.SessionId = session.Id;
 
-        repository.CreateLog(result);
+        try
+        {
+            repository.CreateLog(result);
+        }
+        catch (ArgumentException e)
+        {
+            new BaseView().ShowError(e.Message);
+        }
     }
 }
