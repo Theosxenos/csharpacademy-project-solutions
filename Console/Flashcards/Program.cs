@@ -1,4 +1,6 @@
-﻿namespace Flashcards;
+﻿using Flashcards.Controllers;
+
+namespace Flashcards;
 
 public class Program
 {
@@ -8,6 +10,13 @@ public class Program
     {
         ConfigureApplication();
         InitializeDatabase();
+        StartApp();
+    }
+
+    private static void StartApp()
+    {
+        var mainController = new MainController();
+        mainController.ShowMainMenu();
     }
 
     private static void ConfigureApplication()

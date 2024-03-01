@@ -1,0 +1,23 @@
+namespace Flashcards.Controllers;
+
+public class MainController
+{
+    public void ShowMainMenu()
+    {
+        var deckController = new DeckController();
+        var view = new MenuView();
+        
+        var run = true;
+        while (run)
+        {
+            var menuOptions = new Dictionary<string, Action>()
+            {
+                {"Create Deck", () => deckController.CreateDeck()},
+                { "Exit", () => run = false }
+            };
+
+            var choice = view.ShowMenu(menuOptions.Keys.ToArray());
+            menuOptions[choice]();
+        }
+    }
+}
