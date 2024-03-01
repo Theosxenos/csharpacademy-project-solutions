@@ -1,3 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿var db = new Database();
+db.Initialize();
 
-Console.WriteLine("Hello, World!");
+var controller = new MainController();
+controller.ShowMainMenu();
