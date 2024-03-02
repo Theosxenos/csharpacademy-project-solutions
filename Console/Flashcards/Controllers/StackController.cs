@@ -30,6 +30,12 @@ public class StackController
         var stacks = repository.GetAllStacks();
         var chosenStack = menuView.ShowMenu(stacks, "Choose a stack to manage");
 
+        if (stacks.Count == 0)
+        {
+            menuView.ShowError("No stacks found. Please create one first.");
+            return;
+        }
+        
         var stackManageMenuOptions = new Dictionary<string, Action>
         {
             ["Remove Flashcard(s)"] = () => RemoveFlashcards(chosenStack),

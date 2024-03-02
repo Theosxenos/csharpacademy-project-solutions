@@ -23,4 +23,11 @@ public class BaseView
     {
         return AnsiConsole.Prompt(new TextPrompt<string>(prompt));
     }
+
+    public T AskInput<T>(string prompt, Func<T, bool> validator, string errorMessage)
+    {
+        return AnsiConsole.Prompt(new TextPrompt<T>(prompt)
+            .Validate(validator, errorMessage)
+        );
+    }
 }

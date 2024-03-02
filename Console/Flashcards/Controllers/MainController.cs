@@ -5,6 +5,7 @@ public class MainController
     public void ShowMainMenu()
     {
         var deckController = new StackController();
+        var flashcardController = new FlashcardController();
         var view = new MenuView();
         
         var run = true;
@@ -14,6 +15,7 @@ public class MainController
             {
                 ["Create Stack"] = () => deckController.CreateStack(),
                 ["Manage Stack"] = () => deckController.ManageStack(),
+                ["Create Flashcard"] = () => flashcardController.CreateFlashcard(), 
                 ["Exit"] = () => run = false
             };
 

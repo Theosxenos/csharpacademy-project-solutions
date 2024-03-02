@@ -1,6 +1,6 @@
 namespace Flashcards.Views;
 
-public class MenuView
+public class MenuView : BaseView
 {
     public string ShowMenu(string[] menuOptions)
     {

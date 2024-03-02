@@ -56,4 +56,18 @@ public class Repository
             throw;
         }
     }
+
+    public void CreateFlashcard(Flashcard flashcard)
+    {
+        try
+        {
+            dbContext.Flashcards.Add(flashcard);
+            dbContext.SaveChanges();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }
