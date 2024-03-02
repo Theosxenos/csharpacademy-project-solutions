@@ -21,7 +21,7 @@ public class Repository
     {
         try
         {
-            return dbContext.Stacks.ToList();
+            return dbContext.Stacks.Include(s => s.Flashcards).ToList();
         }
         catch (Exception e)
         {

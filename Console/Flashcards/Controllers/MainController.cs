@@ -16,6 +16,7 @@ public class MainController
                 ["Create Stack"] = () => deckController.CreateStack(),
                 ["Manage Stack"] = () => deckController.ManageStack(),
                 ["Create Flashcard"] = () => flashcardController.CreateFlashcard(), 
+                ["List Flashcards"] = () => flashcardController.ListFlashcards(),
                 ["Exit"] = () => run = false
             };
 

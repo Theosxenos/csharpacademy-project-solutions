@@ -1,3 +1,5 @@
+using Flashcards.DTOs;
+
 namespace Flashcards.Controllers;
 
 public class FlashcardController
@@ -34,5 +36,17 @@ public class FlashcardController
                 continueAdding = false;
             }
         }
+    }
+
+    public void ListFlashcards()
+    {
+        var flashcardTableView = new FlashcardTableView();
+        var menuView = new MenuView();
+        var repository = new Repository();
+        var stacks = repository.GetAllStacks();
+
+        var stack = menuView.ShowMenu(stacks, "Choose a stack to list the cards from");
+        var dtoList = stack.Flashcards.Select(f => new FlashcardDto(f.Title, stack.Name)).ToList();
+        flashcardTableView.ShowTable(dtoList);
     }
 }
