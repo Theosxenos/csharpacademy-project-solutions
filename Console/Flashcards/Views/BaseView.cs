@@ -18,4 +18,9 @@ public class BaseView
     {
         return AnsiConsole.Confirm(message);
     }
+
+    public string AskInput(string prompt)
+    {
+        return AnsiConsole.Prompt(new TextPrompt<string>(prompt));
+    }
 }

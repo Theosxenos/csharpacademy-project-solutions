@@ -1,6 +1,6 @@
 namespace Flashcards.Views;
 
-public class CreateStackView
+public class CreateStackView : BaseView
 {
     public string Prompt()
     {

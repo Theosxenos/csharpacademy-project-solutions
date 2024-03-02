@@ -10,4 +10,11 @@ public class MenuView
             .PageSize(10)
             .AddChoices(menuOptions));
     }
+
+    public T ShowMenu<T>(IEnumerable<T> menuOptions, string title) where T : notnull
+    {
+        return AnsiConsole.Prompt(new SelectionPrompt<T>()
+            .Title(title)
+            .AddChoices(menuOptions));
+    }
 }

@@ -6,4 +6,9 @@ public class Stack
     [Column(TypeName = "nvarchar(50)")]
     public string Name { get; set; }
     public List<Flashcard> Flashcards { get; set; }
+
+    public override string ToString()
+    {
+        return Name;
+    }
 }
