@@ -1,5 +1,3 @@
-using Flashcards.DTOs;
-
 namespace Flashcards.Views;
 
 public class FlashcardTableView : BaseView

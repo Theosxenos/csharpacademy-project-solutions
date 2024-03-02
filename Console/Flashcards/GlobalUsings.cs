@@ -8,3 +8,4 @@ global using Spectre.Console;
 global using Microsoft.Data.SqlClient;
 global using Flashcards.Models;
 global using Flashcards.Repositories;
+global using Flashcards.DTOs;
