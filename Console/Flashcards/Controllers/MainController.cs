@@ -12,9 +12,9 @@ public class MainController
         {
             var menuOptions = new Dictionary<string, Action>
             {
-                {"Create Stack", () => deckController.CreateStack()},
-                {"Manage Stack", () => deckController.ManageStack()},
-                { "Exit", () => run = false }
+                ["Create Stack"] = () => deckController.CreateStack(),
+                ["Manage Stack"] = () => deckController.ManageStack(),
+                ["Exit"] = () => run = false
             };
 
             var choice = view.ShowMenu(menuOptions.Keys.ToArray());
