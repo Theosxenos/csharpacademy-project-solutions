@@ -5,3 +5,4 @@ global using Flashcards.Data;
 global using System.ComponentModel.DataAnnotations.Schema;
 global using Flashcards.Views;
 global using Spectre.Console;
+global using Microsoft.Data.SqlClient;

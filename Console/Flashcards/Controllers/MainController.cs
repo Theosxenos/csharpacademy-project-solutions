@@ -4,7 +4,7 @@ public class MainController
 {
     public void ShowMainMenu()
     {
-        var deckController = new DeckController();
+        var deckController = new StackController();
         var view = new MenuView();
         
         var run = true;
@@ -12,7 +12,7 @@ public class MainController
         {
             var menuOptions = new Dictionary<string, Action>()
             {
-                {"Create Deck", () => deckController.CreateDeck()},
+                {"Create Stack", () => deckController.CreateStack()},
                 { "Exit", () => run = false }
             };
 
