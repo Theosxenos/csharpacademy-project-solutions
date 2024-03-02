@@ -1,5 +1,3 @@
-using Flashcards.DTOs;
-
 namespace Flashcards.Controllers;
 
 public class FlashcardController
