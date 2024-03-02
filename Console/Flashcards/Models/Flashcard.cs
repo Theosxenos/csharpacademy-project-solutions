@@ -12,4 +12,9 @@ public class Flashcard
     public string Question { get; set; }
     [Column(TypeName = "nvarchar(250)")]
     public string Answer { get; set; }
+
+    public override string ToString()
+    {
+        return Title;
+    }
 }

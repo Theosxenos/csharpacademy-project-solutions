@@ -72,6 +72,30 @@ public class FlashcardsContext : DbContext
                 Question = "What is the difference between List<T> and Array in C#?",
                 Answer =
                     "The main difference is that arrays have a fixed size while List<T> can dynamically change size. List<T> also provides more methods for searching, sorting, and manipulating collections."
+            },
+            new()
+            {
+                Id = 4,
+                StackId = 1,
+                Title = "Title1",
+                Question = "Q1",
+                Answer = "A1"
+            },
+            new()
+            {
+                Id = 5,
+                StackId = 1,
+                Title = "Title2",
+                Question = "Q2",
+                Answer = "A2"
+            },
+            new()
+            {
+                Id = 6,
+                StackId = 1,
+                Title = "Title3",
+                Question = "Q3",
+                Answer = "A3"
             }
         );
     }

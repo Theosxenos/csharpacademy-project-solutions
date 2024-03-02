@@ -70,4 +70,53 @@ public class Repository
             throw;
         }
     }
+
+    public void DeleteFlashcard(Flashcard flashcard)
+    {
+        try
+        {
+            dbContext.Flashcards.Remove(flashcard);
+            dbContext.SaveChanges();
+            
+            ResetFlashcardIdNumbering();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }        
+    }
+
+    public void DeleteFlashcard(List<Flashcard> flashcards)
+    {
+        try
+        {
+            dbContext.Flashcards.RemoveRange(flashcards);
+            dbContext.SaveChanges();
+            
+            ResetFlashcardIdNumbering();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private void ResetFlashcardIdNumbering()
+    {
+        var allCards = dbContext.Flashcards.OrderBy(f => f.Id).Select(f => new Flashcard
+        {
+            StackId = f.StackId,
+            Title = f.Title,
+            Question = f.Question,
+            Answer = f.Answer
+        }).ToList();
+            
+        dbContext.Flashcards.RemoveRange(dbContext.Flashcards);
+        dbContext.SaveChanges();
+        dbContext.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Flashcards', RESEED, 0);");
+        dbContext.Flashcards.AddRange(allCards);
+        dbContext.SaveChanges();
+    }
 }

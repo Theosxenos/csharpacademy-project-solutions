@@ -14,6 +14,12 @@ public class BaseView
         Console.ReadKey();
     }
 
+    public void ShowMessage(string message)
+    {
+        AnsiConsole.MarkupLine(message);
+        Console.ReadKey();
+    }
+    
     public bool AskConfirm(string message)
     {
         return AnsiConsole.Confirm(message);
