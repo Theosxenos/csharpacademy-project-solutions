@@ -133,4 +133,9 @@ public class Repository
             throw;
         }
     }
+
+    public void CreateSession(Session session)
+    {
+        throw new NotImplementedException();
+    }
 }
