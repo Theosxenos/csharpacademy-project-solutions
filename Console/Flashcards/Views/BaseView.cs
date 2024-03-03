@@ -42,4 +42,12 @@ public class BaseView
             .Validate(validator, errorMessage)
         );
     }
+    
+    public T ShowMenu<T>(IEnumerable<T> menuOptions, string title = "Select a menu option:", int pageSize = 10) where T : notnull
+    {
+        return AnsiConsole.Prompt(new SelectionPrompt<T>()
+            .Title(title)
+            .PageSize(pageSize)
+            .AddChoices(menuOptions));
+    }
 }

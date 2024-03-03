@@ -2,12 +2,11 @@ namespace Flashcards.Controllers;
 
 public class FlashcardController
 {
-    private MenuView menuView = new();
+    private FlashcardView view = new();
     private Repository repository = new();
     
     public void CreateFlashcard()
     {
-        var createFlashcardView = new UpsertFlashcardView();
         try
         {
             var stack = GetStackFromMenu("Choose a stack to place the card in:");
@@ -15,42 +14,38 @@ public class FlashcardController
             var continueAdding = true;
             while (continueAdding)
             {
-                var flashcard = createFlashcardView.CreateFlashcard();
+                var flashcard = view.CreateFlashcard();
                 flashcard.Stack = stack;
                 repository.CreateFlashcard(flashcard);
-                createFlashcardView.ShowSuccess("Flashcard created successfully.");
-                continueAdding = createFlashcardView.AskConfirm("Do you want to add another flashcard?");
+                view.ShowSuccess("Flashcard created successfully.");
+                continueAdding = view.AskConfirm("Do you want to add another flashcard?");
             }
         }
         catch (NotFoundException e)
         {
-            createFlashcardView.ShowError(e.Message);
+            view.ShowError(e.Message);
         }
     }
 
     public void ListFlashcards()
     {
-        var flashcardTableView = new FlashcardTableView();
-        
         try
         {
             var stack = GetStackFromMenu();
             var dtoList = stack.Flashcards.Select(f => new FlashcardDto(f.Title, stack.Name)).ToList();
 
-            flashcardTableView.ShowTable(dtoList);
+            view.ShowTable(dtoList);
         }
         catch (NotFoundException e)
         {
-            flashcardTableView.ShowError(e.Message);
+            view.ShowError(e.Message);
         }
     }
 
     public void UpdateFlashcard()
     {
         var stack = GetStackFromMenu();
-        var toUpdateFlashcard = menuView.ShowMenu(stack.Flashcards, "Choose a flashcard to update");
-        
-        var view = new UpsertFlashcardView();
+        var toUpdateFlashcard = view.ShowMenu(stack.Flashcards, "Choose a flashcard to update");
         view.UpdateFlashcard(toUpdateFlashcard);
 
         try
@@ -71,6 +66,6 @@ public class FlashcardController
             throw new NoStacksFoundException();
         }
 
-        return menuView.ShowMenu(stacks, menuTitle);
+        return view.ShowMenu(stacks, menuTitle);
     }
 }

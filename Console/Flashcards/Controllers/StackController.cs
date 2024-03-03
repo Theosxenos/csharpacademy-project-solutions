@@ -2,17 +2,18 @@ namespace Flashcards.Controllers;
 
 public class StackController
 {
-    Repository repository = new Repository();
+    private Repository repository = new();
+    private StackView view = new();
     
     public void CreateStack()
     {
-        var view = new CreateStackView();
+        var view = new StackView();
         var retry = false;
         do
         {
             try
             {
-                var stackName = view.Prompt();
+                var stackName = view.CreateStack();
                 repository.CreateStack(new() { Name = stackName });
                 view.ShowSuccess($"Stack '{stackName}' has been created.");
             }
@@ -26,13 +27,12 @@ public class StackController
 
     public void ManageStack()
     {
-        var menuView = new MenuView();
         var stacks = repository.GetAllStacks();
-        var chosenStack = menuView.ShowMenu(stacks, "Choose a stack to manage");
+        var chosenStack = view.ShowMenu(stacks, "Choose a stack to manage");
 
         if (stacks.Count == 0)
         {
-            menuView.ShowError("No stacks found. Please create one first.");
+            view.ShowError("No stacks found. Please create one first.");
             return;
         }
         
@@ -43,7 +43,7 @@ public class StackController
             ["Delete"] = () => DeleteStack(chosenStack),
             ["Exit"] = () => { }
         };
-        var choice = menuView.ShowMenu(stackManageMenuOptions.Keys.ToArray());
+        var choice = view.ShowMenu(stackManageMenuOptions.Keys.ToArray());
         stackManageMenuOptions[choice]();
     }
 
@@ -65,9 +65,7 @@ public class StackController
 
     public void RemoveFlashcards(Stack chosenStack)
     {
-        var view = new RemoveFlashcardView();
-
-        var selection = view.Prompt(chosenStack.Flashcards);
+        var selection = view.RemoveFlashcards(chosenStack.Flashcards);
         var selectionCount = selection.Count;
         switch (selectionCount)
         {
@@ -91,7 +89,6 @@ public class StackController
 
     public void UpdateStackName(Stack stack)
     {
-        var view = new BaseView();
         try
         {
             stack.Name = view.AskInput("What should the new name of the stack be?");

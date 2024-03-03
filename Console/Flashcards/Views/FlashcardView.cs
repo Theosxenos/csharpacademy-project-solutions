@@ -1,6 +1,6 @@
 namespace Flashcards.Views;
 
-public class UpsertFlashcardView : BaseView
+public class FlashcardView: BaseView
 {
     public void UpdateFlashcard(Flashcard flashcard)
     {
@@ -14,5 +14,20 @@ public class UpsertFlashcardView : BaseView
         var flashcard = new Flashcard();
         UpdateFlashcard(flashcard);
         return flashcard;
+    }
+    
+    public void ShowTable(List<FlashcardDto> flashcardDtos)
+    {
+        var table = new Table();
+
+        table.AddColumn("Flashcard");
+        table.AddColumn("Stack");
+
+        flashcardDtos.ForEach( f => table.AddRow(f.FlashcardTitle, f.StackName));
+        
+        AnsiConsole.Write(table);
+
+        AnsiConsole.MarkupLine("[gray]Press any key to go back[/]");
+        Console.ReadKey();
     }
 }

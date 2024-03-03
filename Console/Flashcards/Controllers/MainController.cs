@@ -6,7 +6,7 @@ public class MainController
     {
         var deckController = new StackController();
         var flashcardController = new FlashcardController();
-        var view = new MenuView();
+        var view = new BaseView();
         
         var run = true;
         while (run)
