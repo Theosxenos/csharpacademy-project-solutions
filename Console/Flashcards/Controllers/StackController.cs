@@ -2,11 +2,12 @@ namespace Flashcards.Controllers;
 
 public class StackController
 {
+    Repository repository = new Repository();
+    
     public void CreateStack()
     {
         var view = new CreateStackView();
         var retry = false;
-        var repository = new Repository();
         do
         {
             try
@@ -26,7 +27,6 @@ public class StackController
     public void ManageStack()
     {
         var menuView = new MenuView();
-        var repository = new Repository();
         var stacks = repository.GetAllStacks();
         var chosenStack = menuView.ShowMenu(stacks, "Choose a stack to manage");
 
@@ -55,7 +55,6 @@ public class StackController
 
         try
         {
-            var repository = new Repository();
             repository.DeleteStack(chosenStack);
         }
         catch (Exception e)
@@ -67,7 +66,6 @@ public class StackController
     public void RemoveFlashcards(Stack chosenStack)
     {
         var view = new RemoveFlashcardView();
-        var repository = new Repository();
 
         var selection = view.Prompt(chosenStack.Flashcards);
         var selectionCount = selection.Count;
@@ -97,13 +95,13 @@ public class StackController
         try
         {
             stack.Name = view.AskInput("What should the new name of the stack be?");
-            var repository = new Repository();
             repository.UpdateStack(stack);
         }
         catch (ArgumentException ae)
         {
             view.ShowError(ae.Message);
         }
+        // TODO
         catch (Exception e)
         {
             Console.WriteLine(e);
