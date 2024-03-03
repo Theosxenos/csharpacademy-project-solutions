@@ -25,9 +25,15 @@ public class BaseView
         return AnsiConsole.Confirm(message);
     }
 
-    public string AskInput(string prompt)
+    public string AskInput(string prompt, string? defaultValue = null)
     {
-        return AnsiConsole.Prompt(new TextPrompt<string>(prompt));
+        var textPrompt = new TextPrompt<string>(prompt);
+        if (!string.IsNullOrEmpty(defaultValue))
+        {
+            textPrompt.DefaultValue(defaultValue);
+        }
+        
+        return AnsiConsole.Prompt(textPrompt);
     }
 
     public T AskInput<T>(string prompt, Func<T, bool> validator, string errorMessage)

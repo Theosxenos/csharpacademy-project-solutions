@@ -119,4 +119,18 @@ public class Repository
         dbContext.Flashcards.AddRange(allCards);
         dbContext.SaveChanges();
     }
+
+    public void UpdateFlashcard(Flashcard flashcard)
+    {
+        try
+        {
+            dbContext.Flashcards.Update(flashcard);
+            dbContext.SaveChanges();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

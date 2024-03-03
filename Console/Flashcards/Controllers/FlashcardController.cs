@@ -2,49 +2,75 @@ namespace Flashcards.Controllers;
 
 public class FlashcardController
 {
+    private MenuView menuView = new();
+    private Repository repository = new();
+    
     public void CreateFlashcard()
     {
-        var createFlashcardView = new CreateFlashcardView();
-        var repository = new Repository();
-        var stacks = repository.GetAllStacks();
-        
-        if (stacks.Count == 0)
+        var createFlashcardView = new UpsertFlashcardView();
+        try
         {
-            createFlashcardView.ShowError("No stacks found. Please create one first.");
-            return;
-        }
-        
-        var menuView = new MenuView();
-        var stack = menuView.ShowMenu(stacks, "Choose a stack to place the card in:");
+            var stack = GetStackFromMenu("Choose a stack to place the card in:");
 
-        var continueAdding = true;
-        while (continueAdding)
-        {
-            try
+            var continueAdding = true;
+            while (continueAdding)
             {
-                var flashcard = createFlashcardView.Prompt();
+                var flashcard = createFlashcardView.CreateFlashcard();
                 flashcard.Stack = stack;
                 repository.CreateFlashcard(flashcard);
                 createFlashcardView.ShowSuccess("Flashcard created successfully.");
-                continueAdding = createFlashcardView.AskConfirm("Do you want to add another flashcard? (yes/no)");
+                continueAdding = createFlashcardView.AskConfirm("Do you want to add another flashcard?");
             }
-            catch (Exception e)
-            {
-                createFlashcardView.ShowError(e.Message);
-                continueAdding = false;
-            }
+        }
+        catch (NotFoundException e)
+        {
+            createFlashcardView.ShowError(e.Message);
         }
     }
 
     public void ListFlashcards()
     {
         var flashcardTableView = new FlashcardTableView();
-        var menuView = new MenuView();
-        var repository = new Repository();
-        var stacks = repository.GetAllStacks();
+        
+        try
+        {
+            var stack = GetStackFromMenu();
+            var dtoList = stack.Flashcards.Select(f => new FlashcardDto(f.Title, stack.Name)).ToList();
 
-        var stack = menuView.ShowMenu(stacks, "Choose a stack to list the cards from");
-        var dtoList = stack.Flashcards.Select(f => new FlashcardDto(f.Title, stack.Name)).ToList();
-        flashcardTableView.ShowTable(dtoList);
+            flashcardTableView.ShowTable(dtoList);
+        }
+        catch (NotFoundException e)
+        {
+            flashcardTableView.ShowError(e.Message);
+        }
+    }
+
+    public void UpdateFlashcard()
+    {
+        var stack = GetStackFromMenu();
+        var toUpdateFlashcard = menuView.ShowMenu(stack.Flashcards, "Choose a flashcard to update");
+        
+        var view = new UpsertFlashcardView();
+        view.UpdateFlashcard(toUpdateFlashcard);
+
+        try
+        {
+            repository.UpdateFlashcard(toUpdateFlashcard);
+        }
+        catch (NotFoundException e)
+        {
+            view.ShowError(e.Message);
+        }
+    }
+
+    private Stack GetStackFromMenu(string menuTitle = "Choose a stack to list the cards from")
+    {
+        var stacks = repository.GetAllStacks();
+        if (stacks.Count == 0)
+        {
+            throw new NoStacksFoundException();
+        }
+
+        return menuView.ShowMenu(stacks, menuTitle);
     }
 }
