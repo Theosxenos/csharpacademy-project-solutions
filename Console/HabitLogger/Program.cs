@@ -131,14 +131,6 @@ static void HabitMenuView(HabitModel habit)
                     HabitUpdateView(habit);
                     habit = habitRepository.GetHabitById(habit.Id); // Refresh the habit details
                 }
-            },
-            new()
-            {
-                Text = "Stats", View = () =>
-                {
-                    // TODO: Implement Stats View
-                    Console.WriteLine("Buy our $99,99 DLC to unlock this feature!");
-                }
             }
         };
 
