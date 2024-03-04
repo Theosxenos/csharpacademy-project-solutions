@@ -39,30 +39,57 @@ public class FlashcardsContext : DbContext
 
     private void SeedSessions(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Session>().HasData([
-            new ()
+        // modelBuilder.Entity<Session>().HasData([
+        //     new ()
+        //     {
+        //         Id = 1,
+        //         StackId = 1,
+        //         Score = 20,
+        //         SessionDate = DateTime.Parse("2024-03-01 12:00").ToUniversalTime()
+        //     },
+        //     new ()
+        //     {
+        //         Id = 2,
+        //         StackId = 1,
+        //         Score = 80,
+        //         SessionDate = DateTime.Parse("2024-03-01 13:00").ToUniversalTime()
+        //     },
+        //     new ()
+        //     {
+        //         Id = 3,
+        //         StackId = 2,
+        //         Score = 80,
+        //         SessionDate = DateTime.Parse("2024-03-02 12:00").ToUniversalTime()
+        //     },
+        // ]);
+        
+        var sessions = new List<object>();
+        var startDate = new DateTime(2024, 3, 1, 12, 0, 0); // Starting point
+        var random = new Random();
+        int sessionId = 1; // Starting ID
+
+        for (int stackId = 1; stackId <= 2; stackId++) // Assuming 2 stacks
+        {
+            var currentDate = startDate;
+            for (int day = 0; day < 10; day++) // Spread over 10 days
             {
-                Id = 1,
-                StackId = 1,
-                Score = 20,
-                SessionDate = DateTime.Parse("2024-03-01 12:00").ToUniversalTime()
-            },
-            new ()
-            {
-                Id = 2,
-                StackId = 1,
-                Score = 80,
-                SessionDate = DateTime.Parse("2024-03-01 13:00").ToUniversalTime()
-            },
-            new ()
-            {
-                Id = 3,
-                StackId = 2,
-                Score = 80,
-                SessionDate = DateTime.Parse("2024-03-02 12:00").ToUniversalTime()
-            },
-            
-        ]);
+                for (int sessionOfDay = 0; sessionOfDay < 10; sessionOfDay++) // 10 sessions per day
+                {
+                    sessions.Add(new
+                    {
+                        Id = sessionId++,
+                        StackId = stackId,
+                        Score = random.Next(0, 101), // Random score between 0 and 100
+                        SessionDate = currentDate.ToUniversalTime()
+                    });
+                    currentDate = currentDate.AddHours(1); // Next session an hour later
+                }
+                currentDate = currentDate.AddDays(day + 1).AddHours(-10); // Move to next day, reset hour offset
+            }
+        }
+        
+        modelBuilder.Entity<Session>().HasData(sessions.ToArray());
+
     }
 
     private static void SeedFlashcards(ModelBuilder modelBuilder)
