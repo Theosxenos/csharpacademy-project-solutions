@@ -4,6 +4,7 @@ public class PracticeController
 {
     private PracticeView view = new();
     private Repository repository = new();
+
     public void StartSession()
     {
         var stacks = repository.GetAllStacks();
@@ -11,26 +12,35 @@ public class PracticeController
 
         var stack = view.ShowMenu(stacks, "Select a stack to practice:");
         if (stack.Flashcards.Count == 0) throw new NoFlashcardsFoundException();
-        
+
         StartPractice(stack);
     }
-    
+
     private void StartPractice(Stack stack)
     {
         var toPracticeFlashcards = new List<Flashcard>(stack.Flashcards);
         var questionsAsked = 0;
         var questionsCorrect = 0;
-    
+
+        var colour = toPracticeFlashcards.Count switch
+        {
+            <= 10 => "green", // Easy
+            <= 30 => "yellow", // Medium
+            _ => "red" // Hard
+        };
+
+        view.ShowMessage($"This stack has [{colour}]{toPracticeFlashcards.Count}[/] flashcards. Press any key to start.");
+
         // TODO add a way out of this loop
         do
         {
             var cardToTest = toPracticeFlashcards.First();
             toPracticeFlashcards.Remove(cardToTest);
             
-            view.ShowMessage($"[yellow]{cardToTest.Question}[/]");
+            view.ShowMessage($"[skyblue1][bold]Front:[/][/] {cardToTest.Question}");
             questionsAsked++;
             
-            view.ShowMessage($"The right answer is {cardToTest.Answer}");
+            view.ShowMessage($"[DarkCyan][bold]Back:[/][/] {cardToTest.Answer}");
             var userAnswerCorrect = view.AskConfirm("Did you answer the question correctly?");
 
             if (userAnswerCorrect)
@@ -50,13 +60,13 @@ public class PracticeController
 
         try
         {
-            var currentSession = new Session()
+            var currentSession = new Session
             {
                 StackId = stack.Id,
-                Score = questionsAsked - questionsCorrect,
+                Score = (int)Math.Round((double)questionsCorrect / questionsAsked * 100),
                 SessionDate = DateTime.UtcNow
             };
-            repository.CreateSession(currentSession);
+            repository.CreateSession(currentSession); //TODO
         }
         catch (Exception e)
         {
