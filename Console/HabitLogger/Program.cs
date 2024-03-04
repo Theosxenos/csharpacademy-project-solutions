@@ -3,6 +3,7 @@ using HabitLogger;
 using HabitLogger.Models;
 using HabitLogger.Repositories;
 using HabitLogger.Views;
+using Microsoft.Data.Sqlite;
 
 if (!File.Exists("habits.db"))
 {
@@ -31,15 +32,29 @@ while (!endApp)
         }
     ];
 
-    var userChoice = v.ShowMenu(menu.Select(m => m.Text).ToArray());
-    switch (userChoice)
+    try
     {
-        case -1:
-            endApp = true;
-            break;
-        default:
-            menu[userChoice].View();
-            break;
+        var userChoice = v.ShowMenu(menu.Select(m => m.Text).ToArray());
+        switch (userChoice)
+        {
+            case -1:
+                endApp = true;
+                break;
+            default:
+                menu[userChoice].View();
+                break;
+        }
+    }
+    catch (SqliteException e) when (e.SqliteErrorCode == 8)
+    {
+        Console.WriteLine("ERROR: An error occured with accessing the database.");
+        break;
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"Unknown error occured: {e.Message}");
+        Console.WriteLine("Exiting application");
+        break;
     }
 }
 

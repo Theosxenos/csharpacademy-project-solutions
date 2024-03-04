@@ -9,7 +9,7 @@ This is a simple app to log habits.
  - [x] It should also create a table in the database, where the habit will be logged.
  - [x] The app should show the user a menu of options.
  - [x] The users should be able to insert, delete, update and view their logged habit.
- - [ ] You should handle all possible errors so that the application never crashes.
+ - [x] You should handle all possible errors so that the application never crashes.
  - [x] The application should only be terminated when the user inserts 0.
  - [x] You can only interact with the database using raw SQL. You can’t use mappers such as Entity Framework.
  - [x] Your project needs to contain a Read Me file where you'll explain how your app works.
