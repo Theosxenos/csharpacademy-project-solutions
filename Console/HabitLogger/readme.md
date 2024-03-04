@@ -26,5 +26,17 @@ The basic features are:
 - CRUD for both habits and logs
 
 ## Workflow
-You start at the main menu, where ou either choose to create a new habit or manage existing ones.
+You start at the main menu, where you either choose to create a new habit or manage existing ones.
 ![MainMenu](Screenshots/MainMenu.png)
+
+When you choose list it shows you an overview of all your habits to manage.
+![HabitList](Screenshots/HabitList.png)
+
+There is pagination so it works on smaller screens.
+![Pagination](Screenshots/HabitList2.png)
+
+Once you choose a habit you can update it. It keeps the old value when you keep the prompt empty.
+![Update](Screenshots/UpdateHabit.png)
+
+For every habit you choose you can see an overview of your logs for that habit.
+![Log](Screenshots/HabitLog.png)
