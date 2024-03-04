@@ -55,6 +55,14 @@ public class HabitLoggerDatabase
                 -- Seed data for the Habits
                 INSERT INTO Habits (HabitName, Unit) VALUES ('Drinking Water', 'glasses');
                 INSERT INTO Habits (HabitName, Unit) VALUES ('Reading', 'pages');
+                INSERT INTO Habits (HabitName, Unit) VALUES ('Running', 'meters');
+                INSERT INTO Habits (HabitName, Unit) VALUES ('Sketching', 'drawings');
+                INSERT INTO Habits (HabitName, Unit) VALUES ('Pull-ups', 'repetitions');
+                INSERT INTO Habits (HabitName, Unit) VALUES ('Guitar', 'songs');
+                INSERT INTO Habits (HabitName, Unit) VALUES ('Photography', 'pictures');
+                INSERT INTO Habits (HabitName, Unit) VALUES ('Yoga', 'sessions');
+                INSERT INTO Habits (HabitName, Unit) VALUES ('Dancing', 'moves');
+                INSERT INTO Habits (HabitName, Unit) VALUES ('Cooking', 'dishes');
 
                 -- Seed data for "Drinking Water"
                 INSERT INTO HabitLogs (HabitID, Quantity, Date) VALUES (1, 8, '2024-01-29');
