@@ -32,19 +32,41 @@ public class FlashcardsContext : DbContext
             .HasIndex(s => s.Name)
             .IsUnique();
         
-        modelBuilder.Entity<Stack>().HasData([
-            new()
+        SeedStack(modelBuilder);
+        SeedFlashcards(modelBuilder);
+        SeedSessions(modelBuilder);
+    }
+
+    private void SeedSessions(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Session>().HasData([
+            new ()
             {
                 Id = 1,
-                Name = "C# Stack"
+                StackId = 1,
+                Score = 20,
+                SessionDate = DateTime.Parse("2024-03-01 12:00").ToUniversalTime()
             },
-            new()
+            new ()
             {
                 Id = 2,
-                Name = "JavaScript Stack"
-            }
+                StackId = 1,
+                Score = 80,
+                SessionDate = DateTime.Parse("2024-03-01 13:00").ToUniversalTime()
+            },
+            new ()
+            {
+                Id = 3,
+                StackId = 2,
+                Score = 80,
+                SessionDate = DateTime.Parse("2024-03-02 12:00").ToUniversalTime()
+            },
+            
         ]);
+    }
 
+    private static void SeedFlashcards(ModelBuilder modelBuilder)
+    {
         modelBuilder.Entity<Flashcard>().HasData(
             new()
             {
@@ -76,7 +98,7 @@ public class FlashcardsContext : DbContext
             new()
             {
                 Id = 4,
-                StackId = 1,
+                StackId = 2,
                 Title = "Title1",
                 Question = "Q1",
                 Answer = "A1"
@@ -84,7 +106,7 @@ public class FlashcardsContext : DbContext
             new()
             {
                 Id = 5,
-                StackId = 1,
+                StackId = 2,
                 Title = "Title2",
                 Question = "Q2",
                 Answer = "A2"
@@ -92,11 +114,27 @@ public class FlashcardsContext : DbContext
             new()
             {
                 Id = 6,
-                StackId = 1,
+                StackId = 2,
                 Title = "Title3",
                 Question = "Q3",
                 Answer = "A3"
             }
         );
+    }
+
+    private static void SeedStack(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Stack>().HasData([
+            new()
+            {
+                Id = 1,
+                Name = "C# Stack"
+            },
+            new()
+            {
+                Id = 2,
+                Name = "JavaScript Stack"
+            }
+        ]);
     }
 }
