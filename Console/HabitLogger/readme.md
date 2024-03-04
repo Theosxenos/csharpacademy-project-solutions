@@ -27,3 +27,4 @@ The basic features are:
 
 ## Workflow
 You start at the main menu, where ou either choose to create a new habit or manage existing ones.
+![MainMenu](Screenshots/MainMenu.png)
