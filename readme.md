@@ -8,6 +8,13 @@ Below is a list of projects included in this repository, along with a brief desc
 
 ### Console
 - **MathGame**: *In your first project you’ll build a very simple Math Game app.*
+- **Calculator**: _This time you’ll create a calculator with the help of Microsoft's Documentation_
+- **Habit Logger**: _Build a logger for a habit of choice. Learn how to interact with a database using SQLite and to get and validate user input_
+- **Coding Tracker**: _Track your coding hours. Learn how to deal with dates, to use separation of concerns and use your first external library to enhance your application_
+- **Flashcards**: _Building stacks of flashcards and a study functionality. Learn to deal with linked databases using SQL Server and to use Data Transfer Objects_
+
+### Challenge Projects
+- **Brewery API**: _Improve your .NET WebAPI skills building a Brewery API_
 
 ## How to Use This Repository
 To use this repository, you can clone it to your local machine or browse the solutions directly on GitHub. Each project is contained within its own directory, complete with a separate README file detailing the specific problem statement, how to run the code, and any additional notes pertinent to that project.
