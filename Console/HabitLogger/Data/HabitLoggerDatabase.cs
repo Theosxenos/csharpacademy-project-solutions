@@ -6,7 +6,10 @@ public class HabitLoggerDatabase
 {
     public SqliteConnection GetConnection()
     {
-        var connectionString = "Data Source=habits.db";
+        var basePath = AppDomain.CurrentDomain.BaseDirectory;
+        var dbPath = Path.Combine(basePath, "habits.db");
+        var connectionString = $"Data Source={dbPath}";
+
         var connection = new SqliteConnection(connectionString);
 
         try
