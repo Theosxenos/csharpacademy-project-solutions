@@ -136,6 +136,15 @@ public class Repository
 
     public void CreateSession(Session session)
     {
-        throw new NotImplementedException();
+        try
+        {
+            dbContext.Sessions.Add(session);
+            dbContext.SaveChanges();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }
