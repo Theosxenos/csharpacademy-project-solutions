@@ -6,5 +6,5 @@ public class SessionLog
     public int SessionId { get; set; }
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
-    public Double DurationInHours => (EndTime - StartTime).TotalHours;
+    public double DurationInHours => (EndTime - StartTime).TotalHours;
 }

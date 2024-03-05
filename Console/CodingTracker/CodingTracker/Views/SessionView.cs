@@ -30,7 +30,8 @@ public class SessionView : BaseView
             var root = new Tree(session.ToString());
             rootNodes.Add(root);
 
-            var logsForSession = orderedSessionLogs.Where(l => l.SessionId == session.Id).ToArray();
+            var logsForSession = orderedSessionLogs.Where(
+                l => l.SessionId == session.Id).ToArray();
             foreach (var sessionLog in logsForSession)
             {
                 var formattedDuration = $"Duration: {sessionLog.DurationInHours} hours";
