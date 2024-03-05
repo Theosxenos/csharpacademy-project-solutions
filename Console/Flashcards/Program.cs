@@ -32,7 +32,8 @@ public class Program
     private static void InitializeDatabase()
     {
         using var db = new FlashcardsContext();
-        db.Database.EnsureDeleted();
+        if(Configuration["EnsureDelete"] == "True")
+            db.Database.EnsureDeleted();
         db.Database.EnsureCreated();
     }
 }
