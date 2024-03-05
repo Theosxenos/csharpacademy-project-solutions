@@ -82,6 +82,6 @@ public class PracticeController
         
         var sessionRepo = new PracticeSessionRepository();
         var dataTable = sessionRepo.GetMonthlyAverageByYear(year);
-        view.ShowLog(dataTable);
+        view.ShowLog(dataTable, year);
     }
 }

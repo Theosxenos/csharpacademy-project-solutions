@@ -2,9 +2,10 @@ namespace Flashcards.Views;
 
 public class PracticeView : BaseView
 {
-    public void ShowLog(DataTable logTable)
+    public void ShowLog(DataTable logTable, int year)
     {
         var table = new Table();
+        table.Title = new TableTitle($"Average scores for the year [bold]{year}[/]");
         
         foreach (DataColumn column in logTable.Columns)
         {
