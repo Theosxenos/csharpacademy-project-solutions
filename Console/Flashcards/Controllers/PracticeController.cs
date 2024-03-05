@@ -66,12 +66,18 @@ public class PracticeController
                 Score = (int)Math.Round((double)questionsCorrect / questionsAsked * 100),
                 SessionDate = DateTime.UtcNow
             };
-            repository.CreateSession(currentSession); //TODO
+            repository.CreateSession(currentSession);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
         }
+    }
+
+    public void ShowPracticeLog()
+    {
+        var sessionRepo = new PracticeSessionRepository();
+        sessionRepo.GetMonthlyAverageByYear(2024);
     }
 }

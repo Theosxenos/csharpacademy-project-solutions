@@ -20,11 +20,24 @@ public class MainController
                 ["Update Flashcard"] = () => flashcardController.UpdateFlashcard(),
                 ["List Flashcards"] = () => flashcardController.ListFlashcards(),
                 ["Start Practice"] = () => practiceController.StartSession(),  
+                ["Practice Log"] = () => practiceController.ShowPracticeLog(),  
                 ["Exit"] = () => run = false
             };
 
-            var choice = view.ShowMenu(menuOptions.Keys.ToArray());
-            menuOptions[choice]();
+            try
+            {
+                var choice = view.ShowMenu(menuOptions.Keys.ToArray());
+                menuOptions[choice]();
+            }
+            catch (NotFoundException e)
+            {
+                view.ShowError(e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }
