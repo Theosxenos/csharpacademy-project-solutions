@@ -98,6 +98,10 @@ public class Repository
             var query = "UPDATE Sessions SET Day = @Day WHERE Id = @Id";
             connection.Execute(query, new { Day = DateToString(updatedSession.Day), Id = updatedSession.Id });
         }
+        catch (SqliteException e) when (e is { SqliteErrorCode: 19 })
+        {
+            throw new CodingTrackerException($"A session with the date '{DateToString(updatedSession.Day)}' already exists.");
+        }
         catch (Exception e)
         {
             throw new CodingTrackerException("An unexpected error occurred while updating the session.", e);

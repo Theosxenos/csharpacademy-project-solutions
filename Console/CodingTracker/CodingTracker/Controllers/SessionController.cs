@@ -59,7 +59,20 @@ public class SessionController
         var view = new SessionView();
         var updatedDate = view.PromptStartSession();
         var repository = new Repository();
-        repository.UpdateSession(new Session { Id = session.Id, Day = updatedDate });
+
+        try
+        {
+            repository.UpdateSession(new Session { Id = session.Id, Day = updatedDate });
+        }
+        catch (CodingTrackerException e)
+        {
+            view.ShowError(e.Message);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }    
     }
 
     public void DeleteSession(Session session)
