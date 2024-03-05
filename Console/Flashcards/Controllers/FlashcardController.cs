@@ -2,9 +2,9 @@ namespace Flashcards.Controllers;
 
 public class FlashcardController
 {
-    private FlashcardView view = new();
-    private Repository repository = new();
-    
+    private readonly Repository repository = new();
+    private readonly FlashcardView view = new();
+
     public void CreateFlashcard()
     {
         try
@@ -61,10 +61,7 @@ public class FlashcardController
     private Stack GetStackFromMenu(string menuTitle = "Choose a stack to list the cards from")
     {
         var stacks = repository.GetAllStacks();
-        if (stacks.Count == 0)
-        {
-            throw new NoStacksFoundException();
-        }
+        if (stacks.Count == 0) throw new NoStacksFoundException();
 
         return view.ShowMenu(stacks, menuTitle);
     }

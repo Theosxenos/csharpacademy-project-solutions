@@ -2,7 +2,7 @@ namespace Flashcards.Repositories;
 
 public class Repository
 {
-    private FlashcardsContext dbContext = new FlashcardsContext();
+    private readonly FlashcardsContext dbContext = new();
 
     public void CreateStack(Stack stack)
     {
@@ -77,14 +77,14 @@ public class Repository
         {
             dbContext.Flashcards.Remove(flashcard);
             dbContext.SaveChanges();
-            
+
             ResetFlashcardIdNumbering();
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
-        }        
+        }
     }
 
     public void DeleteFlashcard(List<Flashcard> flashcards)
@@ -93,7 +93,7 @@ public class Repository
         {
             dbContext.Flashcards.RemoveRange(flashcards);
             dbContext.SaveChanges();
-            
+
             ResetFlashcardIdNumbering();
         }
         catch (Exception e)
@@ -112,7 +112,7 @@ public class Repository
             Question = f.Question,
             Answer = f.Answer
         }).ToList();
-            
+
         dbContext.Flashcards.RemoveRange(dbContext.Flashcards);
         dbContext.SaveChanges();
         dbContext.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Flashcards', RESEED, 0);");

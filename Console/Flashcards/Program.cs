@@ -23,8 +23,8 @@ public class Program
     {
         var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddUserSecrets<Program>(optional: true);
+            .AddJsonFile("appsettings.json", false, true)
+            .AddUserSecrets<Program>(true);
 
         Configuration = builder.Build();
     }
@@ -32,7 +32,7 @@ public class Program
     private static void InitializeDatabase()
     {
         using var db = new FlashcardsContext();
-        if(Configuration["EnsureDelete"] == "True")
+        if (Configuration["EnsureDelete"] == "True")
             db.Database.EnsureDeleted();
         db.Database.EnsureCreated();
     }

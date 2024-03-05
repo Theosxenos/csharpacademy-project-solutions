@@ -8,7 +8,7 @@ public class MainController
         var flashcardController = new FlashcardController();
         var practiceController = new PracticeController();
         var view = new BaseView();
-        
+
         var run = true;
         while (run)
         {
@@ -16,11 +16,11 @@ public class MainController
             {
                 ["Create Stack"] = () => deckController.CreateStack(),
                 ["Manage Stack"] = () => deckController.ManageStack(),
-                ["Create Flashcard"] = () => flashcardController.CreateFlashcard(), 
+                ["Create Flashcard"] = () => flashcardController.CreateFlashcard(),
                 ["Update Flashcard"] = () => flashcardController.UpdateFlashcard(),
                 ["List Flashcards"] = () => flashcardController.ListFlashcards(),
-                ["Start Practice"] = () => practiceController.StartSession(),  
-                ["Practice Log"] = () => practiceController.ShowPracticeLog(),  
+                ["Start Practice"] = () => practiceController.StartSession(),
+                ["Practice Log"] = () => practiceController.ShowPracticeLog(),
                 ["Exit"] = () => run = false
             };
 

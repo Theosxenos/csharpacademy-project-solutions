@@ -14,7 +14,7 @@ public class StackView : BaseView
         return AnsiConsole.Prompt(new MultiSelectionPrompt<Flashcard>
             {
                 Required = false,
-                Title = "Select the flashcards to delete",
+                Title = "Select the flashcards to delete"
             }
             .AddChoices(chosenStackFlashcards)
         );

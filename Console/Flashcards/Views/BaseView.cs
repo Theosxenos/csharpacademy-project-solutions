@@ -19,7 +19,7 @@ public class BaseView
         AnsiConsole.MarkupLine(message);
         Console.ReadKey();
     }
-    
+
     public bool AskConfirm(string message)
     {
         return AnsiConsole.Confirm(message);
@@ -28,11 +28,8 @@ public class BaseView
     public string AskInput(string prompt, string? defaultValue = null)
     {
         var textPrompt = new TextPrompt<string>(prompt);
-        if (!string.IsNullOrEmpty(defaultValue))
-        {
-            textPrompt.DefaultValue(defaultValue);
-        }
-        
+        if (!string.IsNullOrEmpty(defaultValue)) textPrompt.DefaultValue(defaultValue);
+
         return AnsiConsole.Prompt(textPrompt);
     }
 
@@ -42,8 +39,9 @@ public class BaseView
             .Validate(validator, errorMessage)
         );
     }
-    
-    public T ShowMenu<T>(IEnumerable<T> menuOptions, string title = "Select a menu option:", int pageSize = 10) where T : notnull
+
+    public T ShowMenu<T>(IEnumerable<T> menuOptions, string title = "Select a menu option:", int pageSize = 10)
+        where T : notnull
     {
         AnsiConsole.Clear();
         return AnsiConsole.Prompt(new SelectionPrompt<T>()

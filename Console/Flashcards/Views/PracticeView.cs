@@ -6,21 +6,17 @@ public class PracticeView : BaseView
     {
         var table = new Table();
         table.Title = new TableTitle($"Average scores for the year [bold]{year}[/]");
-        
+
         foreach (DataColumn column in logTable.Columns)
-        {
             table.AddColumn(int.TryParse(column.ColumnName, out var columnMonthNumber)
                 ? GetMonthName(columnMonthNumber)
                 : column.ColumnName);
-        }
 
         foreach (DataRow row in logTable.Rows)
-        {
             table.AddRow(row.ItemArray.Select(i => i is DBNull ? "0" : i.ToString()).ToArray());
-        }
 
         AnsiConsole.Write(table);
-        
+
         Console.ReadKey();
     }
 

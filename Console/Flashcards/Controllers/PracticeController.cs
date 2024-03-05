@@ -2,8 +2,8 @@ namespace Flashcards.Controllers;
 
 public class PracticeController
 {
-    private PracticeView view = new();
-    private Repository repository = new();
+    private readonly Repository repository = new();
+    private readonly PracticeView view = new();
 
     public void StartSession()
     {
@@ -29,17 +29,18 @@ public class PracticeController
             _ => "red" // Hard
         };
 
-        view.ShowMessage($"This stack has [{colour}]{toPracticeFlashcards.Count}[/] flashcards. Press any key to start.");
+        view.ShowMessage(
+            $"This stack has [{colour}]{toPracticeFlashcards.Count}[/] flashcards. Press any key to start.");
 
         // TODO add a way out of this loop
         do
         {
             var cardToTest = toPracticeFlashcards.First();
             toPracticeFlashcards.Remove(cardToTest);
-            
+
             view.ShowMessage($"[skyblue1][bold]Front:[/][/] {cardToTest.Question}");
             questionsAsked++;
-            
+
             view.ShowMessage($"[DarkCyan][bold]Back:[/][/] {cardToTest.Answer}");
             var userAnswerCorrect = view.AskConfirm("Did you answer the question correctly?");
 
@@ -51,12 +52,14 @@ public class PracticeController
             }
             else
             {
-                view.ShowMessage("Then I will ask you again later this session. Press any key to go to the next question.");
+                view.ShowMessage(
+                    "Then I will ask you again later this session. Press any key to go to the next question.");
                 toPracticeFlashcards.Add(cardToTest);
             }
         } while (toPracticeFlashcards.Count > 0);
-        
-        view.ShowMessage($"During your session you were questioned {questionsAsked} times, and answered {questionsCorrect} times correctly.");
+
+        view.ShowMessage(
+            $"During your session you were questioned {questionsAsked} times, and answered {questionsCorrect} times correctly.");
 
         try
         {
@@ -79,7 +82,7 @@ public class PracticeController
     {
         var year = view.AskInput<int>("Please choose a year to get logs from:", i => i >= 2020,
             "The year should be at least 2020");
-        
+
         var sessionRepo = new PracticeSessionRepository();
         var dataTable = sessionRepo.GetMonthlyAverageByYear(year);
         view.ShowLog(dataTable, year);

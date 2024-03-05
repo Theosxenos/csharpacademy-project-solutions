@@ -2,9 +2,9 @@ namespace Flashcards.Controllers;
 
 public class StackController
 {
-    private Repository repository = new();
-    private StackView view = new();
-    
+    private readonly Repository repository = new();
+    private readonly StackView view = new();
+
     public void CreateStack()
     {
         var view = new StackView();
@@ -14,7 +14,7 @@ public class StackController
             try
             {
                 var stackName = view.CreateStack();
-                repository.CreateStack(new() { Name = stackName });
+                repository.CreateStack(new Stack { Name = stackName });
                 view.ShowSuccess($"Stack '{stackName}' has been created.");
             }
             catch (Exception e)
@@ -26,8 +26,8 @@ public class StackController
     }
 
     /// <summary>
-    /// First it shows the user a list of stacks.
-    /// After the user chooses a stack it shows some menu options related to managing it.
+    ///     First it shows the user a list of stacks.
+    ///     After the user chooses a stack it shows some menu options related to managing it.
     /// </summary>
     /// <exception cref="NoStacksFoundException">Thrown if no stacks are found</exception>
     public void ManageStack()
@@ -40,7 +40,7 @@ public class StackController
         {
             ["Remove Flashcard(s)"] = RemoveFlashcards,
             ["Update Name"] = UpdateStackName,
-            ["Delete"] = (stack) =>
+            ["Delete"] = stack =>
             {
                 DeleteStack(stack);
                 showMenu = false;
@@ -51,7 +51,6 @@ public class StackController
         var chosenStack = view.ShowMenu(stacks, "Choose a stack to manage");
 
         while (showMenu)
-        {
             try
             {
                 var choice = view.ShowMenu(stackManageMenuOptions.Keys.ToArray());
@@ -61,14 +60,13 @@ public class StackController
             {
                 view.ShowError(e.Message);
             }
-        }
     }
 
     public void DeleteStack(Stack chosenStack)
     {
         var view = new BaseView();
         var confirmation = view.AskConfirm($"Are you sure you want to delete '{chosenStack.Name}'?");
-        if(!confirmation) return;
+        if (!confirmation) return;
 
         try
         {
@@ -83,7 +81,7 @@ public class StackController
     public void RemoveFlashcards(Stack chosenStack)
     {
         if (chosenStack.Flashcards.Count == 0) throw new NoFlashcardsFoundException();
-            
+
         var selection = view.RemoveFlashcards(chosenStack.Flashcards);
         var selectionCount = selection.Count;
         switch (selectionCount)
@@ -94,7 +92,7 @@ public class StackController
             case >= 3 when !view.AskConfirm($"[red]You are about to delete {selectionCount} cards, are you sure?[/]"):
                 return;
         }
-        
+
         try
         {
             repository.DeleteFlashcard(selection);
