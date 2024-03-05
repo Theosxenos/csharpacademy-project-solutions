@@ -23,11 +23,6 @@ public class FlashcardsContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // modelBuilder.Entity<Stack>()
-        //     .HasMany<Flashcard>(s => s.Flashcards)
-        //     .WithOne(f => f.Stack)
-        //     .HasForeignKey(f => f.StackId);
-
         modelBuilder.Entity<Stack>()
             .HasIndex(s => s.Name)
             .IsUnique();
@@ -39,30 +34,6 @@ public class FlashcardsContext : DbContext
 
     private void SeedSessions(ModelBuilder modelBuilder)
     {
-        // modelBuilder.Entity<Session>().HasData([
-        //     new ()
-        //     {
-        //         Id = 1,
-        //         StackId = 1,
-        //         Score = 20,
-        //         SessionDate = DateTime.Parse("2024-03-01 12:00").ToUniversalTime()
-        //     },
-        //     new ()
-        //     {
-        //         Id = 2,
-        //         StackId = 1,
-        //         Score = 80,
-        //         SessionDate = DateTime.Parse("2024-03-01 13:00").ToUniversalTime()
-        //     },
-        //     new ()
-        //     {
-        //         Id = 3,
-        //         StackId = 2,
-        //         Score = 80,
-        //         SessionDate = DateTime.Parse("2024-03-02 12:00").ToUniversalTime()
-        //     },
-        // ]);
-        
         var sessions = new List<object>();
         var startDate = new DateTime(2024, 3, 1, 12, 0, 0); // Starting point
         var random = new Random();
@@ -79,8 +50,8 @@ public class FlashcardsContext : DbContext
                     {
                         Id = sessionId++,
                         StackId = stackId,
-                        Score = random.Next(0, 101), // Random score between 0 and 100
-                        SessionDate = currentDate.ToUniversalTime()
+                        Score = random.Next(0, 101),
+                        SessionDate = currentDate
                     });
                     currentDate = currentDate.AddHours(1); // Next session an hour later
                 }
@@ -126,25 +97,25 @@ public class FlashcardsContext : DbContext
             {
                 Id = 4,
                 StackId = 2,
-                Title = "Title1",
-                Question = "Q1",
-                Answer = "A1"
+                Title = "JavaScript Basics",
+                Question = "What is the purpose of the 'typeof' operator in JavaScript?",
+                Answer = "The 'typeof' operator is used to determine the type of a variable or expression in JavaScript."
             },
             new()
             {
                 Id = 5,
                 StackId = 2,
-                Title = "Title2",
-                Question = "Q2",
-                Answer = "A2"
+                Title = "JavaScript Functions",
+                Question = "What is a callback function in JavaScript?",
+                Answer = "A callback function is a function that is passed as an argument to another function and is executed after the completion of that function."
             },
             new()
             {
                 Id = 6,
                 StackId = 2,
-                Title = "Title3",
-                Question = "Q3",
-                Answer = "A3"
+                Title = "JavaScript Arrays",
+                Question = "What is the difference between 'map()' and 'forEach()' methods in JavaScript arrays?",
+                Answer = "'map()' returns a new array based on the result of the provided callback function, while 'forEach()' executes the provided callback function for each element without returning a new array."
             }
         );
     }
