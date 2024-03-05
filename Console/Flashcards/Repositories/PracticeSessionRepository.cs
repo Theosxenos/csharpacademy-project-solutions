@@ -6,21 +6,28 @@ public class PracticeSessionRepository
 
     public DataTable GetMonthlyAverageByYear(int year)
     {
-        var columns = db.Sessions
-            .Where(s => s.SessionDate.Year == year)
-            .GroupBy(s => s.SessionDate.Month)
-            .Select(g => $"[{g.FirstOrDefault().SessionDate:MMMM}]");
-        var columnsFormatted = string.Join(',', columns);
-
         var sql = $"""
-                   SELECT s.Name, {columnsFormatted}
-                   FROM (
-                       SELECT StackId, Score, FORMAT(SessionDate, 'MMMM') as Month
-                       FROM Sessions
-                   ) as SourceTable
-                   PIVOT ( AVG(Score) FOR Month in ({columnsFormatted}) ) as PivotTable
-                   JOIN Stacks as s ON s.Id = PivotTable.StackId
-                   """;
+                  DECLARE @months NVARCHAR(MAX), @sql NVARCHAR(MAX);  
+                    
+                  -- Generate a list of month numbers for pivoting  
+                  -- Ensure uniqueness in the month numbers for pivoting  
+                  SELECT @months = STRING_AGG(QUOTENAME(SessionMonth), ',') WITHIN GROUP (ORDER BY SessionMonth)  
+                  FROM (SELECT DISTINCT MONTH(SessionDate) as SessionMonth FROM Sessions WHERE YEAR(SessionDate) = {year}) AS UniqueMonths;  
+                    -- FORMAT(SessionDate, 'MMM') AS
+                  -- Debugging: Print the corrected months to check  
+                  PRINT @months;  
+                    
+                  -- Construct dynamic SQL for pivot operation  
+                  SET @sql = N'SELECT s.Name, '+ @months +' FROM (  
+                                 SELECT StackId, Score, FORMAT(SessionDate, ''MMM'') as Month  
+                                 FROM Sessions WHERE YEAR(SessionDate) = {year} ) as SourceTable 
+                             PIVOT( AVG(Score) FOR Month IN (' + @months + ')  
+                               ) AS PivotTable    
+                             JOIN Stacks s ON PivotTable.StackId = s.Id;';  
+                    
+                  -- Execute the constructed SQL  
+                  EXEC sp_executesql @sql;
+                  """;
 
         using var connection = GetConnection();
         using var command = connection.CreateCommand();
