@@ -19,7 +19,7 @@ public class PracticeSessionRepository
                     
                   -- Construct dynamic SQL for pivot operation  
                   SET @sql = N'SELECT s.Name, '+ @months +' FROM (  
-                                 SELECT StackId, Score, FORMAT(SessionDate, ''MMM'') as Month  
+                                 SELECT StackId, Score, MONTH(SessionDate) as Month  
                                  FROM Sessions WHERE YEAR(SessionDate) = {year} ) as SourceTable 
                              PIVOT( AVG(Score) FOR Month IN (' + @months + ')  
                                ) AS PivotTable    
