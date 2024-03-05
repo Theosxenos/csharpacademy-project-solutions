@@ -6,6 +6,8 @@ public class PracticeSessionRepository
 
     public DataTable GetMonthlyAverageByYear(int year)
     {
+        CheckYearHasSessions(year);
+        
         var sql = $"""
                   DECLARE @months NVARCHAR(MAX), @sql NVARCHAR(MAX);  
                     
@@ -37,6 +39,12 @@ public class PracticeSessionRepository
         pivotResult.Load(reader);
 
         return pivotResult;
+    }
+
+    private void CheckYearHasSessions(int year)
+    {
+        if (!db.Sessions.Any(s => s.SessionDate.Year == year))
+            throw new NotFoundException($"No sessions found for {year}.");
     }
 
     private DbConnection GetConnection()
