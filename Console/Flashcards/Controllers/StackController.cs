@@ -94,9 +94,9 @@ public class StackController
             stack.Name = view.AskInput("What should the new name of the stack be?");
             repository.UpdateStack(stack);
         }
-        catch (ArgumentException ae)
+        catch (ArgumentException e)
         {
-            view.ShowError(ae.Message);
+            view.ShowError(e.Message);
         }
         // TODO
         catch (Exception e)
