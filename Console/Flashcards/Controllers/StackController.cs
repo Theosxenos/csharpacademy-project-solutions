@@ -25,26 +25,43 @@ public class StackController
         } while (retry);
     }
 
+    /// <summary>
+    /// First it shows the user a list of stacks.
+    /// After the user chooses a stack it shows some menu options related to managing it.
+    /// </summary>
+    /// <exception cref="NoStacksFoundException">Thrown if no stacks are found</exception>
     public void ManageStack()
     {
         var stacks = repository.GetAllStacks();
+        if (stacks.Count == 0) throw new NoStacksFoundException();
+
+        var showMenu = true;
+        var stackManageMenuOptions = new Dictionary<string, Action<Stack>>
+        {
+            ["Remove Flashcard(s)"] = RemoveFlashcards,
+            ["Update Name"] = UpdateStackName,
+            ["Delete"] = (stack) =>
+            {
+                DeleteStack(stack);
+                showMenu = false;
+            },
+            ["Exit"] = _ => showMenu = false
+        };
+
         var chosenStack = view.ShowMenu(stacks, "Choose a stack to manage");
 
-        if (stacks.Count == 0)
+        while (showMenu)
         {
-            view.ShowError("No stacks found. Please create one first.");
-            return;
+            try
+            {
+                var choice = view.ShowMenu(stackManageMenuOptions.Keys.ToArray());
+                stackManageMenuOptions[choice](chosenStack);
+            }
+            catch (NotFoundException e)
+            {
+                view.ShowError(e.Message);
+            }
         }
-        
-        var stackManageMenuOptions = new Dictionary<string, Action>
-        {
-            ["Remove Flashcard(s)"] = () => RemoveFlashcards(chosenStack),
-            ["Update Name"] = () => UpdateStackName(chosenStack),
-            ["Delete"] = () => DeleteStack(chosenStack),
-            ["Exit"] = () => { }
-        };
-        var choice = view.ShowMenu(stackManageMenuOptions.Keys.ToArray());
-        stackManageMenuOptions[choice]();
     }
 
     public void DeleteStack(Stack chosenStack)
@@ -65,6 +82,8 @@ public class StackController
 
     public void RemoveFlashcards(Stack chosenStack)
     {
+        if (chosenStack.Flashcards.Count == 0) throw new NoFlashcardsFoundException();
+            
         var selection = view.RemoveFlashcards(chosenStack.Flashcards);
         var selectionCount = selection.Count;
         switch (selectionCount)
@@ -97,12 +116,6 @@ public class StackController
         catch (ArgumentException e)
         {
             view.ShowError(e.Message);
-        }
-        // TODO
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
         }
     }
 }
