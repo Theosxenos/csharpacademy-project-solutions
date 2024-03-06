@@ -1,53 +1,79 @@
-using DrinksInfo.Models;
-
 namespace DrinksInfo.Controllers;
 
 public class DrinksController
 {
     private readonly HttpClient httpClient = new();
     private readonly DrinksView view = new();
+    private readonly ApiSettings apiSettings = ApiSettings.Instance;
 
     public async Task ShowCategoryMenu()
     {
         var response =
             await httpClient.GetFromJsonAsync<DrinksResponse>(
-                "https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list");
+                $"{apiSettings.BaseUrl}list.php?c=list");
 
-        if (response == null)
+        if (response?.Drinks == null)
         {
             view.ShowError("Could not retrieve categories. Please check your connection");
             return;
         }
 
         var categories = response.Drinks.OrderBy(d => d.Category);
-        
         var selectedCategory = view.ShowMenu(categories.Select(d => d.Category), "Select a category:");
-        
-        // view.ShowSuccess($"You chose {selectedCategory}");
         await ShowDrinksMenu(selectedCategory);
     }
 
     public async Task ShowDrinksMenu(string category)
     {
         var response =
-            await httpClient.GetFromJsonAsync<DrinksResponse>($"https://www.thecocktaildb.com/api/json/v1/1/filter.php?c={category}");
+            await httpClient.GetFromJsonAsync<DrinksResponse>($"{apiSettings.BaseUrl}filter.php?c={category}");
 
-        var selectedDrink = view.ShowMenu(response.Drinks.OrderBy(d => d.Name).Select(d => d.Name), "Select a drink:");
-        await ShowDrinkDetail(selectedDrink);
+        if (response?.Drinks == null)
+        {
+            view.ShowError("Could not retrieve drinks. Please check your connection");
+            return;
+        }
+
+        while (true)
+        {
+            var selectedDrink = view.ShowMenu(response.Drinks.OrderBy(d => d.Name).Select(d => d.Name), "Select a drink:");
+            await ShowDrinkDetail(selectedDrink);
+        }
     }
 
     public async Task ShowDrinkDetail(string drinkName)
     {
         var response =
-            await httpClient.GetFromJsonAsync<DrinksResponse>($"https://www.thecocktaildb.com/api/json/v1/1/search.php?s={drinkName}");
-
-        var drink = response?.Drinks.FirstOrDefault();
+            await httpClient.GetFromJsonAsync<DrinksResponse>($"{apiSettings.BaseUrl}search.php?s={drinkName}");
         
-        AnsiConsole.MarkupLine($"[bold][red]{drink.Instructions}[/][/]");
-        Console.WriteLine($"{drink.DrinkThumb}/preview");
-        var imageResponse = await httpClient.GetStreamAsync($"{drink.DrinkThumb}/preview");
-        var image = new CanvasImage(imageResponse);
-        image.MaxWidth = 16;
-        AnsiConsole.Write(image);
+        if (response?.Drinks == null)
+        {
+            view.ShowError("Could not retrieve categories. Please check your connection");
+            return;
+        }
+        
+        var drink = response.Drinks.First();
+        var ingredients = MapIngredients(drink).Ingredients;
+        await view.ShowDrinkDetails(drink, ingredients);
+    }
+
+    private DrinkIngredientsDto MapIngredients(Drink drink)
+    {
+        var dto = new DrinkIngredientsDto();
+        for (int i = 1; i <= 15; i++) // Assuming up to 15 ingredients
+        {
+            var ingredientProp = drink.GetType().GetProperty($"strIngredient{i}");
+            var measureProp = drink.GetType().GetProperty($"strMeasure{i}");
+
+            var ingredient = ingredientProp?.GetValue(drink) as string;
+            var measure = measureProp?.GetValue(drink) as string;
+
+            if (!string.IsNullOrWhiteSpace(ingredient))
+            {
+                dto.Ingredients.Add(ingredient, measure ?? "By taste");
+            }
+        }
+
+        return dto;
     }
 }

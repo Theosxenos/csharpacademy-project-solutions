@@ -12,6 +12,9 @@ public class Drink
     public string Tags { get; set; }
     [JsonPropertyName("strCategory")]
     public string Category { get; set; }
+
+    [JsonPropertyName("strIBA")]
+    public string Iba { get; set; }
     [JsonPropertyName("strAlcoholic")]
     public string Alcoholic { get; set; }
     [JsonPropertyName("strGlass")]
