@@ -30,8 +30,16 @@ public class SessionView : BaseView
             var root = new Tree(session.ToString());
             rootNodes.Add(root);
 
-            foreach (var sessionLog in orderedSessionLogs.Where(l => l.SessionId == session.Id))
-                root.AddNode($"{sessionLog.StartTime} - {sessionLog.EndTime}");
+            var logsForSession = orderedSessionLogs.Where(
+                l => l.SessionId == session.Id).ToArray();
+            foreach (var sessionLog in logsForSession)
+            {
+                var formattedDuration = $"Duration: {sessionLog.DurationInHours} hours";
+                root.AddNode($"{sessionLog.StartTime} - {sessionLog.EndTime} -> {formattedDuration}");
+            }
+
+            var totalSessionHours = logsForSession.Sum(l => l.DurationInHours);
+            root.AddNode($"Total for the day: {totalSessionHours}");
         }
 
         rootNodes.ForEach(AnsiConsole.Write);

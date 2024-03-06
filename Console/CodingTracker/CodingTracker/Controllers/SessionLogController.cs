@@ -27,7 +27,7 @@ public class SessionLogController
         }
         catch (ArgumentException e)
         {
-            new BaseView().ShowError(e.Message);
+            sessionListView.ShowError(e.Message);
         }
     }
 }

@@ -59,13 +59,27 @@ public class SessionController
         var view = new SessionView();
         var updatedDate = view.PromptStartSession();
         var repository = new Repository();
-        repository.UpdateSession(new Session { Id = session.Id, Day = updatedDate });
+
+        try
+        {
+            repository.UpdateSession(new Session { Id = session.Id, Day = updatedDate });
+        }
+        catch (CodingTrackerException e)
+        {
+            view.ShowError(e.Message);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public void DeleteSession(Session session)
     {
         var baseView = new BaseView();
-        var choice = baseView.AskConfirm($"[red]Are you sure you want to delete session: [green]{session}[/][/]");
+        var choice = baseView.AskConfirm(
+            $"[red]Are you sure you want to delete session: [green]{session}[/][/]");
 
         if (choice)
             try

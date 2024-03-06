@@ -52,14 +52,20 @@ public class Repository
     public void CreateLog(SessionLog sessionLog)
     {
         if (sessionLog.EndTime < sessionLog.StartTime)
-            throw new ArgumentException("Log not created due to: End Time must be greater than Start Time.", nameof(sessionLog));
+            throw new ArgumentException("Log not created due to: End Time must be greater than Start Time.",
+                nameof(sessionLog));
 
         try
         {
             using var connection = db.GetConnection();
 
             var query = "INSERT INTO Logs (SessionId, StartTime, EndTime) VALUES (@SessionId, @StartTime, @EndTime)";
-            connection.Execute(query, new { sessionLog.SessionId, StartTime = sessionLog.StartTime.ToString("t"), EndTime = sessionLog.EndTime.ToString("t") });
+            connection.Execute(query,
+                new
+                {
+                    sessionLog.SessionId, StartTime = sessionLog.StartTime.ToString("t"),
+                    EndTime = sessionLog.EndTime.ToString("t")
+                });
         }
         catch (Exception e)
         {
@@ -81,7 +87,7 @@ public class Repository
                 StartTime = TimeOnly.Parse(l.StartTime),
                 EndTime = TimeOnly.Parse(l.EndTime)
             });
-            
+
             return logs.ToList();
         }
         catch (Exception e)
@@ -96,7 +102,12 @@ public class Repository
         {
             using var connection = db.GetConnection();
             var query = "UPDATE Sessions SET Day = @Day WHERE Id = @Id";
-            connection.Execute(query, new { Day = DateToString(updatedSession.Day), Id = updatedSession.Id });
+            connection.Execute(query, new { Day = DateToString(updatedSession.Day), updatedSession.Id });
+        }
+        catch (SqliteException e) when (e is { SqliteErrorCode: 19 })
+        {
+            throw new CodingTrackerException(
+                $"A session with the date '{DateToString(updatedSession.Day)}' already exists.");
         }
         catch (Exception e)
         {
