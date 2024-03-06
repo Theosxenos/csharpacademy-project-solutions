@@ -4,19 +4,21 @@ public class ApiSettings
 {
     private static ApiSettings instance;
 
-    private ApiSettings(){}
+    private ApiSettings()
+    {
+    }
 
     public static ApiSettings Instance => instance ??= LoadSettings();
 
     public string BaseUrl { get; set; }
-    
+
     private static ApiSettings LoadSettings()
     {
         var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            .AddJsonFile("appsettings.json", true, true);
 
-        IConfigurationRoot configuration = builder.Build();
+        var configuration = builder.Build();
 
         var settings = new ApiSettings();
         configuration.GetSection("ApiSettings").Bind(settings);

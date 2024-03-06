@@ -2,9 +2,9 @@ namespace DrinksInfo.Controllers;
 
 public class DrinksController
 {
+    private readonly ApiSettings apiSettings = ApiSettings.Instance;
     private readonly HttpClient httpClient = new();
     private readonly DrinksView view = new();
-    private readonly ApiSettings apiSettings = ApiSettings.Instance;
 
     public async Task ShowCategoryMenu()
     {
@@ -36,7 +36,8 @@ public class DrinksController
 
         while (true)
         {
-            var selectedDrink = view.ShowMenu(response.Drinks.OrderBy(d => d.Name).Select(d => d.Name), "Select a drink:");
+            var selectedDrink =
+                view.ShowMenu(response.Drinks.OrderBy(d => d.Name).Select(d => d.Name), "Select a drink:");
             await ShowDrinkDetail(selectedDrink);
         }
     }
@@ -45,13 +46,13 @@ public class DrinksController
     {
         var response =
             await httpClient.GetFromJsonAsync<DrinksResponse>($"{apiSettings.BaseUrl}search.php?s={drinkName}");
-        
+
         if (response?.Drinks == null)
         {
             view.ShowError("Could not retrieve categories. Please check your connection");
             return;
         }
-        
+
         var drink = response.Drinks.First();
         var ingredients = MapIngredients(drink).Ingredients;
         await view.ShowDrinkDetails(drink, ingredients);
@@ -60,7 +61,7 @@ public class DrinksController
     private DrinkIngredientsDto MapIngredients(Drink drink)
     {
         var dto = new DrinkIngredientsDto();
-        for (int i = 1; i <= 15; i++) // Assuming up to 15 ingredients
+        for (var i = 1; i <= 15; i++) // Assuming up to 15 ingredients
         {
             var ingredientProp = drink.GetType().GetProperty($"strIngredient{i}");
             var measureProp = drink.GetType().GetProperty($"strMeasure{i}");
@@ -68,10 +69,7 @@ public class DrinksController
             var ingredient = ingredientProp?.GetValue(drink) as string;
             var measure = measureProp?.GetValue(drink) as string;
 
-            if (!string.IsNullOrWhiteSpace(ingredient))
-            {
-                dto.Ingredients.Add(ingredient, measure ?? "By taste");
-            }
+            if (!string.IsNullOrWhiteSpace(ingredient)) dto.Ingredients.Add(ingredient, measure ?? "By taste");
         }
 
         return dto;
