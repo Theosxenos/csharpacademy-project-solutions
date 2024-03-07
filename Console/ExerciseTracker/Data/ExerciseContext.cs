@@ -13,20 +13,26 @@ public class ExerciseContext(DbContextOptions options) : DbContext(options)
             new()
             {
                 Id = 1,
-                Date = DateTime.Today.AddDays(-2),
-                Weight = 10f
+                DateStart = DateTime.Now.AddDays(-2),
+                DateEnd = DateTime.Now.AddDays(-2).AddHours(3),
+                Duration = TimeSpan.FromHours(3),
+                Comments = "Set PR at 50kg"
             },
             new ()
             {
                 Id = 2,
-                Date = DateTime.Today.AddDays(-1),
-                Weight = 12.5f
+                DateStart = DateTime.Now.AddDays(-1),
+                DateEnd = DateTime.Now.AddDays(-1).AddHours(0.25),
+                Duration = TimeSpan.FromHours(0.25),
+                Comments = "Quit after 3 reps"
             },
             new ()
             {
                 Id = 3,
-                Date = DateTime.Today,
-                Weight = 15f
+                DateStart = DateTime.Now,
+                DateEnd = DateTime.Now.AddHours(2),
+                Duration = TimeSpan.FromHours(2),
+                Comments = ""
             }
         ]);
     }

@@ -1,13 +1,19 @@
-using ExerciseTracker.Data;
-using ExerciseTracker.Models;
-using Microsoft.EntityFrameworkCore;
-using Spectre.Console;
+using ExerciseTracker.Views;
 
 namespace ExerciseTracker.Controllers;
 
-public class MainController(ExerciseContext context)
+public class MainController(SquatsController squatsController)
 {
-    public void ShowMenu()
+    public async Task ShowMenu()
     {
+        var menu = new Dictionary<string, Func<Task>>
+        {
+            ["Squats Menu"] = squatsController.ShowSquatsMenu,
+            ["Running Menu"] = async () => {},
+            ["Exit"] = async () => Environment.Exit(0),
+        };
+
+        var choice = new BaseView().ShowMenu(menu, converter: pair => pair.Key);
+        await choice.Value.Invoke();
     }
 }

@@ -41,14 +41,21 @@ public class BaseView
             .Validate(validator, errorMessage)
         );
     }
-
-    public T ShowMenu<T>(IEnumerable<T> menuOptions, string title = "Select a menu option:", int pageSize = 10)
+    
+    public T ShowMenu<T>(IEnumerable<T> menuOptions, string title = "Select a menu option:", int pageSize = 10, Func<T, string>? converter = null)
         where T : notnull
     {
         AnsiConsole.Clear();
-        return AnsiConsole.Prompt(new SelectionPrompt<T>()
-            .Title(title)
-            .PageSize(pageSize)
-            .AddChoices(menuOptions));
+
+        string DefaultConverter(T item) => item.ToString() ?? throw new InvalidOperationException($"Cannot convert {typeof(T)} to string.");
+        var prompt = new SelectionPrompt<T>()
+        {
+            Title = title,
+            PageSize = pageSize,
+            Converter = converter ?? DefaultConverter,
+        };
+        prompt.AddChoices(menuOptions);
+
+        return AnsiConsole.Prompt(prompt);
     }
 }

@@ -1,3 +1,3 @@
 namespace ExerciseTracker.Models;
 
-public class Squat : BaseModel;
+public class Running : BaseModel;
