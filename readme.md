@@ -12,6 +12,9 @@ Below is a list of projects included in this repository, along with a brief desc
 - **Habit Logger**: _Build a logger for a habit of choice. Learn how to interact with a database using SQLite and to get and validate user input_
 - **Coding Tracker**: _Track your coding hours. Learn how to deal with dates, to use separation of concerns and use your first external library to enhance your application_
 - **Flashcards**: _Building stacks of flashcards and a study functionality. Learn to deal with linked databases using SQL Server and to use Data Transfer Objects_
+- **Drinks Info**: _Build a console app to consume an external API with HTTP Requests with C#_
+- **Phone Book**: _Now you have basic understanding of SQL, it’s time to learn the basics of Entity Framework with a CRUD Phone Book Console App_
+- **Shifts Logger**: _Build an App for shift workers to log their hours. In this app you’ll learn how to build a Web API and consume it with a Console App_
 
 ### Challenge Projects
 - **Brewery API**: _Improve your .NET WebAPI skills building a Brewery API_
