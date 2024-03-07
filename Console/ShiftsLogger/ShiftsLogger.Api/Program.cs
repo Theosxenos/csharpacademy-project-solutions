@@ -29,8 +29,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 var apiGroup = app.MapGroup("/api/");
-var workerGroup = apiGroup.MapGroup("worker");
-workerGroup.MapGet("/", () => "Yo");
+
+var workerGroup = apiGroup.MapGroup("workers");
+workerGroup.MapGet("/", async (Repository repository) => await repository.GetAllWorkers());
 workerGroup.MapPost("/", async (WorkerRequest worker, WorkerService workerService) =>
 {
     try
@@ -49,5 +50,11 @@ workerGroup.MapPost("/", async (WorkerRequest worker, WorkerService workerServic
 
 });
 
+var shiftsGroup = apiGroup.MapGroup("shifts");
+shiftsGroup.MapPost("/", async (ShiftRequest shift, Repository repository) =>
+{
+    await repository.AddShift(shift);
+});
+shiftsGroup.MapGet("/{workerId}", async (int workerId, Repository repository) => await repository.GetShiftsByWorkerId(workerId));
 
 app.Run();
