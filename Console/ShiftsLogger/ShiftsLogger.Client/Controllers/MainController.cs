@@ -7,7 +7,7 @@ namespace ShiftsLogger.Client.Controllers;
 
 public class MainController
 {
-    private BaseView view = new();
+    private MainView view = new();
     private HttpClient httpClient = new();
     public async Task ShowMenu()
     {
@@ -16,8 +16,8 @@ public class MainController
         {
             ["Add Worker"] = AddWorker,
             ["Log Shift"] = LogShift,
-            ["List Shifts"] = async () => { },
-            ["Exit"] = async () => runApp = false
+            ["List Shifts"] = ListShifts,
+            ["Exit"] = () => Task.FromResult(runApp = false)
         };
 
         while (runApp)
@@ -33,6 +33,40 @@ public class MainController
                 throw;
             }
         }
+    }
+
+    private async Task ListShifts()
+    {
+        var workers = await httpClient.GetFromJsonAsync<List<Worker>>($"{Program.BaseUrl}/workers");
+        if (workers== null)
+        {
+            view.ShowError($"A problem occured after getting the list of workers. The returned worker object is null.");
+            return;
+        }
+
+        if (workers.Count == 0)
+        {
+            view.ShowError("No workers found. Please add one before logging a shift.");
+            return;
+        }
+        
+        var selectedWorker = view.ShowMenu(workers.Select(w => w.Name));
+        var workerId = workers.First(w => w.Name.Equals(selectedWorker)).Id;
+        
+        var shifts = await httpClient.GetFromJsonAsync<List<Shift>>($"{Program.BaseUrl}/shifts/{workerId}");
+        if (shifts == null)
+        {
+            view.ShowError($"A problem occured after getting the list of workers. The returned worker object is null.");
+            return;
+        }
+
+        if (shifts.Count == 0)
+        {
+            view.ShowError($"No shifts found for worker {selectedWorker}");
+            return;
+        }
+
+        view.ListShifts(shifts);
     }
 
     public async Task AddWorker()

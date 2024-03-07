@@ -51,21 +51,4 @@ public class BaseView
             .PageSize(pageSize)
             .AddChoices(menuOptions));
     }
-
-    public DateTime AskStartShift()
-    {
-        return AskShift("What's the start datetime of the shift?");
-    }
-
-    public DateTime AskEndShift()
-    {
-        return AskShift("What's the end datetime of the shift?");
-    }
-
-    private DateTime AskShift(string prompt)
-    {
-        var date = AskInput<string>(prompt, i => DateTime.TryParse(i, out _), "Not a valid datetime");
-
-        return DateTime.Parse(date);
-    }
 }

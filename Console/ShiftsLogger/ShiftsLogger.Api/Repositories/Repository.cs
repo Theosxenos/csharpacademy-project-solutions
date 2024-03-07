@@ -41,6 +41,6 @@ public class Repository(ShiftsLoggerContext context)
 
     public async Task<List<Shift>> GetShiftsByWorkerId(int workerId)
     {
-        return await context.Shifts.Where(s => s.WorkerId == workerId).ToListAsync();
+        return await context.Shifts.Where(s => s.WorkerId == workerId).OrderBy(s => s.StartShift).ToListAsync();
     }
 }
