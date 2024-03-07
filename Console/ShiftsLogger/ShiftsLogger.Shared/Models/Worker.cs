@@ -1,4 +1,4 @@
-namespace ShiftsLogger.Api.Models;
+namespace ShiftsLogger.Shared.Models;
 
 public class Worker
 {

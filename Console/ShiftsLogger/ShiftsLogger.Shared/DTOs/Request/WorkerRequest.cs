@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ShiftsLogger.Api.DTOs.Request;
+namespace ShiftsLogger.Shared.DTOs.Request;
 
 public class WorkerRequest
 {

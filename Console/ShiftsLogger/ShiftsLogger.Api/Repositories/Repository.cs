@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftsLogger.Api.Data;
-using ShiftsLogger.Api.DTOs.Request;
-using ShiftsLogger.Api.Models;
+using ShiftsLogger.Shared.DTOs.Request;
+using ShiftsLogger.Shared.Models;
 
 namespace ShiftsLogger.Api.Repositories;
 

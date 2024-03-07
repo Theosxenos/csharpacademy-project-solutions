@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftsLogger.Api.Data;
-using ShiftsLogger.Api.DTOs.Request;
 using ShiftsLogger.Api.Repositories;
 using ShiftsLogger.Api.Services;
+using ShiftsLogger.Shared.DTOs.Request;
 
 var builder = WebApplication.CreateBuilder(args);
 

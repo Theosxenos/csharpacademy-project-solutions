@@ -1,6 +1,6 @@
-using ShiftsLogger.Api.DTOs.Request;
-using ShiftsLogger.Api.Models;
 using ShiftsLogger.Api.Repositories;
+using ShiftsLogger.Shared.DTOs.Request;
+using ShiftsLogger.Shared.Models;
 
 namespace ShiftsLogger.Api.Services;
 
