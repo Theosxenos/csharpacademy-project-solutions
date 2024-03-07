@@ -21,4 +21,8 @@
       <Folder Include="Migrations\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ShiftsLogger.Shared\ShiftsLogger.Shared.csproj" />
+    </ItemGroup>
+
 </Project>
