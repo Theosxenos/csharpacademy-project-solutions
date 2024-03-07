@@ -379,3 +379,7 @@ fabric.properties
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/rider,aspnetcore,dotnetcore,visualstudiocode
+
+# Single DB files
+*.sqlite
+*.db
