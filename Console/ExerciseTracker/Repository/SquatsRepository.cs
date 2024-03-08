@@ -54,4 +54,20 @@ public class SquatsRepository(ExerciseContext context)
             throw;
         }
     }
+
+    public async Task<Squat> DeleteSquat(Squat squat)
+    {
+        try
+        {
+            context.Squats.Remove(squat);
+            await context.SaveChangesAsync();
+
+            return squat;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

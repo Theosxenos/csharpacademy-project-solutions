@@ -27,34 +27,34 @@ public class BaseView
         return AnsiConsole.Confirm(message);
     }
 
-    public string AskInput(string prompt, string? defaultValue = null)
+    public T AskInput<T>(string prompt, Func<T, bool>? validator = null, string? errorMessage = null,
+        T? defaultValue = default)
     {
-        var textPrompt = new TextPrompt<string>(prompt);
-        if (!string.IsNullOrEmpty(defaultValue)) textPrompt.DefaultValue(defaultValue);
+        var textPrompt = new TextPrompt<T>(prompt);
+
+        if (defaultValue != null)
+            textPrompt.DefaultValue(defaultValue);
+        if (validator != null)
+            textPrompt.Validate(validator,
+                string.IsNullOrEmpty(errorMessage) ? textPrompt.ValidationErrorMessage : errorMessage);
 
         return AnsiConsole.Prompt(textPrompt);
     }
 
-    public T AskInput<T>(string prompt, Func<T, bool> validator, string errorMessage)
-    {
-        return AnsiConsole.Prompt(new TextPrompt<T>(prompt)
-            .Validate(validator, errorMessage)
-        );
-    }
-    
-    public T ShowMenu<T>(IEnumerable<T> menuOptions, string title = "Select a menu option:", int pageSize = 10, Func<T, string>? converter = null)
+    public T ShowMenu<T>(IEnumerable<T> menuOptions, string title = "Select a menu option:", int pageSize = 10,
+        Func<T, string>? converter = null)
         where T : notnull
     {
         AnsiConsole.Clear();
 
-        string DefaultConverter(T item) => item.ToString() ?? throw new InvalidOperationException($"Cannot convert {typeof(T)} to string.");
-        var prompt = new SelectionPrompt<T>()
+        var prompt = new SelectionPrompt<T>
         {
             Title = title,
-            PageSize = pageSize,
-            Converter = converter ?? DefaultConverter,
+            PageSize = pageSize
         };
         prompt.AddChoices(menuOptions);
+
+        if (converter != null) prompt.UseConverter(converter);
 
         return AnsiConsole.Prompt(prompt);
     }

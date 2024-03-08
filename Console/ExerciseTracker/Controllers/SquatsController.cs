@@ -1,3 +1,4 @@
+using ExerciseTracker.Models;
 using ExerciseTracker.Repository;
 using ExerciseTracker.Views;
 
@@ -11,13 +12,21 @@ public class SquatsController(SquatsRepository repository)
     {
         var menu = new Dictionary<string, Func<Task>>
         {
-            ["Add"] = () => Task.CompletedTask,
+            ["Add"] = AddSquat,
             ["Manage"] = ManageSquat,
             ["Exit"] = () => Task.CompletedTask
         };
 
         var choice = view.ShowMenu(menu, converter: pair => pair.Key);
         await choice.Value.Invoke();
+    }
+
+    private async Task AddSquat()
+    {
+        var squat = new Squat();
+        view.PromptUpsertSquat(squat);
+
+        await repository.AddSquatAsync(squat);
     }
 
     public async Task ManageSquat()
@@ -29,5 +38,30 @@ public class SquatsController(SquatsRepository repository)
         }
 
         var chosenSquat = view.ShowSquatLogsMenu(squats);
+        await ShowSquatManageMenu(chosenSquat);
+    }
+
+    public async Task ShowSquatManageMenu(Squat squat)
+    {
+        var menu = new Dictionary<string, Func<Squat, Task>>
+        {
+            ["Update"] =  UpdateSquat,
+            ["Delete"] = DeleteSquat,
+            ["Exit"] = _ => Task.CompletedTask
+        };
+
+        var choice = view.ShowMenu(menu, converter: pair => pair.Key);
+        await choice.Value.Invoke(squat);
+    }
+
+    private async Task DeleteSquat(Squat arg)
+    {
+        _ = await repository.DeleteSquat(arg);
+        view.ShowSuccess($"Squat from {arg.DateStart.ToShortDateString()} deleted.");
+    }
+
+    private async Task UpdateSquat(Squat arg)
+    {
+        var updated = await repository.UpdateSquatAsync(arg);
     }
 }
