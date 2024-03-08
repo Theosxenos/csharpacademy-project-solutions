@@ -8,10 +8,10 @@ public class ExerciseView : BaseView
 {
     public BaseModel ShowLogsMenu(IEnumerable<BaseModel> exercises)
     {
-        return ShowMenu(exercises.OrderBy(s => s.DateStart), "Choose a squat to manage:", converter: squat => $"{squat.DateStart:d-M-y h:mm}\t\t{squat.Duration:d\\.h\\:mm}\t\t{squat.Comments}");
+        return ShowMenu(exercises.OrderBy(s => s.DateStart), "Choose an exercise to manage:", converter: exercise => $"{exercise.DateStart:d-M-y h:mm}\t\t{exercise.Duration:d\\.h\\:mm}\t\t{exercise.Comments}");
     }
 
-    public void PromptUpsertSquat(BaseModel exercise)
+    public void PromptUpsertExercise(BaseModel exercise)
     {
         var promptStart = $"What's the start date/time of your {exercise.GetType().Name} session?";
         var promptEnd = $"What's the end date/time of your {exercise.GetType().Name} session?";
