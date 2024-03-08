@@ -1,28 +1,39 @@
 using System.Globalization;
 using ExerciseTracker.Models;
+using Spectre.Console;
 
 namespace ExerciseTracker.Views;
 
 public class SquatsView : BaseView
 {
-    public Squat ShowSquatLogsMenu(List<Squat> squats)
+    public BaseModel ShowLogsMenu(IEnumerable<BaseModel> exercises)
     {
-        return ShowMenu(squats, "Choose a squat to manage:", converter: squat => $"{squat.DateStart:d-M-y h:m} - {squat.Duration} - {squat.Comments}");
+        return ShowMenu(exercises.OrderBy(s => s.DateStart), "Choose a squat to manage:", converter: squat => $"{squat.DateStart:d-M-y h:mm}\t\t{squat.Duration:d\\.h\\:mm}\t\t{squat.Comments}");
     }
 
-    public void PromptUpsertSquat(Squat squat)
+    public void PromptUpsertSquat(BaseModel exercise)
     {
-        var prompt = "What's the {0} date/time of your squat session?";
-        var errorMessage = "[red]Invalid date/time[/]";
+        var promptStart = $"What's the start date/time of your {exercise.GetType().Name} session?";
+        var promptEnd = $"What's the end date/time of your {exercise.GetType().Name} session?";
+        var dateParsePattern =
+            $"{CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern} {CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern}";
+        var errorMessage = $"[red]Invalid date/time. The pattern is: {dateParsePattern}[/]";
+        var validator = (string x) => DateTime.TryParse(x, out _);
+
+        AnsiConsole.WriteLine($"The pattern is: {dateParsePattern}");
 
         bool retry;
         do
         {
             retry = false;
-            var dateStart = AskInput(string.Format(prompt, "start"), null,
-                errorMessage, squat.DateStart);
-            var dateEnd = AskInput(string.Format(prompt, "end"), null,
-                errorMessage, squat.DateEnd);
+
+            var dateStartInput = AskInput(promptStart, validator, errorMessage,
+                exercise.DateStart.ToString(CultureInfo.CurrentCulture));
+            var dateEndInput = AskInput(promptEnd, validator, errorMessage,
+                exercise.DateEnd.ToString(CultureInfo.CurrentCulture));
+
+            var dateStart = DateTime.Parse(dateStartInput);
+            var dateEnd = DateTime.Parse(dateEndInput);
 
             if (dateEnd < dateStart)
             {
@@ -32,12 +43,12 @@ public class SquatsView : BaseView
             }
 
             var comments = AskInput("Write a comment on your session:",
-                defaultValue: string.IsNullOrEmpty(squat.Comments) ? null : squat.Comments);
+                defaultValue: string.IsNullOrEmpty(exercise.Comments) ? null : exercise.Comments);
 
-            squat.DateStart = dateStart;
-            squat.DateEnd = dateEnd;
-            squat.Duration = dateEnd - dateStart;
-            squat.Comments = comments;
+            exercise.DateStart = dateStart;
+            exercise.DateEnd = dateEnd;
+            exercise.Duration = dateEnd - dateStart;
+            exercise.Comments = comments;
 
         } while (retry);
     }

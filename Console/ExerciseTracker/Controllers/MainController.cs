@@ -9,7 +9,7 @@ public class MainController(SquatsController squatsController)
         var menu = new Dictionary<string, Func<Task>>
         {
             ["Squats Menu"] = squatsController.ShowSquatsMenu,
-            ["Running Menu"] = async () => {},
+            ["Running Menu"] = () => throw new NotImplementedException(),
             ["Exit"] = async () => Environment.Exit(0),
         };
 

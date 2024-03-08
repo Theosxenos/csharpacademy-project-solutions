@@ -27,6 +27,7 @@ public class SquatsController(SquatsRepository repository)
         view.PromptUpsertSquat(squat);
 
         await repository.AddSquatAsync(squat);
+        view.ShowSuccess($"Squat from {squat.DateStart.ToShortDateString()} created.");
     }
 
     public async Task ManageSquat()
@@ -37,8 +38,8 @@ public class SquatsController(SquatsRepository repository)
             view.ShowError("No squat logs found.");
         }
 
-        var chosenSquat = view.ShowSquatLogsMenu(squats);
-        await ShowSquatManageMenu(chosenSquat);
+        var chosenSquat = view.ShowLogsMenu(squats);
+        await ShowSquatManageMenu((Squat)chosenSquat);
     }
 
     public async Task ShowSquatManageMenu(Squat squat)
@@ -62,6 +63,8 @@ public class SquatsController(SquatsRepository repository)
 
     private async Task UpdateSquat(Squat arg)
     {
+        view.PromptUpsertSquat(arg);
         var updated = await repository.UpdateSquatAsync(arg);
+        view.ShowSuccess($"Squat from {arg.DateStart.ToShortDateString()} update.");
     }
 }
