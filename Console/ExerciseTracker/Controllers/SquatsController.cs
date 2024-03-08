@@ -6,7 +6,7 @@ namespace ExerciseTracker.Controllers;
 
 public class SquatsController(SquatsRepository repository)
 {
-    private SquatsView view = new();
+    private ExerciseView view = new();
 
     public async Task ShowSquatsMenu()
     {

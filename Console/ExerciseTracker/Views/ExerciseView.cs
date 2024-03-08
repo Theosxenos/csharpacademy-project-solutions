@@ -4,7 +4,7 @@ using Spectre.Console;
 
 namespace ExerciseTracker.Views;
 
-public class SquatsView : BaseView
+public class ExerciseView : BaseView
 {
     public BaseModel ShowLogsMenu(IEnumerable<BaseModel> exercises)
     {
