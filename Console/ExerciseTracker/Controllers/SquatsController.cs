@@ -24,7 +24,7 @@ public class SquatsController(SquatsRepository repository)
     private async Task AddSquat()
     {
         var squat = new Squat();
-        view.PromptUpsertSquat(squat);
+        view.PromptUpsertExercise(squat);
 
         await repository.AddSquatAsync(squat);
         view.ShowSuccess($"Squat from {squat.DateStart.ToShortDateString()} created.");
@@ -63,7 +63,7 @@ public class SquatsController(SquatsRepository repository)
 
     private async Task UpdateSquat(Squat arg)
     {
-        view.PromptUpsertSquat(arg);
+        view.PromptUpsertExercise(arg);
         var updated = await repository.UpdateSquatAsync(arg);
         view.ShowSuccess($"Squat from {arg.DateStart.ToShortDateString()} update.");
     }

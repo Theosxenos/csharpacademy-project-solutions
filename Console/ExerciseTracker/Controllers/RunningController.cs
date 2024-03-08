@@ -23,7 +23,7 @@ public class RunningController(RunningRepository repository)
     private async Task AddRunning()
     {
         var exercise = new Running();
-        view.PromptUpsertSquat(exercise);
+        view.PromptUpsertExercise(exercise);
 
         await repository.AddAsync(exercise);
         view.ShowSuccess($"Squat from {exercise.DateStart.ToShortDateString()} created.");
