@@ -2,14 +2,14 @@ using ExerciseTracker.Views;
 
 namespace ExerciseTracker.Controllers;
 
-public class MainController(SquatsController squatsController)
+public class MainController(SquatsController squatsController, RunningController runningController)
 {
     public async Task ShowMenu()
     {
         var menu = new Dictionary<string, Func<Task>>
         {
             ["Squats Menu"] = squatsController.ShowSquatsMenu,
-            ["Running Menu"] = () => throw new NotImplementedException(),
+            ["Running Menu"] = runningController.ShowRunningMenu,
             ["Exit"] = async () => Environment.Exit(0),
         };
 

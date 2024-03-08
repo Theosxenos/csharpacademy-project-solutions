@@ -14,8 +14,10 @@ builder.Services.AddTransient<ExerciseDapperContext>();
 
 builder.Services.AddTransient<MainController>();
 builder.Services.AddScoped<SquatsController>();
+builder.Services.AddScoped<RunningController>();
 
 builder.Services.AddScoped<SquatsRepository>();
+builder.Services.AddScoped<RunningRepository>();
 
 var host = builder.Build();
 
