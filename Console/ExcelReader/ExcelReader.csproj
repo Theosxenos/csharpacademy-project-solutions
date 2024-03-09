@@ -12,6 +12,7 @@
       <PackageReference Include="EPPlus" Version="7.0.9" />
       <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0-preview.1.24081.2" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0-preview.1.24080.9" />
+      <PackageReference Include="Spectre.Console" Version="0.48.1-preview.0.35" />
     </ItemGroup>
 
     <ItemGroup>
