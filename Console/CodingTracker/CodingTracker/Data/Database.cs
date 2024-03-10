@@ -54,6 +54,7 @@ public class Database
                     SessionId INTEGER NOT NULL,
                     StartTime TEXT,
                     EndTime TEXT,
+                    Duration INTEGER,
                     FOREIGN KEY (SessionId) REFERENCES Sessions(Id) ON DELETE CASCADE
                 );
             """;
@@ -62,7 +63,7 @@ public class Database
         createTableCommand.ExecuteNonQuery();
 
         var seedDataQuery =
-            """
+            $"""
                 -- Seed sessions
                 INSERT INTO Sessions (Day) VALUES
                 ('1-1-24'),
@@ -70,12 +71,12 @@ public class Database
                 ('10-2-24');
                 
                 -- Seed logs
-                INSERT INTO Logs (SessionId, StartTime, EndTime) VALUES
-                (1, '09:00', '10:00'),
-                (1, '10:00', '11:00'),
-                (2, '11:00', '12:00'),
-                (2, '12:00', '13:00'),
-                (3, '13:00', '14:00');
+                INSERT INTO Logs (SessionId, StartTime, EndTime, Duration) VALUES
+                (1, '09:00', '10:00', 36000000000),
+                (1, '10:00', '11:00', 36000000000),
+                (2, '11:00', '12:00', 36000000000),
+                (2, '12:00', '13:00', 36000000000),
+                (3, '13:00', '14:00', 36000000000);
             """;
 
         var seedDataCommand = new SqliteCommand(seedDataQuery, connection);

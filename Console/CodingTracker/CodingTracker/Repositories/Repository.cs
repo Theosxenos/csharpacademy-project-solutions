@@ -59,12 +59,14 @@ public class Repository
         {
             using var connection = db.GetConnection();
 
-            var query = "INSERT INTO Logs (SessionId, StartTime, EndTime) VALUES (@SessionId, @StartTime, @EndTime)";
+            var query = "INSERT INTO Logs (SessionId, StartTime, EndTime, Duration) VALUES (@SessionId, @StartTime, @EndTime, @Duration)";
             connection.Execute(query,
                 new
                 {
-                    sessionLog.SessionId, StartTime = sessionLog.StartTime.ToString("t"),
-                    EndTime = sessionLog.EndTime.ToString("t")
+                    sessionLog.SessionId, 
+                    StartTime = sessionLog.StartTime.ToString("t"),
+                    EndTime = sessionLog.EndTime.ToString("t"),
+                    Duration = sessionLog.CalculateDuration
                 });
         }
         catch (Exception e)
@@ -85,7 +87,8 @@ public class Repository
                 Id = (int)l.Id,
                 SessionId = (int)l.SessionId,
                 StartTime = TimeOnly.Parse(l.StartTime),
-                EndTime = TimeOnly.Parse(l.EndTime)
+                EndTime = TimeOnly.Parse(l.EndTime),
+                Duration = TimeSpan.FromTicks(l.Duration) 
             });
 
             return logs.ToList();
@@ -124,5 +127,12 @@ public class Repository
     private string DateToString(DateOnly date)
     {
         return date.ToString("d-M-yy");
+    }
+
+    public IEnumerable<SessionLog> GetLogsBySessionId(int sessionId)
+    {
+        using var connection = db.GetConnection();
+        return connection
+            .Query<SessionLog>("SELECT * FROM Logs WHERE SessionId = @SessionId", new { SessionId = sessionId });
     }
 }

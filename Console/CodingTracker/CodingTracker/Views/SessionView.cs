@@ -34,12 +34,12 @@ public class SessionView : BaseView
                 l => l.SessionId == session.Id).ToArray();
             foreach (var sessionLog in logsForSession)
             {
-                var formattedDuration = $"Duration: {sessionLog.DurationInHours} hours";
+                var formattedDuration = $"Duration: {sessionLog.Duration.TotalHours} hours";
                 root.AddNode($"{sessionLog.StartTime} - {sessionLog.EndTime} -> {formattedDuration}");
             }
 
-            var totalSessionHours = logsForSession.Sum(l => l.DurationInHours);
-            root.AddNode($"Total for the day: {totalSessionHours}");
+            var totalSessionHours = logsForSession.Sum(l => l.Duration.TotalHours);
+            root.AddNode($"Total hours for the day: {totalSessionHours}");
         }
 
         rootNodes.ForEach(AnsiConsole.Write);
