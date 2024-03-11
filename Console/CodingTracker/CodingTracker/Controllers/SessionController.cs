@@ -60,11 +60,6 @@ public class SessionController
         {
             view.ShowError(e.Message);
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
     }
 
     public void DeleteSession(Session session)
@@ -74,15 +69,7 @@ public class SessionController
 
         if (!choice) return;
 
-        try
-        {
-            new SessionRepository().DeleteSession(session.Id);
-            view.ShowSuccess($"[white]{session}[/] successfully deleted.");
-        }
-        catch (Exception e)
-        {
-            view.ShowError(e.Message);
-            throw;
-        }
+        new SessionRepository().DeleteSession(session.Id);
+        view.ShowSuccess($"[white]{session}[/] successfully deleted.");
     }
 }
