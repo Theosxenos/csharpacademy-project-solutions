@@ -2,9 +2,9 @@ namespace CodingTracker.Controllers;
 
 public class SessionController
 {
-    SessionView view = new();
-    private SessionRepository _sessionRepository = new();
-    
+    private readonly SessionRepository _sessionRepository = new();
+    private readonly SessionView view = new();
+
     public void StartSession()
     {
         var result = view.PromptStartSession();
@@ -42,8 +42,8 @@ public class SessionController
         var menu = new Dictionary<string, Action<Session>>
         {
             ["Update"] = UpdateSession,
-            ["Delete"] = DeleteSession ,
-            ["Exit"] = _ => { } 
+            ["Delete"] = DeleteSession,
+            ["Exit"] = _ => { }
         };
         var menuSelection = view.ShowMenu(menu.Keys);
         menu[menuSelection].Invoke(session);
@@ -73,7 +73,7 @@ public class SessionController
             $"[red]Are you sure you want to delete session: [green]{session}[/][/]");
 
         if (!choice) return;
-        
+
         try
         {
             new SessionRepository().DeleteSession(session.Id);

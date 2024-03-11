@@ -1,5 +1,3 @@
-using CodingTracker.Validators;
-
 namespace CodingTracker.Views;
 
 public class SessionLogView : BaseView
@@ -15,7 +13,7 @@ public class SessionLogView : BaseView
         return new SessionLog
         {
             StartTime = TimeOnly.ParseExact(startTime, Validator.TimeFormat),
-            EndTime = TimeOnly.ParseExact(endTime, Validator.TimeFormat),
+            EndTime = TimeOnly.ParseExact(endTime, Validator.TimeFormat)
         };
     }
 }

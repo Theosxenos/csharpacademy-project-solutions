@@ -24,7 +24,7 @@ public class BaseView
     {
         return AnsiConsole.Confirm(message);
     }
-    
+
     public T AskInput<T>(string prompt, Func<T, bool>? validator = null, string? errorMessage = null,
         T? defaultValue = default)
     {

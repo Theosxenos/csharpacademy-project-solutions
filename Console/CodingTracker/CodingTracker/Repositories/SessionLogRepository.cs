@@ -2,8 +2,8 @@ namespace CodingTracker.Repositories;
 
 public class SessionLogRepository
 {
-    private Database db = new();
-    
+    private readonly Database db = new();
+
     public IEnumerable<SessionLog> GetLogsBySessionId(int sessionId)
     {
         using var connection = db.GetConnection();
@@ -15,7 +15,7 @@ public class SessionLogRepository
             SessionId = (int)l.SessionId,
             StartTime = TimeOnly.Parse(l.StartTime),
             EndTime = TimeOnly.Parse(l.EndTime),
-            Duration = TimeSpan.FromTicks(l.Duration) 
+            Duration = TimeSpan.FromTicks(l.Duration)
         });
     }
 
@@ -30,17 +30,18 @@ public class SessionLogRepository
         if (sessionLog.EndTime < sessionLog.StartTime)
             throw new ArgumentException("Log not created due to: End Time must be greater than Start Time.",
                 nameof(sessionLog));
-        
+
         using var connection = db.GetConnection();
-        connection.Execute("UPDATE Logs SET StartTime = @StartTime, EndTime = @EndTime, Duration = @Duration WHERE Id = @Id",                 new
-        {
-            Id = sessionLog.Id,
-            StartTime = sessionLog.StartTime.ToString("t"),
-            EndTime = sessionLog.EndTime.ToString("t"),
-            Duration = sessionLog.CalculateDuration
-        });
+        connection.Execute(
+            "UPDATE Logs SET StartTime = @StartTime, EndTime = @EndTime, Duration = @Duration WHERE Id = @Id", new
+            {
+                sessionLog.Id,
+                StartTime = sessionLog.StartTime.ToString("t"),
+                EndTime = sessionLog.EndTime.ToString("t"),
+                Duration = sessionLog.CalculateDuration
+            });
     }
-    
+
     public List<SessionLog> GetAllSessionLogs()
     {
         try
@@ -54,7 +55,7 @@ public class SessionLogRepository
                 SessionId = (int)l.SessionId,
                 StartTime = TimeOnly.Parse(l.StartTime),
                 EndTime = TimeOnly.Parse(l.EndTime),
-                Duration = TimeSpan.FromTicks(l.Duration) 
+                Duration = TimeSpan.FromTicks(l.Duration)
             });
 
             return logs.ToList();
@@ -64,7 +65,7 @@ public class SessionLogRepository
             throw new CodingTrackerException("An unexpected error occurred while getting the session logs.", e);
         }
     }
-    
+
     public void CreateLog(SessionLog sessionLog)
     {
         if (sessionLog.EndTime < sessionLog.StartTime)
@@ -75,11 +76,12 @@ public class SessionLogRepository
         {
             using var connection = db.GetConnection();
 
-            var query = "INSERT INTO Logs (SessionId, StartTime, EndTime, Duration) VALUES (@SessionId, @StartTime, @EndTime, @Duration)";
+            var query =
+                "INSERT INTO Logs (SessionId, StartTime, EndTime, Duration) VALUES (@SessionId, @StartTime, @EndTime, @Duration)";
             connection.Execute(query,
                 new
                 {
-                    sessionLog.SessionId, 
+                    sessionLog.SessionId,
                     StartTime = sessionLog.StartTime.ToString("t"),
                     EndTime = sessionLog.EndTime.ToString("t"),
                     Duration = sessionLog.CalculateDuration

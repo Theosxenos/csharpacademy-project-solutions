@@ -63,7 +63,7 @@ public class Database
         createTableCommand.ExecuteNonQuery();
 
         var seedDataQuery =
-            $"""
+            """
                 -- Seed sessions
                 INSERT INTO Sessions (Day) VALUES
                 ('1-1-24'),
@@ -77,7 +77,7 @@ public class Database
                 (2, '11:00', '12:00', 36000000000),
                 (2, '12:00', '13:00', 36000000000),
                 (3, '13:00', '14:00', 36000000000),
-                (3, '15:00', '16:55', 69000000000);    
+                (3, '15:00', '16:55', 69000000000);
             """;
 
         var seedDataCommand = new SqliteCommand(seedDataQuery, connection);

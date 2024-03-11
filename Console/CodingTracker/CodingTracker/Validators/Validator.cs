@@ -9,7 +9,7 @@ public static class Validator
     {
         return DateOnly.TryParseExact(date, DateFormat, out _);
     }
-    
+
     public static bool ValidateStringAsTime(string time)
     {
         return TimeOnly.TryParseExact(time, TimeFormat, out _);

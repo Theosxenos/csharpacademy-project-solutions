@@ -7,7 +7,7 @@ public class SessionLog
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
     public TimeSpan Duration { get; set; }
-    
+
     public long CalculateDuration
     {
         get => (EndTime - StartTime).Ticks;

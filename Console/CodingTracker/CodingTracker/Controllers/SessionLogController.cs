@@ -1,13 +1,11 @@
-using CodingTracker.Validators;
-
 namespace CodingTracker.Controllers;
 
 public class SessionLogController
 {
-    private SessionRepository sessionRepository = new();
-    private SessionLogRepository repository = new();
-    private SessionLogView view = new();
-    
+    private readonly SessionLogRepository repository = new();
+    private readonly SessionRepository sessionRepository = new();
+    private readonly SessionLogView view = new();
+
     public void CreateSessionLog()
     {
         var sessions = sessionRepository.GetAllSessions();
@@ -17,7 +15,7 @@ public class SessionLogController
             view.ShowError("No sessions found. Create a session before logging.");
             return;
         }
-        
+
         var session = view.ShowMenu(sessions);
         var sessionLog = view.AskSessionTimes();
         sessionLog.SessionId = session.Id;
@@ -35,7 +33,7 @@ public class SessionLogController
     public void ManageLogs()
     {
         var sessions = sessionRepository.GetAllSessions();
-        
+
         if (sessions.Count == 0)
         {
             view.ShowError("No sessions found. Create a session before logging.");
@@ -48,7 +46,7 @@ public class SessionLogController
         {
             ["Update Log"] = UpdateLog,
             ["Delete Log"] = DeleteLog,
-            ["Exit"] = _ => {}
+            ["Exit"] = _ => { }
         };
 
         var choice = view.ShowMenu(menu.Keys);
@@ -58,7 +56,8 @@ public class SessionLogController
     public void DeleteLog(Session session)
     {
         var logs = repository.GetLogsBySessionId(session.Id);
-        var log = view.ShowMenu(logs, "Choose a log to delete:", converter: sessionLog => new string($"{sessionLog.StartTime} - {sessionLog.EndTime}"));
+        var log = view.ShowMenu(logs, "Choose a log to delete:",
+            converter: sessionLog => new string($"{sessionLog.StartTime} - {sessionLog.EndTime}"));
         repository.DeleteSessionLog(log);
         view.ShowSuccess($"Log from {log.StartTime.ToString(Validator.TimeFormat)} deleted");
     }

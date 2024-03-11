@@ -28,14 +28,11 @@ public class SessionView : BaseView
                 .AddColumn("End Time")
                 .AddColumn("Duration (Hours)")
                 .Title($"{session.Day.ToString(Validator.DateFormat)}");
-            
-            foreach (var log in sessionLogs.Where(l => l.SessionId == session.Id))
-            {
-                table.AddRow([$"{log.StartTime:HH:mm}", $"{log.EndTime:HH:mm}", $"{log.Duration.TotalHours:N1}"]);
-            }
-            
-            AnsiConsole.Write(table);
 
+            foreach (var log in sessionLogs.Where(l => l.SessionId == session.Id))
+                table.AddRow([$"{log.StartTime:HH:mm}", $"{log.EndTime:HH:mm}", $"{log.Duration.TotalHours:N1}"]);
+
+            AnsiConsole.Write(table);
         }
 
         AnsiConsole.MarkupLine("[grey]Press any key to go back to the menu.[/]");
