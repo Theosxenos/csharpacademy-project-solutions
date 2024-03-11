@@ -2,20 +2,14 @@ namespace CodingTracker.Views;
 
 public class SessionView : BaseView
 {
-    public DateOnly PromptStartSession()
+    public DateOnly PromptSessionDay(DateOnly? date = null)
     {
-        var dateFormat = "d-M-yy";
-        var startDate = AnsiConsole.Prompt(
-            new TextPrompt<string>($"What's the day of the start of the session? [grey]({dateFormat})[/]")
-                .ValidationErrorMessage($"[red]Invalid time format. Use a correct format ({dateFormat}).[/]")
-                .Validate(input =>
-                {
-                    if (DateOnly.TryParseExact(input, dateFormat, out _)) return ValidationResult.Success();
+        var day = AskInput($"What's the day of the start of the session? [grey]({Validator.DateFormat})[/]",
+            Validator.ValidateStringAsDate,
+            $"[red]Invalid time format. Use a correct format ({Validator.DateFormat}).[/]",
+            date?.ToString(Validator.DateFormat));
 
-                    return ValidationResult.Error($"[red]Invalid date format. Use a correct format ({dateFormat}).[/]");
-                }));
-
-        return DateOnly.ParseExact(startDate, dateFormat);
+        return DateOnly.ParseExact(day, Validator.DateFormat);
     }
 
     public void ShowSessionTree(List<Session> sessions, List<SessionLog> sessionLogs)

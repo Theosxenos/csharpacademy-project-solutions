@@ -7,7 +7,7 @@ public class SessionController
 
     public void StartSession()
     {
-        var result = view.PromptStartSession();
+        var result = view.PromptSessionDay();
         try
         {
             new SessionRepository().CreateSession(result);
@@ -51,7 +51,7 @@ public class SessionController
 
     public void UpdateSession(Session session)
     {
-        var updatedDate = view.PromptStartSession();
+        var updatedDate = view.PromptSessionDay();
         try
         {
             _sessionRepository.UpdateSession(new Session { Id = session.Id, Day = updatedDate });

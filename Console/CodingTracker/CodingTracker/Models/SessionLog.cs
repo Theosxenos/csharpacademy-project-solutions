@@ -8,9 +8,5 @@ public class SessionLog
     public TimeOnly EndTime { get; set; }
     public TimeSpan Duration { get; set; }
 
-    public long CalculateDuration
-    {
-        get => (EndTime - StartTime).Ticks;
-        set => Duration = TimeSpan.FromTicks(value);
-    }
+    public long CalculateDuration => (EndTime - StartTime).Ticks;
 }
