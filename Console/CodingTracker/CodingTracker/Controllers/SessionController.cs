@@ -51,7 +51,7 @@ public class SessionController
 
     public void UpdateSession(Session session)
     {
-        var updatedDate = view.PromptSessionDay();
+        var updatedDate = view.PromptSessionDay(session.Day);
         try
         {
             _sessionRepository.UpdateSession(new Session { Id = session.Id, Day = updatedDate });
