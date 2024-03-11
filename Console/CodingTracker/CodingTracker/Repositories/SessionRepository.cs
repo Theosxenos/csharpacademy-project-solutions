@@ -39,7 +39,7 @@ public class SessionRepository
                     Id = (int)record.Id,
                     Day = DateOnly.Parse(record.Day)
                 }
-            ).ToList();
+            ).OrderBy(s => s.Day).ToList();
 
             return sessions;
         }
@@ -48,7 +48,7 @@ public class SessionRepository
             throw new CodingTrackerException("An unexpected error occurred while getting the sessions.", e);
         }
     }
-    
+
     public void UpdateSession(Session updatedSession)
     {
         try
