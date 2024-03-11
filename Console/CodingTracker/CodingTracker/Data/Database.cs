@@ -31,8 +31,7 @@ public class Database
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            Console.WriteLine($"A problem occured during database opening: {e.Message}");
         }
 
         return connection;

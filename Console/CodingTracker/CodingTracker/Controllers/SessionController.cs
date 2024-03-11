@@ -51,7 +51,7 @@ public class SessionController
 
     public void UpdateSession(Session session)
     {
-        var updatedDate = view.PromptSessionDay();
+        var updatedDate = view.PromptSessionDay(session.Day);
         try
         {
             _sessionRepository.UpdateSession(new Session { Id = session.Id, Day = updatedDate });
@@ -59,11 +59,6 @@ public class SessionController
         catch (CodingTrackerException e)
         {
             view.ShowError(e.Message);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
         }
     }
 
@@ -74,15 +69,7 @@ public class SessionController
 
         if (!choice) return;
 
-        try
-        {
-            new SessionRepository().DeleteSession(session.Id);
-            view.ShowSuccess($"[white]{session}[/] successfully deleted.");
-        }
-        catch (Exception e)
-        {
-            view.ShowError(e.Message);
-            throw;
-        }
+        new SessionRepository().DeleteSession(session.Id);
+        view.ShowSuccess($"[white]{session}[/] successfully deleted.");
     }
 }
