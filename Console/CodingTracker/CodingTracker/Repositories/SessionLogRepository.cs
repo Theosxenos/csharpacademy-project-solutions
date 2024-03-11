@@ -27,6 +27,10 @@ public class SessionLogRepository
 
     public void UpdateSessionLog(SessionLog sessionLog)
     {
+        if (sessionLog.EndTime < sessionLog.StartTime)
+            throw new ArgumentException("Log not created due to: End Time must be greater than Start Time.",
+                nameof(sessionLog));
+        
         using var connection = db.GetConnection();
         connection.Execute("UPDATE Logs SET StartTime = @StartTime, EndTime = @EndTime, Duration = @Duration WHERE Id = @Id",                 new
         {

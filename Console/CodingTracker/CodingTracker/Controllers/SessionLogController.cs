@@ -71,7 +71,14 @@ public class SessionLogController
         var updatedLog = view.AskSessionTimes(log);
         updatedLog.Id = log.Id;
 
-        repository.UpdateSessionLog(updatedLog);
-        view.ShowSuccess("Log has been updated");
+        try
+        {
+            repository.UpdateSessionLog(updatedLog);
+            view.ShowSuccess("Log has been updated");
+        }
+        catch (ArgumentException e)
+        {
+            view.ShowError(e.Message);
+        }
     }
 }
