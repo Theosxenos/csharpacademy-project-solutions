@@ -6,5 +6,11 @@ public class SessionLog
     public int SessionId { get; set; }
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
-    public double DurationInHours => (EndTime - StartTime).TotalHours;
+    public TimeSpan Duration { get; set; }
+
+    public long CalculateDuration
+    {
+        get => (EndTime - StartTime).Ticks;
+        set => Duration = TimeSpan.FromTicks(value);
+    }
 }

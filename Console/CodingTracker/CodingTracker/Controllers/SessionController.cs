@@ -2,13 +2,15 @@ namespace CodingTracker.Controllers;
 
 public class SessionController
 {
+    private readonly SessionRepository _sessionRepository = new();
+    private readonly SessionView view = new();
+
     public void StartSession()
     {
-        var view = new SessionView();
         var result = view.PromptStartSession();
         try
         {
-            new Repository().CreateSession(result);
+            new SessionRepository().CreateSession(result);
             view.ShowSuccess("Session is created.");
         }
         catch (CodingTrackerException e)
@@ -19,19 +21,15 @@ public class SessionController
 
     public void ListSessions()
     {
-        var view = new SessionView();
-
-        var repository = new Repository();
-        var sessions = repository.GetAllSessions();
-        var sessionLogs = repository.GetAllSessionLogs();
+        var sessions = _sessionRepository.GetAllSessions();
+        var sessionLogs = new SessionLogRepository().GetAllSessionLogs();
 
         view.ShowSessionTree(sessions, sessionLogs);
     }
 
     public void ManageSessions()
     {
-        var repository = new Repository();
-        var sessions = repository.GetAllSessions();
+        var sessions = _sessionRepository.GetAllSessions();
 
         if (sessions.Count == 0)
         {
@@ -39,30 +37,24 @@ public class SessionController
             return;
         }
 
-        var sessionSelectionView = new SessionSelectionView();
-        var session = sessionSelectionView.Prompt(sessions);
+        var session = view.ShowMenu(sessions);
 
-        var sessionManagingView = new SessionManagingView();
-
-        var menu = new Dictionary<string, Action>
+        var menu = new Dictionary<string, Action<Session>>
         {
-            { "Update", () => UpdateSession(session) },
-            { "Delete", () => DeleteSession(session) },
-            { "Exit", () => { } }
+            ["Update"] = UpdateSession,
+            ["Delete"] = DeleteSession,
+            ["Exit"] = _ => { }
         };
-        var menuSelection = sessionManagingView.ShowManagingMenu(session.ToString(), menu.Keys.ToArray());
-        menu[menuSelection]();
+        var menuSelection = view.ShowMenu(menu.Keys);
+        menu[menuSelection].Invoke(session);
     }
 
     public void UpdateSession(Session session)
     {
-        var view = new SessionView();
         var updatedDate = view.PromptStartSession();
-        var repository = new Repository();
-
         try
         {
-            repository.UpdateSession(new Session { Id = session.Id, Day = updatedDate });
+            _sessionRepository.UpdateSession(new Session { Id = session.Id, Day = updatedDate });
         }
         catch (CodingTrackerException e)
         {
@@ -77,20 +69,20 @@ public class SessionController
 
     public void DeleteSession(Session session)
     {
-        var baseView = new BaseView();
-        var choice = baseView.AskConfirm(
+        var choice = view.AskConfirm(
             $"[red]Are you sure you want to delete session: [green]{session}[/][/]");
 
-        if (choice)
-            try
-            {
-                new Repository().DeleteSession(session.Id);
-                baseView.ShowSuccess($"[white]{session}[/] successfully deleted.");
-            }
-            catch (Exception e)
-            {
-                baseView.ShowError(e.Message);
-                throw;
-            }
+        if (!choice) return;
+
+        try
+        {
+            new SessionRepository().DeleteSession(session.Id);
+            view.ShowSuccess($"[white]{session}[/] successfully deleted.");
+        }
+        catch (Exception e)
+        {
+            view.ShowError(e.Message);
+            throw;
+        }
     }
 }
