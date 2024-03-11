@@ -1,13 +1,16 @@
+using CodingTracker.Validators;
+
 namespace CodingTracker.Controllers;
 
 public class SessionLogController
 {
-    Repository repository = new();
+    private SessionRepository sessionRepository = new();
+    private SessionLogRepository repository = new();
     private SessionLogView view = new();
     
     public void CreateSessionLog()
     {
-        var sessions = repository.GetAllSessions();
+        var sessions = sessionRepository.GetAllSessions();
 
         if (sessions.Count == 0)
         {
@@ -31,7 +34,7 @@ public class SessionLogController
 
     public void ManageLogs()
     {
-        var sessions = repository.GetAllSessions();
+        var sessions = sessionRepository.GetAllSessions();
         
         if (sessions.Count == 0)
         {
@@ -40,11 +43,35 @@ public class SessionLogController
         }
 
         var session = view.ShowMenu(sessions, "Choose a session to manage logs from:");
-        var logs = repository.GetLogsBySessionId(session.Id);
 
-        var menu = new Dictionary<string, Action>
+        var menu = new Dictionary<string, Action<Session>>
         {
-
+            ["Update Log"] = UpdateLog,
+            ["Delete Log"] = DeleteLog,
+            ["Exit"] = _ => {}
         };
+
+        var choice = view.ShowMenu(menu.Keys);
+        menu[choice].Invoke(session);
+    }
+
+    public void DeleteLog(Session session)
+    {
+        var logs = repository.GetLogsBySessionId(session.Id);
+        var log = view.ShowMenu(logs, "Choose a log to delete:", converter: sessionLog => new string($"{sessionLog.StartTime} - {sessionLog.EndTime}"));
+        repository.DeleteSessionLog(log);
+        view.ShowSuccess($"Log from {log.StartTime.ToString(Validator.TimeFormat)} deleted");
+    }
+
+    public void UpdateLog(Session session)
+    {
+        var logs = repository.GetLogsBySessionId(session.Id);
+        var log = view.ShowMenu(logs, "Choose a log to update:",
+            converter: sessionLog => new string($"{sessionLog.StartTime} - {sessionLog.EndTime}"));
+        var updatedLog = view.AskSessionTimes(log);
+        updatedLog.Id = log.Id;
+
+        repository.UpdateSessionLog(updatedLog);
+        view.ShowSuccess("Log has been updated");
     }
 }
