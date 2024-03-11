@@ -20,29 +20,20 @@ public class SessionView : BaseView
 
     public void ShowSessionTree(List<Session> sessions, List<SessionLog> sessionLogs)
     {
-        AnsiConsole.MarkupLine("Your sessions.");
-
-        var rootNodes = new List<Tree>();
-        var orderedSessionLogs = sessionLogs.OrderBy(l => l.StartTime).ToArray();
-
-        foreach (var session in sessions.OrderBy(s => s.Day))
+        foreach (var session in sessions)
         {
-            var root = new Tree(session.ToString());
-            rootNodes.Add(root);
+            var table = new Table();
+            table.Border = TableBorder.Rounded;
+            table.AddColumn("Start Time")
+                .AddColumn("End Time")
+                .AddColumn("Duration (Hours)")
+                .Title($"{session.Day.ToString(Validator.DateFormat)}");
 
-            var logsForSession = orderedSessionLogs.Where(
-                l => l.SessionId == session.Id).ToArray();
-            foreach (var sessionLog in logsForSession)
-            {
-                var formattedDuration = $"Duration: {sessionLog.DurationInHours} hours";
-                root.AddNode($"{sessionLog.StartTime} - {sessionLog.EndTime} -> {formattedDuration}");
-            }
+            foreach (var log in sessionLogs.Where(l => l.SessionId == session.Id))
+                table.AddRow([$"{log.StartTime:HH:mm}", $"{log.EndTime:HH:mm}", $"{log.Duration.TotalHours:N1}"]);
 
-            var totalSessionHours = logsForSession.Sum(l => l.DurationInHours);
-            root.AddNode($"Total for the day: {totalSessionHours}");
+            AnsiConsole.Write(table);
         }
-
-        rootNodes.ForEach(AnsiConsole.Write);
 
         AnsiConsole.MarkupLine("[grey]Press any key to go back to the menu.[/]");
         Console.ReadKey();
