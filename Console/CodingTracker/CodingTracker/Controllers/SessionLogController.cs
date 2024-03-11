@@ -55,7 +55,14 @@ public class SessionLogController
 
     public void DeleteLog(Session session)
     {
-        var logs = repository.GetLogsBySessionId(session.Id);
+        var logs = repository.GetLogsBySessionId(session.Id).ToList();
+
+        if (logs.Count == 0)
+        {
+            view.ShowError("No logs found for this session.");
+            return;
+        }
+
         var log = view.ShowMenu(logs, "Choose a log to delete:",
             converter: sessionLog => new string($"{sessionLog.StartTime} - {sessionLog.EndTime}"));
         repository.DeleteSessionLog(log);
@@ -64,7 +71,14 @@ public class SessionLogController
 
     public void UpdateLog(Session session)
     {
-        var logs = repository.GetLogsBySessionId(session.Id);
+        var logs = repository.GetLogsBySessionId(session.Id).ToList();
+
+        if (logs.Count == 0)
+        {
+            view.ShowError("No logs found for this session.");
+            return;
+        }
+
         var log = view.ShowMenu(logs, "Choose a log to update:",
             converter: sessionLog => new string($"{sessionLog.StartTime} - {sessionLog.EndTime}"));
         var updatedLog = view.AskSessionTimes(log);
