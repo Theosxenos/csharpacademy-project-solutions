@@ -4,25 +4,24 @@ namespace DrinksInfo.Models;
 
 public class Drink
 {
-    [JsonPropertyName("idDrink")]
-    public int Id { get; set; }
-    [JsonPropertyName("strDrink")]
-    public string Name { get; set; }
-    [JsonPropertyName("strTags")]
-    public string Tags { get; set; }
-    [JsonPropertyName("strCategory")]
-    public string Category { get; set; }
+    [JsonPropertyName("idDrink")] public int Id { get; set; }
 
-    [JsonPropertyName("strIBA")]
-    public string? Iba { get; set; }
-    [JsonPropertyName("strAlcoholic")]
-    public string Alcoholic { get; set; }
-    [JsonPropertyName("strGlass")]
-    public string Glass { get; set; }
-    [JsonPropertyName("strInstructions")]
-    public string Instructions { get; set; }
-    [JsonPropertyName("strDrinkThumb")]
-    public string DrinkThumb { get; set; }
+    [JsonPropertyName("strDrink")] public string Name { get; set; }
+
+    [JsonPropertyName("strTags")] public string Tags { get; set; }
+
+    [JsonPropertyName("strCategory")] public string Category { get; set; }
+
+    [JsonPropertyName("strIBA")] public string? Iba { get; set; }
+
+    [JsonPropertyName("strAlcoholic")] public string Alcoholic { get; set; }
+
+    [JsonPropertyName("strGlass")] public string Glass { get; set; }
+
+    [JsonPropertyName("strInstructions")] public string Instructions { get; set; }
+
+    [JsonPropertyName("strDrinkThumb")] public string DrinkThumb { get; set; }
+
     public string strIngredient1 { get; set; }
     public string strIngredient2 { get; set; }
     public string strIngredient3 { get; set; }
