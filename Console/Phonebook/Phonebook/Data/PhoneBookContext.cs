@@ -6,10 +6,11 @@ namespace Phonebook.Data;
 
 public class PhoneBookContext : DbContext
 {
+    private readonly IConfiguration configuration =
+        new ConfigurationBuilder().AddJsonFile("appsettings.json").AddUserSecrets<Program>().Build();
+
     public DbSet<Contact> Contacts { get; set; }
-    
-    private IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").AddUserSecrets<Program>().Build();
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (optionsBuilder.IsConfigured) return;

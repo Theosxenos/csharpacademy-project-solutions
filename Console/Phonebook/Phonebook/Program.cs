@@ -14,22 +14,13 @@ var mainMenu = new Dictionary<string, Action>
     ["Delete Contact"] = controller.DeleteContact,
     ["Exit"] = () => runApp = false
 };
-    
-InitDatabase();
+
+using PhoneBookContext db = new();
+db.Database.EnsureCreated();
 
 AnsiConsole.Write(new FigletText("Phone Book").Color(Color.Yellow2));
 while (runApp)
 {
     var choice = view.ShowMenu(mainMenu.Keys.ToArray());
     mainMenu[choice]();
-}
-
-
-return ;
-
-static void InitDatabase()
-{
-    using PhoneBookContext db = new();
-    // db.Database.EnsureDeleted();
-    db.Database.EnsureCreated();
 }

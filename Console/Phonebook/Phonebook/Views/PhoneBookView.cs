@@ -26,7 +26,7 @@ public partial class PhoneBookView : BaseView
     {
         var formatMessage = "Phone number must either in formats xx-xxxxxxxx or xxx-xxxxxxx";
         AnsiConsole.MarkupLine($"[yellow3][bold]{formatMessage}[/][/]");
-        
+
         var textPrompt = new TextPrompt<string>("What's the contact's phone number?");
 
         if (!string.IsNullOrEmpty(number))
@@ -35,18 +35,18 @@ public partial class PhoneBookView : BaseView
 
         return AnsiConsole.Prompt(textPrompt);
     }
-    
+
     public void ShowTable(List<Contact> contacts)
     {
         var table = new Table();
         table.Title("Your phone book");
-        
+
         table.AddColumn("Name");
         table.AddColumn("Email");
         table.AddColumn("Phone");
 
         contacts.ForEach(c => table.AddRow(c.Name, c.Email, c.PhoneNumber));
-        
+
         AnsiConsole.Write(table);
         AnsiConsole.MarkupLine("[grey]Press any key to go back[/]");
         Console.ReadKey();
@@ -64,6 +64,4 @@ public partial class PhoneBookView : BaseView
 
     [GeneratedRegex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")]
     private static partial Regex EmailRegex();
-
-
 }
