@@ -16,6 +16,7 @@ public class FlashcardController
             {
                 var flashcard = view.CreateFlashcard();
                 flashcard.StackId = stack.Id;
+                flashcard.Position = repository.GetLastPositionByStackId(stack.Id);
                 repository.CreateFlashcard(flashcard);
                 view.ShowSuccess("Flashcard created successfully.");
                 continueAdding = view.AskConfirm("Do you want to add another flashcard?");

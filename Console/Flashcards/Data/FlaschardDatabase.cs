@@ -23,7 +23,7 @@ public class FlaschardDatabase
     private void SeedSessions()
     {
         var sessions = new List<Session>();
-        var startDate = new DateTime(2024, 3, 1, 12, 0, 0); // Starting point
+        var startDate = new DateTime(2024, 1, 1, 12, 0, 0); // Starting point
         var random = new Random();
         var sessionId = 1; // Starting ID
 
@@ -63,7 +63,8 @@ public class FlaschardDatabase
                 Title = "C# Basics",
                 Question = "What is the purpose of the 'using' statement in C#?",
                 Answer =
-                    "The 'using' statement is used to ensure that IDisposable objects, such as file and database connections, are properly disposed of once they are no longer needed."
+                    "The 'using' statement is used to ensure that IDisposable objects, such as file and database connections, are properly disposed of once they are no longer needed.",
+                Position = 1
             },
             new Flashcard
             {
@@ -71,7 +72,8 @@ public class FlaschardDatabase
                 Title = "Object-Oriented Programming",
                 Question = "What is polymorphism in C#?",
                 Answer =
-                    "Polymorphism is a concept in C# that allows methods to do different things based on the object that it is acting upon, enabling objects of different classes to be treated as objects of a common superclass."
+                    "Polymorphism is a concept in C# that allows methods to do different things based on the object that it is acting upon, enabling objects of different classes to be treated as objects of a common superclass.",
+                Position = 2
             },
             new Flashcard
             {
@@ -79,7 +81,8 @@ public class FlaschardDatabase
                 Title = "C# Collections",
                 Question = "What is the difference between List<T> and Array in C#?",
                 Answer =
-                    "The main difference is that arrays have a fixed size while List<T> can dynamically change size. List<T> also provides more methods for searching, sorting, and manipulating collections."
+                    "The main difference is that arrays have a fixed size while List<T> can dynamically change size. List<T> also provides more methods for searching, sorting, and manipulating collections.",
+                Position = 3
             },
             new Flashcard
             {
@@ -87,7 +90,8 @@ public class FlaschardDatabase
                 Title = "JavaScript Basics",
                 Question = "What is the purpose of the 'typeof' operator in JavaScript?",
                 Answer =
-                    "The 'typeof' operator is used to determine the type of a variable or expression in JavaScript."
+                    "The 'typeof' operator is used to determine the type of a variable or expression in JavaScript.",
+                Position = 1
             },
             new Flashcard
             {
@@ -95,7 +99,8 @@ public class FlaschardDatabase
                 Title = "JavaScript Functions",
                 Question = "What is a callback function in JavaScript?",
                 Answer =
-                    "A callback function is a function that is passed as an argument to another function and is executed after the completion of that function."
+                    "A callback function is a function that is passed as an argument to another function and is executed after the completion of that function.",
+                Position = 2
             },
             new Flashcard
             {
@@ -103,13 +108,16 @@ public class FlaschardDatabase
                 Title = "JavaScript Arrays",
                 Question = "What is the difference between 'map()' and 'forEach()' methods in JavaScript arrays?",
                 Answer =
-                    "'map()' returns a new array based on the result of the provided callback function, while 'forEach()' executes the provided callback function for each element without returning a new array."
+                    "'map()' returns a new array based on the result of the provided callback function, while 'forEach()' executes the provided callback function for each element without returning a new array.",
+                Position = 3
             }
         ];
         using var connection = GetConnection();
         connection.Execute(
-            "insert into Flashcards (StackId, Title, Question, Answer) values (@StackId, @Title, @Question, @Answer)",
-            flashcards);
+            """
+            insert into Flashcards (StackId, Title, Question, Answer, Position) 
+            values (@StackId, @Title, @Question, @Answer, @Position)
+            """, flashcards);
     }
 
     private void SeedStacks()
@@ -149,7 +157,8 @@ public class FlaschardDatabase
                     StackId INT NOT NULL CONSTRAINT FK_Flashcards_Stacks_StackId REFERENCES Stacks ON DELETE CASCADE,
                     Title NVARCHAR(50) NOT NULL,
                     Question NVARCHAR(250) NOT NULL,
-                    Answer NVARCHAR(250) NOT NULL
+                    Answer NVARCHAR(250) NOT NULL,
+                    Position INT NOT NULL
                   );
 
                   -- Sessions table

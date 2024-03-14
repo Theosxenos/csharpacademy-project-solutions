@@ -4,6 +4,7 @@ public class StackController
 {
     private readonly Repository repository = new();
     private readonly StackView view = new();
+    private readonly FlashcardRepository flashcardRepository = new();
 
     public void CreateStack()
     {
@@ -93,13 +94,24 @@ public class StackController
 
         try
         {
-            new FlashcardRepository().DeleteFlashcards(selection);
+            flashcardRepository.DeleteFlashcards(selection);
+            UpdateCardsPosition(chosenStack.Flashcards);
             view.ShowSuccess($"{selectionCount} Flashcards have been deleted");
         }
         catch (Exception e)
         {
             view.ShowError(e.Message);
         }
+    }
+
+    private void UpdateCardsPosition(List<Flashcard> chosenStackFlashcards)
+    {
+        var orderedFlashcards = chosenStackFlashcards.OrderBy(f => f.Position).ToList();
+        for (int i = 1; i < orderedFlashcards.Count; i++)
+        {
+            orderedFlashcards[i - 1].Position = i;
+        }
+        flashcardRepository.UpdateFlashcards(orderedFlashcards);
     }
 
     public void UpdateStackName(Stack stack)

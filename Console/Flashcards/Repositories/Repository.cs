@@ -20,7 +20,7 @@ public class Repository
     public List<Stack> GetAllStacks()
     {
         using var connection = db.GetConnection();
-        var query = connection.QueryMultiple("SELECT * FROM Stacks; SELECT * FROM Flashcards;");
+        var query = connection.QueryMultiple("SELECT * FROM Stacks; SELECT * FROM Flashcards ORDER BY Position;");
         var stacks = query.Read<Stack>().ToList();
         var flashcards = query.Read<Flashcard>().ToList();
 

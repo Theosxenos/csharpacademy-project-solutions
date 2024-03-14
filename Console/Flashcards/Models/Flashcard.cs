@@ -7,6 +7,7 @@ public class Flashcard
     public string Title { get; set; } = default!;
     public string Question { get; set; } = default!;
     public string Answer { get; set; } = default!;
+    public int Position { get; set; }
 
     public override string ToString()
     {
