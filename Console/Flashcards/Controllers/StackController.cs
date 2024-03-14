@@ -2,9 +2,9 @@ namespace Flashcards.Controllers;
 
 public class StackController
 {
+    private readonly FlashcardRepository flashcardRepository = new();
     private readonly Repository repository = new();
     private readonly StackView view = new();
-    private readonly FlashcardRepository flashcardRepository = new();
 
     public void CreateStack()
     {
@@ -107,10 +107,7 @@ public class StackController
     private void UpdateCardsPosition(List<Flashcard> chosenStackFlashcards)
     {
         var orderedFlashcards = chosenStackFlashcards.OrderBy(f => f.Position).ToList();
-        for (int i = 1; i < orderedFlashcards.Count; i++)
-        {
-            orderedFlashcards[i - 1].Position = i;
-        }
+        for (var i = 1; i < orderedFlashcards.Count; i++) orderedFlashcards[i - 1].Position = i;
         flashcardRepository.UpdateFlashcards(orderedFlashcards);
     }
 

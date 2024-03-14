@@ -9,7 +9,7 @@ public class FlashcardRepository
         using var connection = db.GetConnection();
         connection.Execute(
             """
-            INSERT INTO Flashcards (StackId, Title, Question, Answer, Position) 
+            INSERT INTO Flashcards (StackId, Title, Question, Answer, Position)
             VALUES (@StackId, @Title, @Question, @Answer, @Position);
             """, flashcard);
     }
@@ -39,6 +39,7 @@ public class FlashcardRepository
     public int GetLastPositionByStackId(int stackId)
     {
         using var connection = db.GetConnection();
-        return connection.ExecuteScalar<int>("SELECT MAX(Position) FROM Flashcards WHERE StackId = @stackId", new { stackId });
+        return connection.ExecuteScalar<int>("SELECT MAX(Position) FROM Flashcards WHERE StackId = @stackId",
+            new { stackId });
     }
 }
