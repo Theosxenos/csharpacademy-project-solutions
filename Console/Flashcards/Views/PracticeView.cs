@@ -2,18 +2,21 @@ namespace Flashcards.Views;
 
 public class PracticeView : BaseView
 {
-    public void ShowLog(DataTable logTable, int year)
+    public void ShowLog(IEnumerable<dynamic> pivotData, int year)
     {
+        var data = pivotData.ToList();
+        
         var table = new Table();
         table.Title = new TableTitle($"Average scores for the year [bold]{year}[/]");
 
-        foreach (DataColumn column in logTable.Columns)
-            table.AddColumn(int.TryParse(column.ColumnName, out var columnMonthNumber)
-                ? GetMonthName(columnMonthNumber)
-                : column.ColumnName);
+        var keys = ((IDictionary<string, object>)data[0]).Keys;
+        var columns = keys.Select(k => new TableColumn(int.TryParse(k, out var month) ? GetMonthName(month) : k));
+        table.AddColumns(columns.ToArray());
 
-        foreach (DataRow row in logTable.Rows)
-            table.AddRow(row.ItemArray.Select(i => i is DBNull ? "0" : i.ToString()).ToArray());
+        foreach (IDictionary<string, object?> row in data)
+        {
+            table.AddRow(row.Select(pair => pair.Value?.ToString() ?? "-").ToArray());
+        }
 
         AnsiConsole.Write(table);
 
@@ -24,5 +27,10 @@ public class PracticeView : BaseView
     {
         culture ??= CultureInfo.CurrentCulture;
         return culture.DateTimeFormat.GetMonthName(month);
+    }
+
+    public int GetYear(List<int> years)
+    {
+        return ShowMenu(years, "Please choose a year to get logs from:");
     }
 }

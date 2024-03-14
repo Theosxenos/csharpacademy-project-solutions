@@ -81,10 +81,9 @@ public class PracticeController
 
     public void ShowPracticeLog()
     {
-        var year = view.AskInput<int>("Please choose a year to get logs from:", i => i >= 2020,
-            "The year should be at least 2020");
+        var year = view.GetYear(sessionRepo.GetLogYears());
         
-        var dataTable = sessionRepo.GetMonthlyAverageByYear(year);
-        view.ShowLog(dataTable, year);
+        var pivotData = sessionRepo.GetMonthlyAverageByYear(year);
+        view.ShowLog(pivotData, year);
     }
 }

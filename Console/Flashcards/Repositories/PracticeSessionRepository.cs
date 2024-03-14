@@ -7,10 +7,16 @@ public class PracticeSessionRepository
     public void CreateSession(Session session)
     {
         using var connection = db.GetConnection();
-        connection.Execute("INSERT INTO Sessions (StackId, Score, SessionDate) VALUES (@StackId, @Score, @StartedAt);", session);
+        connection.Execute("INSERT INTO Sessions (StackId, Score, SessionDate) VALUES (@StackId, @Score, @SessionDate);", session);
+    }
+
+    public List<int> GetLogYears()
+    {
+        using var connection = db.GetConnection();
+        return connection.Query<int>("SELECT DISTINCT YEAR(SessionDate) FROM Sessions;").ToList();
     }
     
-    public DataTable GetMonthlyAverageByYear(int year)
+    public IEnumerable<dynamic> GetMonthlyAverageByYear(int year)
     {
         CheckYearHasSessions(year);
 
@@ -38,14 +44,7 @@ public class PracticeSessionRepository
                    """;
         
         using var connection = db.GetConnection();
-        var dapperpivot = connection.Query(sql);
-        using var command = connection.CreateCommand();
-        command.CommandText = sql;
-        using var reader = command.ExecuteReader();
-        var pivotResult = new DataTable();
-        pivotResult.Load(reader);
-
-        return pivotResult;
+        return connection.Query(sql);
     }
 
     private void CheckYearHasSessions(int year)

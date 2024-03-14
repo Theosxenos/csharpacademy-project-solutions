@@ -20,9 +20,16 @@ public class Repository
     public List<Stack> GetAllStacks()
     {
         using var connection = db.GetConnection();
-        var stacks = connection.Query<Stack>("SELECT * FROM Stacks;");
+        var query = connection.QueryMultiple("SELECT * FROM Stacks; SELECT * FROM Flashcards;");
+        var stacks = query.Read<Stack>().ToList();
+        var flashcards = query.Read<Flashcard>().ToList();
 
-        return stacks.ToList();
+        foreach (var stack in stacks)
+        {
+            stack.Flashcards = flashcards.Where(f => f.StackId == stack.Id).ToList();
+        }
+        
+        return stacks;
     }
 
     public void UpdateStack(Stack stack)
