@@ -48,13 +48,13 @@ public class PracticeController
             if (userAnswerCorrect)
             {
                 view.ShowMessage(
-                    "Then I will not ask you again this session. Press any key to go to the next question.");
+                    "[grey]Then I will not ask you again this session. Press any key to go to the next question.[/]");
                 questionsCorrect++;
             }
             else
             {
                 view.ShowMessage(
-                    "Then I will ask you again later this session. Press any key to go to the next question.");
+                    "[grey]Then I will ask you again later this session. Press any key to go to the next question.[/]");
                 toPracticeFlashcards.Add(cardToTest);
             }
         } while (toPracticeFlashcards.Count > 0);
