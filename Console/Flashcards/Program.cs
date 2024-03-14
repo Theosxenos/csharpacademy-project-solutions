@@ -34,7 +34,8 @@ public class Program
         try
         {
             var db = new FlaschardDatabase();
-            db.InitDb();
+            db.CreateDb();
+            db.CreateTables();
             db.SeedInitialData();
         }
         catch (Exception e)

@@ -115,7 +115,7 @@ public class FlaschardDatabase
         using var connection = GetConnection();
         connection.Execute(
             """
-            insert into Flashcards (StackId, Title, Question, Answer, Position) 
+            insert into Flashcards (StackId, Title, Question, Answer, Position)
             values (@StackId, @Title, @Question, @Answer, @Position)
             """, flashcards);
     }
@@ -140,7 +140,36 @@ public class FlaschardDatabase
         connection.Execute("insert into Stacks (Name) values (@Name)", stacks);
     }
 
-    public void InitDb()
+    public void CreateDb()
+    {
+        try
+        {
+            var connectionString = !string.IsNullOrEmpty(Configuration?.GetConnectionString("DefaultConnection"))
+                ? Configuration.GetConnectionString("DefaultConnection")
+                : Configuration?.GetConnectionString("SecretConnection");
+
+            var builder = new SqlConnectionStringBuilder(connectionString);
+            var databaseName = builder.InitialCatalog;
+
+            builder.InitialCatalog = "master";
+            var systemConnectionString = builder.ConnectionString;
+
+            using var connection = new SqlConnection(systemConnectionString);
+
+            var sql = $"""
+                       IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = N'{databaseName}')
+                           CREATE DATABASE [{databaseName}]
+                       """;
+
+            connection.Execute(sql);
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException($"An error occurred during database creation:\n{e.Message}", e);
+        }
+    }
+
+    public void CreateTables()
     {
         var sql = """
                   -- Stacks table
@@ -191,6 +220,7 @@ public class FlaschardDatabase
 
         if (string.IsNullOrEmpty(connectionString))
             throw new InvalidOperationException("No connection string found.");
+
 
         return new SqlConnection(connectionString);
     }
