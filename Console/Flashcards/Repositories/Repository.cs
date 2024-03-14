@@ -2,16 +2,16 @@ namespace Flashcards.Repositories;
 
 public class Repository
 {
-    private readonly FlashcardsContext dbContext = new();
+    private readonly FlaschardDatabase db = new();
 
     public void CreateStack(Stack stack)
     {
         try
         {
-            dbContext.Stacks.Add(stack);
-            dbContext.SaveChanges();
+            using var connection = db.GetConnection();
+            connection.Execute("INSERT INTO Stacks (Name) VALUES (@Name);", stack);
         }
-        catch (DbUpdateException ex) when ((ex.InnerException as SqlException)?.Number is 2627 or 2601)
+        catch (SqlException ex) when (ex.Number is 2627 or 2601)
         {
             throw new ArgumentException($"A stack with the name '{stack.Name}' already exists.");
         }
@@ -19,25 +19,20 @@ public class Repository
 
     public List<Stack> GetAllStacks()
     {
-        try
-        {
-            return dbContext.Stacks.Include(s => s.Flashcards).ToList();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        using var connection = db.GetConnection();
+        var stacks = connection.Query<Stack>("SELECT * FROM Stacks;");
+
+        return stacks.ToList();
     }
 
     public void UpdateStack(Stack stack)
     {
         try
         {
-            dbContext.Update(stack);
-            dbContext.SaveChanges();
+            using var connection = db.GetConnection();
+            connection.Execute("UPDATE Stacks SET Name = @Name WHERE Id = @Id", stack);
         }
-        catch (DbUpdateException ex) when ((ex.InnerException as SqlException)?.Number is 2627 or 2601)
+        catch (SqlException ex) when (ex.Number is 2627 or 2601)
         {
             throw new ArgumentException($"A stack with the name '{stack.Name}' already exists.");
         }
@@ -45,106 +40,7 @@ public class Repository
 
     public void DeleteStack(Stack stack)
     {
-        try
-        {
-            dbContext.Remove(stack);
-            dbContext.SaveChanges();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    public void CreateFlashcard(Flashcard flashcard)
-    {
-        try
-        {
-            dbContext.Flashcards.Add(flashcard);
-            dbContext.SaveChanges();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    public void DeleteFlashcard(Flashcard flashcard)
-    {
-        try
-        {
-            dbContext.Flashcards.Remove(flashcard);
-            dbContext.SaveChanges();
-
-            ResetFlashcardIdNumbering();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    public void DeleteFlashcard(List<Flashcard> flashcards)
-    {
-        try
-        {
-            dbContext.Flashcards.RemoveRange(flashcards);
-            dbContext.SaveChanges();
-
-            ResetFlashcardIdNumbering();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    private void ResetFlashcardIdNumbering()
-    {
-        var allCards = dbContext.Flashcards.OrderBy(f => f.Id).Select(f => new Flashcard
-        {
-            StackId = f.StackId,
-            Title = f.Title,
-            Question = f.Question,
-            Answer = f.Answer
-        }).ToList();
-
-        dbContext.Flashcards.RemoveRange(dbContext.Flashcards);
-        dbContext.SaveChanges();
-        dbContext.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Flashcards', RESEED, 0);");
-        dbContext.Flashcards.AddRange(allCards);
-        dbContext.SaveChanges();
-    }
-
-    public void UpdateFlashcard(Flashcard flashcard)
-    {
-        try
-        {
-            dbContext.Flashcards.Update(flashcard);
-            dbContext.SaveChanges();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    public void CreateSession(Session session)
-    {
-        try
-        {
-            dbContext.Sessions.Add(session);
-            dbContext.SaveChanges();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        using var connection = db.GetConnection();
+        connection.Execute("DELETE FROM Stacks WHERE Id = @Id", new { stack.Id });
     }
 }

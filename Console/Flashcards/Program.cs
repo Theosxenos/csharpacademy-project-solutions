@@ -31,9 +31,16 @@ public class Program
 
     private static void InitializeDatabase()
     {
-        using var db = new FlashcardsContext();
-        if (Configuration["EnsureDelete"] == "True")
-            db.Database.EnsureDeleted();
-        db.Database.EnsureCreated();
+        try
+        {
+            var db = new FlaschardDatabase();
+            db.InitDb();
+            db.SeedInitialData();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            Environment.Exit(-1);
+        }
     }
 }

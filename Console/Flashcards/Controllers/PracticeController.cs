@@ -3,6 +3,7 @@ namespace Flashcards.Controllers;
 public class PracticeController
 {
     private readonly Repository repository = new();
+    private readonly PracticeSessionRepository sessionRepo = new();
     private readonly PracticeView view = new();
 
     public void StartSession()
@@ -69,7 +70,7 @@ public class PracticeController
                 Score = (int)Math.Round((double)questionsCorrect / questionsAsked * 100),
                 SessionDate = DateTime.UtcNow
             };
-            repository.CreateSession(currentSession);
+            sessionRepo.CreateSession(currentSession);
         }
         catch (Exception e)
         {
@@ -82,8 +83,7 @@ public class PracticeController
     {
         var year = view.AskInput<int>("Please choose a year to get logs from:", i => i >= 2020,
             "The year should be at least 2020");
-
-        var sessionRepo = new PracticeSessionRepository();
+        
         var dataTable = sessionRepo.GetMonthlyAverageByYear(year);
         view.ShowLog(dataTable, year);
     }

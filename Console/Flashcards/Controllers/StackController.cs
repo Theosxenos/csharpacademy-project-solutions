@@ -7,7 +7,6 @@ public class StackController
 
     public void CreateStack()
     {
-        var view = new StackView();
         var retry = false;
         do
         {
@@ -64,7 +63,6 @@ public class StackController
 
     public void DeleteStack(Stack chosenStack)
     {
-        var view = new BaseView();
         var confirmation = view.AskConfirm($"Are you sure you want to delete '{chosenStack.Name}'?");
         if (!confirmation) return;
 
@@ -95,7 +93,7 @@ public class StackController
 
         try
         {
-            repository.DeleteFlashcard(selection);
+            new FlashcardRepository().DeleteFlashcards(selection);
             view.ShowSuccess($"{selectionCount} Flashcards have been deleted");
         }
         catch (Exception e)

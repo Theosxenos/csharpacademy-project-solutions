@@ -1,38 +1,27 @@
 namespace Flashcards.Data;
 
-public class FlashcardsContext : DbContext
+public class FlaschardDatabase
 {
-    public DbSet<Flashcard> Flashcards { get; set; }
-    public DbSet<Stack> Stacks { get; set; }
-    public DbSet<Session> Sessions { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    private IConfiguration? Configuration => Program.Configuration;
+    
+    public void SeedInitialData()
     {
-        if (optionsBuilder.IsConfigured) return;
-
-        var connectionString = Program.Configuration.GetConnectionString("DefaultConnection");
-        if (string.IsNullOrEmpty(connectionString))
-            connectionString = Program.Configuration.GetConnectionString("SecretConnection");
-
-        optionsBuilder.UseSqlServer(connectionString);
+        using var connection = GetConnection();
+        var hasInitialSeed = connection.ExecuteScalar<int>("select count(*) from DataVersion") >= 1;
+        if(hasInitialSeed)
+            return;
+        
+        SeedStacks();
+        SeedFlashcards();
+        SeedSessions();
+        
+        // Set seeding flag 
+        connection.Execute("INSERT INTO DataVersion (Description, AppliedOn) VALUES ('Initial seed', @Now);", new { DateTime.Now});
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    private void SeedSessions()
     {
-        base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<Stack>()
-            .HasIndex(s => s.Name)
-            .IsUnique();
-
-        SeedStack(modelBuilder);
-        SeedFlashcards(modelBuilder);
-        SeedSessions(modelBuilder);
-    }
-
-    private void SeedSessions(ModelBuilder modelBuilder)
-    {
-        var sessions = new List<object>();
+        var sessions = new List<Session>();
         var startDate = new DateTime(2024, 3, 1, 12, 0, 0); // Starting point
         var random = new Random();
         var sessionId = 1; // Starting ID
@@ -44,7 +33,7 @@ public class FlashcardsContext : DbContext
             {
                 for (var sessionOfDay = 0; sessionOfDay < 10; sessionOfDay++) // 10 sessions per day
                 {
-                    sessions.Add(new
+                    sessions.Add(new()
                     {
                         Id = sessionId++,
                         StackId = stackId,
@@ -58,12 +47,15 @@ public class FlashcardsContext : DbContext
             }
         }
 
-        modelBuilder.Entity<Session>().HasData(sessions.ToArray());
+        using var connection = GetConnection();
+        connection.Execute(
+            "insert into Sessions (StackId, Score, SessionDate) values (@StackId, @Score, @SessionDate)", sessions);
     }
 
-    private static void SeedFlashcards(ModelBuilder modelBuilder)
+    private void SeedFlashcards()
     {
-        modelBuilder.Entity<Flashcard>().HasData(
+        List<Flashcard> flashcards =
+        [
             new Flashcard
             {
                 Id = 1,
@@ -118,12 +110,15 @@ public class FlashcardsContext : DbContext
                 Answer =
                     "'map()' returns a new array based on the result of the provided callback function, while 'forEach()' executes the provided callback function for each element without returning a new array."
             }
-        );
+        ];
+        using var connection = GetConnection();
+        connection.Execute("insert into Flashcards (StackId, Title, Question, Answer) values (@StackId, @Title, @Question, @Answer)", flashcards);
     }
 
-    private static void SeedStack(ModelBuilder modelBuilder)
+    private void SeedStacks()
     {
-        modelBuilder.Entity<Stack>().HasData([
+        List<Stack> stacks =
+        [
             new Stack
             {
                 Id = 1,
@@ -134,6 +129,63 @@ public class FlashcardsContext : DbContext
                 Id = 2,
                 Name = "JavaScript Stack"
             }
-        ]);
+        ];
+
+        using var connection = GetConnection();
+        connection.Execute("insert into Stacks (Name) values (@Name)", stacks);
+    }
+
+    public void InitDb()
+    {
+        var sql = """
+                  -- Stacks table
+                  if not exists(select * from sys.tables where name = 'Stacks')
+                  create table Stacks (
+                    Id int identity  constraint PK_Stacks primary key ,
+                    Name nvarchar(50) constraint UQ_StackName unique 
+                  );
+                  
+                  -- Flashcards table
+                  if not exists(select * from sys.tables where name = 'Flashcards')
+                  CREATE TABLE Flashcards (
+                    Id INT IDENTITY CONSTRAINT PK_Flashcards PRIMARY KEY,
+                    StackId INT NOT NULL CONSTRAINT FK_Flashcards_Stacks_StackId REFERENCES Stacks ON DELETE CASCADE,
+                    Title NVARCHAR(50) NOT NULL,
+                    Question NVARCHAR(250) NOT NULL,
+                    Answer NVARCHAR(250) NOT NULL
+                  );
+                  
+                  -- Sessions table
+                  if not exists(select * from sys.tables where name = 'Sessions')
+                  CREATE TABLE Sessions (
+                      Id INT IDENTITY CONSTRAINT PK_Sessions PRIMARY KEY,
+                      StackId INT NOT NULL CONSTRAINT FK_Sessions_Stacks_StackId REFERENCES Stacks ON DELETE CASCADE,
+                      Score INT NOT NULL,
+                      SessionDate DATETIME2 NOT NULL
+                  );
+                  
+                  -- Data Version table
+                    if not exists (select * from sys.tables where name = 'DataVersion')
+                      create table DataVersion (
+                          Id int identity constraint PK_DataVersion primary key,
+                          Description nvarchar(255),
+                          AppliedOn datetime
+                  );
+                  """;
+
+        using var connection = GetConnection();
+        connection.Execute(sql);
+    }
+
+    public IDbConnection GetConnection()
+    {
+        var connectionString = !string.IsNullOrEmpty(Configuration?.GetConnectionString("DefaultConnection")) 
+            ? Configuration.GetConnectionString("DefaultConnection") 
+            : Configuration?.GetConnectionString("SecretConnection");
+
+        if (string.IsNullOrEmpty(connectionString))
+            throw new InvalidOperationException("No connection string found.");
+
+        return new SqlConnection(connectionString);
     }
 }

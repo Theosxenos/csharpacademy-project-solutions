@@ -2,8 +2,14 @@ namespace Flashcards.Repositories;
 
 public class PracticeSessionRepository
 {
-    private readonly FlashcardsContext db = new();
+    private readonly FlaschardDatabase db = new();
 
+    public void CreateSession(Session session)
+    {
+        using var connection = db.GetConnection();
+        connection.Execute("INSERT INTO Sessions (StackId, Score, SessionDate) VALUES (@StackId, @Score, @StartedAt);", session);
+    }
+    
     public DataTable GetMonthlyAverageByYear(int year)
     {
         CheckYearHasSessions(year);
@@ -30,8 +36,9 @@ public class PracticeSessionRepository
                    -- Execute the constructed SQL
                    EXEC sp_executesql @sql;
                    """;
-
-        using var connection = GetConnection();
+        
+        using var connection = db.GetConnection();
+        var dapperpivot = connection.Query(sql);
         using var command = connection.CreateCommand();
         command.CommandText = sql;
         using var reader = command.ExecuteReader();
@@ -43,15 +50,11 @@ public class PracticeSessionRepository
 
     private void CheckYearHasSessions(int year)
     {
-        if (!db.Sessions.Any(s => s.SessionDate.Year == year))
+        using var connection = db.GetConnection();
+        var yearSessions =
+            connection.ExecuteScalar<int>("select count(*) from Sessions where year(SessionDate) = @year",
+                new { year });
+        if(yearSessions == 0)    
             throw new NotFoundException($"No sessions found for {year}.");
-    }
-
-    private DbConnection GetConnection()
-    {
-        var connection = db.Database.GetDbConnection();
-        connection.Open();
-
-        return connection;
     }
 }
