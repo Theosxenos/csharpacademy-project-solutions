@@ -55,7 +55,7 @@ public class DrinksController
 
         var drink = response.Drinks.First();
         var ingredients = MapIngredients(drink).Ingredients;
-        await view.ShowDrinkDetails(drink, ingredients);
+        view.ShowDrinkDetails(drink, ingredients);
     }
 
     private DrinkIngredientsDto MapIngredients(Drink drink)

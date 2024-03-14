@@ -2,9 +2,9 @@ namespace DrinksInfo.Views;
 
 public class DrinksView : BaseView
 {
-    public async Task ShowDrinkDetails(Drink drink, Dictionary<string, string> ingredients)
+    public void ShowDrinkDetails(Drink drink, Dictionary<string, string> ingredients)
     {
-        var recipe = string.Join(',', ingredients.Select(x => $"{x.Key}: {x.Value}"));
+        var recipe = string.Join(", ", ingredients.Select(x => $"{x.Key}: {x.Value.Trim()}"));
 
         var grid = new Grid();
         grid.AddColumn();
