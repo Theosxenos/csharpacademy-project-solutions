@@ -24,11 +24,8 @@ public class Repository
         var stacks = query.Read<Stack>().ToList();
         var flashcards = query.Read<Flashcard>().ToList();
 
-        foreach (var stack in stacks)
-        {
-            stack.Flashcards = flashcards.Where(f => f.StackId == stack.Id).ToList();
-        }
-        
+        foreach (var stack in stacks) stack.Flashcards = flashcards.Where(f => f.StackId == stack.Id).ToList();
+
         return stacks;
     }
 

@@ -7,7 +7,8 @@ public class PracticeSessionRepository
     public void CreateSession(Session session)
     {
         using var connection = db.GetConnection();
-        connection.Execute("INSERT INTO Sessions (StackId, Score, SessionDate) VALUES (@StackId, @Score, @SessionDate);", session);
+        connection.Execute(
+            "INSERT INTO Sessions (StackId, Score, SessionDate) VALUES (@StackId, @Score, @SessionDate);", session);
     }
 
     public List<int> GetLogYears()
@@ -15,7 +16,7 @@ public class PracticeSessionRepository
         using var connection = db.GetConnection();
         return connection.Query<int>("SELECT DISTINCT YEAR(SessionDate) FROM Sessions;").ToList();
     }
-    
+
     public IEnumerable<dynamic> GetMonthlyAverageByYear(int year)
     {
         CheckYearHasSessions(year);
@@ -42,7 +43,7 @@ public class PracticeSessionRepository
                    -- Execute the constructed SQL
                    EXEC sp_executesql @sql;
                    """;
-        
+
         using var connection = db.GetConnection();
         return connection.Query(sql);
     }
@@ -53,7 +54,7 @@ public class PracticeSessionRepository
         var yearSessions =
             connection.ExecuteScalar<int>("select count(*) from Sessions where year(SessionDate) = @year",
                 new { year });
-        if(yearSessions == 0)    
+        if (yearSessions == 0)
             throw new NotFoundException($"No sessions found for {year}.");
     }
 }

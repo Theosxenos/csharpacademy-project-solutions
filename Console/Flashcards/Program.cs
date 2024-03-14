@@ -6,7 +6,7 @@ public class Program
 {
     public static IConfigurationRoot? Configuration;
 
-    public static void Main(string[] args)
+    public static void Main()
     {
         ConfigureApplication();
         InitializeDatabase();

@@ -3,20 +3,21 @@ namespace Flashcards.Data;
 public class FlaschardDatabase
 {
     private IConfiguration? Configuration => Program.Configuration;
-    
+
     public void SeedInitialData()
     {
         using var connection = GetConnection();
         var hasInitialSeed = connection.ExecuteScalar<int>("select count(*) from DataVersion") >= 1;
-        if(hasInitialSeed)
+        if (hasInitialSeed)
             return;
-        
+
         SeedStacks();
         SeedFlashcards();
         SeedSessions();
-        
+
         // Set seeding flag 
-        connection.Execute("INSERT INTO DataVersion (Description, AppliedOn) VALUES ('Initial seed', @Now);", new { DateTime.Now});
+        connection.Execute("INSERT INTO DataVersion (Description, AppliedOn) VALUES ('Initial seed', @Now);",
+            new { DateTime.Now });
     }
 
     private void SeedSessions()
@@ -33,7 +34,7 @@ public class FlaschardDatabase
             {
                 for (var sessionOfDay = 0; sessionOfDay < 10; sessionOfDay++) // 10 sessions per day
                 {
-                    sessions.Add(new()
+                    sessions.Add(new Session
                     {
                         Id = sessionId++,
                         StackId = stackId,
@@ -58,7 +59,6 @@ public class FlaschardDatabase
         [
             new Flashcard
             {
-                Id = 1,
                 StackId = 1,
                 Title = "C# Basics",
                 Question = "What is the purpose of the 'using' statement in C#?",
@@ -67,7 +67,6 @@ public class FlaschardDatabase
             },
             new Flashcard
             {
-                Id = 2,
                 StackId = 1,
                 Title = "Object-Oriented Programming",
                 Question = "What is polymorphism in C#?",
@@ -76,7 +75,6 @@ public class FlaschardDatabase
             },
             new Flashcard
             {
-                Id = 3,
                 StackId = 1,
                 Title = "C# Collections",
                 Question = "What is the difference between List<T> and Array in C#?",
@@ -85,7 +83,6 @@ public class FlaschardDatabase
             },
             new Flashcard
             {
-                Id = 4,
                 StackId = 2,
                 Title = "JavaScript Basics",
                 Question = "What is the purpose of the 'typeof' operator in JavaScript?",
@@ -94,7 +91,6 @@ public class FlaschardDatabase
             },
             new Flashcard
             {
-                Id = 5,
                 StackId = 2,
                 Title = "JavaScript Functions",
                 Question = "What is a callback function in JavaScript?",
@@ -103,7 +99,6 @@ public class FlaschardDatabase
             },
             new Flashcard
             {
-                Id = 6,
                 StackId = 2,
                 Title = "JavaScript Arrays",
                 Question = "What is the difference between 'map()' and 'forEach()' methods in JavaScript arrays?",
@@ -112,7 +107,9 @@ public class FlaschardDatabase
             }
         ];
         using var connection = GetConnection();
-        connection.Execute("insert into Flashcards (StackId, Title, Question, Answer) values (@StackId, @Title, @Question, @Answer)", flashcards);
+        connection.Execute(
+            "insert into Flashcards (StackId, Title, Question, Answer) values (@StackId, @Title, @Question, @Answer)",
+            flashcards);
     }
 
     private void SeedStacks()
@@ -142,9 +139,9 @@ public class FlaschardDatabase
                   if not exists(select * from sys.tables where name = 'Stacks')
                   create table Stacks (
                     Id int identity  constraint PK_Stacks primary key ,
-                    Name nvarchar(50) constraint UQ_StackName unique 
+                    Name nvarchar(50) constraint UQ_StackName unique
                   );
-                  
+
                   -- Flashcards table
                   if not exists(select * from sys.tables where name = 'Flashcards')
                   CREATE TABLE Flashcards (
@@ -154,7 +151,7 @@ public class FlaschardDatabase
                     Question NVARCHAR(250) NOT NULL,
                     Answer NVARCHAR(250) NOT NULL
                   );
-                  
+
                   -- Sessions table
                   if not exists(select * from sys.tables where name = 'Sessions')
                   CREATE TABLE Sessions (
@@ -163,7 +160,7 @@ public class FlaschardDatabase
                       Score INT NOT NULL,
                       SessionDate DATETIME2 NOT NULL
                   );
-                  
+
                   -- Data Version table
                     if not exists (select * from sys.tables where name = 'DataVersion')
                       create table DataVersion (
@@ -179,8 +176,8 @@ public class FlaschardDatabase
 
     public IDbConnection GetConnection()
     {
-        var connectionString = !string.IsNullOrEmpty(Configuration?.GetConnectionString("DefaultConnection")) 
-            ? Configuration.GetConnectionString("DefaultConnection") 
+        var connectionString = !string.IsNullOrEmpty(Configuration?.GetConnectionString("DefaultConnection"))
+            ? Configuration.GetConnectionString("DefaultConnection")
             : Configuration?.GetConnectionString("SecretConnection");
 
         if (string.IsNullOrEmpty(connectionString))

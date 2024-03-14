@@ -82,7 +82,7 @@ public class PracticeController
     public void ShowPracticeLog()
     {
         var year = view.GetYear(sessionRepo.GetLogYears());
-        
+
         var pivotData = sessionRepo.GetMonthlyAverageByYear(year);
         view.ShowLog(pivotData, year);
     }

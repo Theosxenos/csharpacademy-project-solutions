@@ -5,7 +5,7 @@ public class PracticeView : BaseView
     public void ShowLog(IEnumerable<dynamic> pivotData, int year)
     {
         var data = pivotData.ToList();
-        
+
         var table = new Table();
         table.Title = new TableTitle($"Average scores for the year [bold]{year}[/]");
 
@@ -14,9 +14,7 @@ public class PracticeView : BaseView
         table.AddColumns(columns.ToArray());
 
         foreach (IDictionary<string, object?> row in data)
-        {
             table.AddRow(row.Select(pair => pair.Value?.ToString() ?? "-").ToArray());
-        }
 
         AnsiConsole.Write(table);
 

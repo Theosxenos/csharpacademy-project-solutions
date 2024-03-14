@@ -15,7 +15,7 @@ public class FlashcardController
             while (continueAdding)
             {
                 var flashcard = view.CreateFlashcard();
-                flashcard.Stack = stack;
+                flashcard.StackId = stack.Id;
                 repository.CreateFlashcard(flashcard);
                 view.ShowSuccess("Flashcard created successfully.");
                 continueAdding = view.AskConfirm("Do you want to add another flashcard?");

@@ -7,6 +7,7 @@ public class BaseView
         AnsiConsole.MarkupLine(message);
         Console.ReadKey();
     }
+
     public void ShowSuccess(string message)
     {
         ShowMessage($"[green]{message}[/]");
@@ -52,5 +53,9 @@ public class BaseView
         if (converter != null) prompt.UseConverter(converter);
 
         return AnsiConsole.Prompt(prompt);
+    }
+
+    public void Test()
+    {
     }
 }
