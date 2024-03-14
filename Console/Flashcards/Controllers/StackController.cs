@@ -106,7 +106,7 @@ public class StackController
     {
         try
         {
-            stack.Name = view.AskInput("What should the new name of the stack be?");
+            stack.Name = view.AskInput<string>("What should the new name of the stack be?");
             repository.UpdateStack(stack);
         }
         catch (ArgumentException e)

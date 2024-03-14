@@ -2,22 +2,19 @@ namespace Flashcards.Views;
 
 public class BaseView
 {
-    public void ShowSuccess(string message)
-    {
-        AnsiConsole.MarkupLine($"[green]{message}[/]");
-        Console.ReadKey();
-    }
-
-    public void ShowError(string message)
-    {
-        AnsiConsole.MarkupLine($"[red]{message}[/]");
-        Console.ReadKey();
-    }
-
     public void ShowMessage(string message)
     {
         AnsiConsole.MarkupLine(message);
         Console.ReadKey();
+    }
+    public void ShowSuccess(string message)
+    {
+        ShowMessage($"[green]{message}[/]");
+    }
+
+    public void ShowError(string message)
+    {
+        ShowMessage($"[red]{message}[/]");
     }
 
     public bool AskConfirm(string message)
@@ -25,28 +22,35 @@ public class BaseView
         return AnsiConsole.Confirm(message);
     }
 
-    public string AskInput(string prompt, string? defaultValue = null)
+    public T AskInput<T>(string prompt, T? defaultValue = default, Func<T, bool>? validator = null,
+        string? errorMessage = null)
     {
-        var textPrompt = new TextPrompt<string>(prompt);
-        if (!string.IsNullOrEmpty(defaultValue)) textPrompt.DefaultValue(defaultValue);
+        var textPrompt = new TextPrompt<T>(prompt);
+
+        if (defaultValue != null)
+            textPrompt.DefaultValue(defaultValue);
+        if (validator != null)
+            textPrompt.Validate(validator,
+                string.IsNullOrEmpty(errorMessage) ? textPrompt.ValidationErrorMessage : errorMessage);
 
         return AnsiConsole.Prompt(textPrompt);
     }
 
-    public T AskInput<T>(string prompt, Func<T, bool> validator, string errorMessage)
-    {
-        return AnsiConsole.Prompt(new TextPrompt<T>(prompt)
-            .Validate(validator, errorMessage)
-        );
-    }
-
-    public T ShowMenu<T>(IEnumerable<T> menuOptions, string title = "Select a menu option:", int pageSize = 10)
+    public T ShowMenu<T>(IEnumerable<T> menuOptions, string title = "Select a menu option:", int pageSize = 10,
+        Func<T, string>? converter = null)
         where T : notnull
     {
         AnsiConsole.Clear();
-        return AnsiConsole.Prompt(new SelectionPrompt<T>()
-            .Title(title)
-            .PageSize(pageSize)
-            .AddChoices(menuOptions));
+
+        var prompt = new SelectionPrompt<T>
+        {
+            Title = title,
+            PageSize = pageSize
+        };
+        prompt.AddChoices(menuOptions);
+
+        if (converter != null) prompt.UseConverter(converter);
+
+        return AnsiConsole.Prompt(prompt);
     }
 }
