@@ -11,7 +11,7 @@ public class PhoneBookController
 
     public void AddContact()
     {
-        var retry = false;
+        bool retry;
         do
         {
             var contactName = view.GetContactName();

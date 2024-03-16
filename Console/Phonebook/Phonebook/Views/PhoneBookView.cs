@@ -17,21 +17,21 @@ public partial class PhoneBookView : BaseView
 
         if (!string.IsNullOrEmpty(email))
             textPrompt.DefaultValue(email);
-        textPrompt.Validate(x => EmailRegex().Match(x).Success, "Email not valid");
+        textPrompt.Validate(x => EmailRegex().Match(x).Success, "[red]Email not valid[/]");
 
         return AnsiConsole.Prompt(textPrompt);
     }
 
     public string GetPhoneNumber(string number = "")
     {
-        var formatMessage = "Phone number must either in formats xx-xxxxxxxx or xxx-xxxxxxx";
+        var formatMessage = "Phone number must be in formats xx-xxxxxxxx or xxx-xxxxxxx";
         AnsiConsole.MarkupLine($"[yellow3][bold]{formatMessage}[/][/]");
 
         var textPrompt = new TextPrompt<string>("What's the contact's phone number?");
 
         if (!string.IsNullOrEmpty(number))
             textPrompt.DefaultValue(number);
-        textPrompt.Validate(ValidatePhoneNumber, formatMessage);
+        textPrompt.Validate(ValidatePhoneNumber, $"[red]{formatMessage}[/]");
 
         return AnsiConsole.Prompt(textPrompt);
     }
@@ -54,9 +54,7 @@ public partial class PhoneBookView : BaseView
 
     private bool ValidatePhoneNumber(string number)
     {
-        if (number.Length > 11) return false;
-
-        return DutchPhoneRegex().Match(number).Success;
+        return number.Length <= 11 && DutchPhoneRegex().Match(number).Success;
     }
 
     [GeneratedRegex(@"^\d{2,3}-\d{7,8}$")]

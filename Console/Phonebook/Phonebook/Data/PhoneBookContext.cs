@@ -17,7 +17,8 @@ public class PhoneBookContext : DbContext
 
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         if (string.IsNullOrEmpty(connectionString))
-            connectionString = configuration.GetConnectionString("SecretConnection");
+            connectionString = configuration.GetConnectionString("SecretConnection")
+                               ?? throw new InvalidOperationException("No connection string found");
 
         optionsBuilder.UseSqlServer(connectionString);
     }
