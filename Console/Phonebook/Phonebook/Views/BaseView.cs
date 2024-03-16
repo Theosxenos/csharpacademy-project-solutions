@@ -4,21 +4,9 @@ namespace Phonebook.Views;
 
 public class BaseView
 {
-    public void ShowSuccess(string message)
-    {
-        AnsiConsole.MarkupLine($"[green]{message}[/]");
-        Console.ReadKey();
-    }
-
     public void ShowError(string message)
     {
         AnsiConsole.MarkupLine($"[red]{message}[/]");
-        Console.ReadKey();
-    }
-
-    public void ShowMessage(string message)
-    {
-        AnsiConsole.MarkupLine(message);
         Console.ReadKey();
     }
 
@@ -33,13 +21,6 @@ public class BaseView
         if (!string.IsNullOrEmpty(defaultValue)) textPrompt.DefaultValue(defaultValue);
 
         return AnsiConsole.Prompt(textPrompt);
-    }
-
-    public T AskInput<T>(string prompt, Func<T, bool> validator, string errorMessage)
-    {
-        return AnsiConsole.Prompt(new TextPrompt<T>(prompt)
-            .Validate(validator, errorMessage)
-        );
     }
 
     public T ShowMenu<T>(IEnumerable<T> menuOptions, string title = "Select a menu option:", int pageSize = 10)

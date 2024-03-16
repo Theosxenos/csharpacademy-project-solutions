@@ -6,12 +6,12 @@ namespace Phonebook.Controllers;
 
 public class PhoneBookController
 {
-    private PhoneBookView view = new();
-    private PhoneBookRepository repository = new();
-    
+    private readonly PhoneBookRepository repository = new();
+    private readonly PhoneBookView view = new();
+
     public void AddContact()
     {
-        var retry = false;
+        bool retry;
         do
         {
             var contactName = view.GetContactName();
@@ -38,7 +38,6 @@ public class PhoneBookController
 
     public void UpdateContact()
     {
-        
         var retry = false;
         do
         {
@@ -48,16 +47,17 @@ public class PhoneBookController
                 view.ShowError("No contacts found.");
                 continue;
             }
-            
+
             var contact = view.ShowMenu(contacts);
-            
+
             var contactName = view.GetContactName(contact.Name);
             var email = view.GetContactEmail(contact.Email);
             var phoneNumber = view.GetPhoneNumber(contact.PhoneNumber);
 
             try
             {
-                repository.UpdateContact(new Contact{Id = contact.Id, Name = contactName, Email = email, PhoneNumber = phoneNumber});
+                repository.UpdateContact(new Contact
+                    { Id = contact.Id, Name = contactName, Email = email, PhoneNumber = phoneNumber });
                 retry = false;
             }
             catch (ArgumentException e)

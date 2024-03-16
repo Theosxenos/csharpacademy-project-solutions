@@ -6,17 +6,19 @@ namespace Phonebook.Data;
 
 public class PhoneBookContext : DbContext
 {
+    private readonly IConfiguration configuration =
+        new ConfigurationBuilder().AddJsonFile("appsettings.json").AddUserSecrets<Program>().Build();
+
     public DbSet<Contact> Contacts { get; set; }
-    
-    private IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").AddUserSecrets<Program>().Build();
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (optionsBuilder.IsConfigured) return;
 
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         if (string.IsNullOrEmpty(connectionString))
-            connectionString = configuration.GetConnectionString("SecretConnection");
+            connectionString = configuration.GetConnectionString("SecretConnection")
+                               ?? throw new InvalidOperationException("No connection string found");
 
         optionsBuilder.UseSqlServer(connectionString);
     }
