@@ -4,6 +4,5 @@ namespace ShiftsLogger.Shared.DTOs.Request;
 
 public class WorkerRequest
 {
-    [Required]
-    public string Name { get; set; }
+    [Required] public string Name { get; set; }
 }

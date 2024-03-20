@@ -47,14 +47,11 @@ workerGroup.MapPost("/", async (WorkerRequest worker, WorkerService workerServic
     {
         return Results.Problem(e.Message, statusCode: 400);
     }
-
 });
 
 var shiftsGroup = apiGroup.MapGroup("shifts");
-shiftsGroup.MapPost("/", async (ShiftRequest shift, Repository repository) =>
-{
-    await repository.AddShift(shift);
-});
-shiftsGroup.MapGet("/{workerId}", async (int workerId, Repository repository) => await repository.GetShiftsByWorkerId(workerId));
+shiftsGroup.MapPost("/", async (ShiftRequest shift, Repository repository) => { await repository.AddShift(shift); });
+shiftsGroup.MapGet("/{workerId}",
+    async (int workerId, Repository repository) => await repository.GetShiftsByWorkerId(workerId));
 
 app.Run();

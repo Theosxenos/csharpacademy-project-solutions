@@ -7,8 +7,9 @@ namespace ShiftsLogger.Client.Controllers;
 
 public class MainController
 {
-    private MainView view = new();
-    private HttpClient httpClient = new();
+    private readonly HttpClient httpClient = new();
+    private readonly MainView view = new();
+
     public async Task ShowMenu()
     {
         var runApp = true;
@@ -21,26 +22,28 @@ public class MainController
         };
 
         while (runApp)
-        {
             try
             {
                 var choice = view.ShowMenu(menu.Keys.ToArray());
                 await menu[choice]();
+            }
+            catch (HttpRequestException e)
+            {
+                view.ShowError($"Cannot connect to the API server. ERROR: {e.Message}");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-        }
     }
 
     private async Task ListShifts()
     {
         var workers = await httpClient.GetFromJsonAsync<List<Worker>>($"{Program.BaseUrl}/workers");
-        if (workers== null)
+        if (workers == null)
         {
-            view.ShowError($"A problem occured after getting the list of workers. The returned worker object is null.");
+            view.ShowError("A problem occured after getting the list of workers. The returned worker object is null.");
             return;
         }
 
@@ -49,14 +52,14 @@ public class MainController
             view.ShowError("No workers found. Please add one before logging a shift.");
             return;
         }
-        
+
         var selectedWorker = view.ShowMenu(workers.Select(w => w.Name));
         var workerId = workers.First(w => w.Name.Equals(selectedWorker)).Id;
-        
+
         var shifts = await httpClient.GetFromJsonAsync<List<Shift>>($"{Program.BaseUrl}/shifts/{workerId}");
         if (shifts == null)
         {
-            view.ShowError($"A problem occured after getting the list of workers. The returned worker object is null.");
+            view.ShowError("A problem occured after getting the list of workers. The returned worker object is null.");
             return;
         }
 
@@ -72,10 +75,12 @@ public class MainController
     public async Task AddWorker()
     {
         var name = view.AskInput("What's the worker's name?");
-        var responseMessage = await httpClient.PostAsJsonAsync($"{Program.BaseUrl}/workers", new WorkerRequest() { Name = name });
+        var responseMessage =
+            await httpClient.PostAsJsonAsync($"{Program.BaseUrl}/workers", new WorkerRequest { Name = name });
         if (!responseMessage.IsSuccessStatusCode)
         {
-            view.ShowError(responseMessage.ReasonPhrase ?? $"An error with the status code {responseMessage.StatusCode} occured");
+            view.ShowError(responseMessage.ReasonPhrase ??
+                           $"An error with the status code {responseMessage.StatusCode} occured");
             return;
         }
 
@@ -85,16 +90,16 @@ public class MainController
             view.ShowError($"A problem occured after adding worker {name}. The returned worker object is null.");
             return;
         }
-        
+
         view.ShowSuccess($"Worker {worker.Name} with ID {worker.Id} has been created.");
     }
 
     public async Task LogShift()
     {
         var workers = await httpClient.GetFromJsonAsync<List<Worker>>($"{Program.BaseUrl}/workers");
-        if (workers== null)
+        if (workers == null)
         {
-            view.ShowError($"A problem occured after getting the list of workers. The returned worker object is null.");
+            view.ShowError("A problem occured after getting the list of workers. The returned worker object is null.");
             return;
         }
 
@@ -103,7 +108,7 @@ public class MainController
             view.ShowError("No workers found. Please add one before logging a shift.");
             return;
         }
-        
+
         var selectedWorker = view.ShowMenu(workers.Select(w => w.Name));
         var workerId = workers.First(w => w.Name.Equals(selectedWorker)).Id;
 
@@ -128,14 +133,10 @@ public class MainController
                 };
                 var response = await httpClient.PostAsJsonAsync($"{Program.BaseUrl}/shifts", shift);
                 if (response.IsSuccessStatusCode)
-                {
                     view.ShowSuccess("Shift created successfully.");
-                }
                 else
-                {
                     view.ShowError(response.ReasonPhrase ??
                                    $"An error with the status code {response.StatusCode} occured");
-                }
 
                 retry = false;
             }

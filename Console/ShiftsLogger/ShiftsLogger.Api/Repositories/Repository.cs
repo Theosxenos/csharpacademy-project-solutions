@@ -22,18 +22,17 @@ public class Repository(ShiftsLoggerContext context)
 
     public Task<List<Worker>> GetAllWorkers()
     {
-        // return context.Workers.Include(w => w.Shifts).ToListAsync();
         return context.Workers.ToListAsync();
     }
 
     public async Task AddShift(ShiftRequest shift)
     {
-        var toAddShift = new Shift()
+        var toAddShift = new Shift
         {
             WorkerId = shift.WorkerId,
             StartShift = shift.StartShift,
             EndShift = shift.EndShift,
-            MinutesDuration = (int)(shift.EndShift - shift.StartShift).TotalMinutes
+            Duration = shift.EndShift - shift.StartShift
         };
         context.Shifts.Add(toAddShift);
         await context.SaveChangesAsync();

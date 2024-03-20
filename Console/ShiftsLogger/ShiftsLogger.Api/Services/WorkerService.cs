@@ -10,16 +10,11 @@ public class WorkerService(Repository repository)
     {
         ArgumentNullException.ThrowIfNull(worker);
 
-        if (string.IsNullOrEmpty(worker.Name?.Trim()))
-        {
-            throw new ArgumentException("Name cannot be empty");
-        }
+        if (string.IsNullOrEmpty(worker.Name?.Trim())) throw new ArgumentException("Name cannot be empty");
 
         if (await repository.WorkerExistsByName(worker.Name))
-        {
             throw new ArgumentException($"Worker with name {worker.Name} already exists");
-        }
 
-        return await repository.AddWorker(new Worker() { Name = worker.Name });
+        return await repository.AddWorker(new Worker { Name = worker.Name });
     }
 }

@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using ShiftsLogger.Client.Controllers;
 
-class Program
+internal class Program
 {
     public static string BaseUrl { get; set; }
+
     public static async Task Main()
     {
         InitConfiguration();

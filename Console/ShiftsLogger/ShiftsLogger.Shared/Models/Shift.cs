@@ -7,5 +7,5 @@ public class Shift
     public Worker Worker { get; set; }
     public DateTime StartShift { get; set; }
     public DateTime EndShift { get; set; }
-    public int MinutesDuration { get; set; }
+    public TimeSpan Duration { get; set; }
 }
