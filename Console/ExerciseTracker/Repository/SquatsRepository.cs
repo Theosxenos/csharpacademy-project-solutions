@@ -6,7 +6,7 @@ namespace ExerciseTracker.Repository;
 
 public class SquatsRepository(ExerciseContext context)
 {
-    public async Task<Squat> AddSquatAsync(Squat squat)
+    public async Task AddSquatAsync(Squat squat)
     {
         ArgumentNullException.ThrowIfNull(squat, nameof(squat));
 
@@ -14,8 +14,6 @@ public class SquatsRepository(ExerciseContext context)
         {
             await context.Squats.AddAsync(squat);
             await context.SaveChangesAsync();
-
-            return squat;
         }
         catch (Exception e)
         {
@@ -37,16 +35,14 @@ public class SquatsRepository(ExerciseContext context)
         }
     }
 
-    public async Task<Squat> UpdateSquatAsync(Squat squat)
+    public async Task UpdateSquatAsync(Squat squat)
     {
         ArgumentNullException.ThrowIfNull(squat, nameof(squat));
-        
+
         try
         {
             context.Squats.Update(squat);
             await context.SaveChangesAsync();
-            
-            return squat;
         }
         catch (Exception e)
         {
@@ -55,14 +51,12 @@ public class SquatsRepository(ExerciseContext context)
         }
     }
 
-    public async Task<Squat> DeleteSquat(Squat squat)
+    public async Task DeleteSquatAsync(Squat squat)
     {
         try
         {
             context.Squats.Remove(squat);
             await context.SaveChangesAsync();
-
-            return squat;
         }
         catch (Exception e)
         {

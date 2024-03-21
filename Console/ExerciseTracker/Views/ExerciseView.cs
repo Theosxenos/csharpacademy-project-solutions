@@ -8,7 +8,9 @@ public class ExerciseView : BaseView
 {
     public BaseModel ShowLogsMenu(IEnumerable<BaseModel> exercises)
     {
-        return ShowMenu(exercises.OrderBy(s => s.DateStart), "Choose an exercise to manage:", converter: exercise => $"{exercise.DateStart:d-M-y h:mm}\t\t{exercise.Duration:d\\.h\\:mm}\t\t{exercise.Comments}");
+        return ShowMenu(exercises.OrderBy(s => s.DateStart), "Choose an exercise to manage:",
+            converter: exercise =>
+                $"{exercise.DateStart:d-M-y h:mm}\t\t{exercise.Duration:d\\.h\\:mm}\t\t{exercise.Comments}");
     }
 
     public void PromptUpsertExercise(BaseModel exercise)
@@ -35,21 +37,12 @@ public class ExerciseView : BaseView
             var dateStart = DateTime.Parse(dateStartInput);
             var dateEnd = DateTime.Parse(dateEndInput);
 
-            if (dateEnd < dateStart)
-            {
-                ShowError("End date cannot be earlier than the start date.");
-                retry = AskConfirm("Retry?");
-                continue;
-            }
-
             var comments = AskInput("Write a comment on your session:",
                 defaultValue: string.IsNullOrEmpty(exercise.Comments) ? null : exercise.Comments);
 
             exercise.DateStart = dateStart;
             exercise.DateEnd = dateEnd;
-            exercise.Duration = dateEnd - dateStart;
             exercise.Comments = comments;
-
         } while (retry);
     }
 }

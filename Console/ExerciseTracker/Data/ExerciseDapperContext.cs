@@ -14,7 +14,7 @@ public class ExerciseDapperContext
         _config = config;
         Init();
     }
-    
+
     private void Init()
     {
         using var con = GetConnection();
@@ -26,7 +26,7 @@ public class ExerciseDapperContext
                       "DateStart" TEXT NOT NULL,
                       "Duration" TEXT NOT NULL
                   );
-                  
+
                   """;
         con.Execute(sql);
     }
@@ -34,7 +34,7 @@ public class ExerciseDapperContext
     public SqliteConnection GetConnection()
     {
         var con = new SqliteConnection(_config.GetConnectionString("DefaultConnection"));
-        if(con.State != ConnectionState.Open)
+        if (con.State != ConnectionState.Open)
             con.Open();
 
         return con;

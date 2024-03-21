@@ -10,7 +10,7 @@ public class MainController(SquatsController squatsController, RunningController
         {
             ["Squats Menu"] = squatsController.ShowSquatsMenu,
             ["Running Menu"] = runningController.ShowRunningMenu,
-            ["Exit"] = async () => Environment.Exit(0),
+            ["Exit"] = async () => Environment.Exit(0)
         };
 
         var choice = new BaseView().ShowMenu(menu, converter: pair => pair.Key);

@@ -10,7 +10,7 @@ public class ExerciseContext(DbContextOptions options) : DbContext(options)
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Squat>().HasData([
-            new()
+            new Squat
             {
                 Id = 1,
                 DateStart = DateTime.Now.AddDays(-2),
@@ -18,7 +18,7 @@ public class ExerciseContext(DbContextOptions options) : DbContext(options)
                 Duration = TimeSpan.FromHours(3),
                 Comments = "Set PR at 50kg"
             },
-            new ()
+            new Squat
             {
                 Id = 2,
                 DateStart = DateTime.Now.AddDays(-1),
@@ -26,7 +26,7 @@ public class ExerciseContext(DbContextOptions options) : DbContext(options)
                 Duration = TimeSpan.FromHours(0.25),
                 Comments = "Quit after 3 reps"
             },
-            new ()
+            new Squat
             {
                 Id = 3,
                 DateStart = DateTime.Now,

@@ -13,12 +13,10 @@ public class RunningRepository(ExerciseDapperContext context)
         try
         {
             using var connection = context.GetConnection();
-            var result = await connection.ExecuteAsync("INSERT INTO Running (Comments, DateEnd, DateStart, Duration) VALUES (@Comments, @DateEnd, @DateStart, @Ticks)", exercise);
-            if (result != 1)
-            {
-                throw new Exception("Something wrong with inserting");
-            }
-
+            var result = await connection.ExecuteAsync(
+                "INSERT INTO Running (Comments, DateEnd, DateStart, Duration) VALUES (@Comments, @DateEnd, @DateStart, @Ticks)",
+                exercise);
+            if (result != 1) throw new Exception("Something wrong with inserting");
         }
         catch (Exception e)
         {
@@ -32,7 +30,9 @@ public class RunningRepository(ExerciseDapperContext context)
         try
         {
             using var connection = context.GetConnection();
-            var result = await connection.QueryAsync<Running>("SELECT Id, Comments, DateEnd, DateStart, Duration as Ticks FROM Running;");
+            var result =
+                await connection.QueryAsync<Running>(
+                    "SELECT Id, Comments, DateEnd, DateStart, Duration as Ticks FROM Running;");
             return result.ToList();
         }
         catch (Exception e)
@@ -74,7 +74,7 @@ public class RunningRepository(ExerciseDapperContext context)
         catch (Exception e)
         {
             Console.WriteLine(e);
-            throw;  
+            throw;
         }
     }
 }

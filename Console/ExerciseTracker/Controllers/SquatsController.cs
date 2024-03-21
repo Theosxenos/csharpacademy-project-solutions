@@ -1,12 +1,12 @@
 using ExerciseTracker.Models;
-using ExerciseTracker.Repository;
+using ExerciseTracker.Services;
 using ExerciseTracker.Views;
 
 namespace ExerciseTracker.Controllers;
 
-public class SquatsController(SquatsRepository repository)
+public class SquatsController(SquatsService service)
 {
-    private ExerciseView view = new();
+    private readonly ExerciseView view = new();
 
     public async Task ShowSquatsMenu()
     {
@@ -23,20 +23,24 @@ public class SquatsController(SquatsRepository repository)
 
     private async Task AddSquat()
     {
-        var squat = new Squat();
-        view.PromptUpsertExercise(squat);
+        try
+        {
+            var squat = new Squat();
+            view.PromptUpsertExercise(squat);
 
-        await repository.AddSquatAsync(squat);
-        view.ShowSuccess($"Squat from {squat.DateStart.ToShortDateString()} created.");
+            await service.AddAsync(squat);
+            view.ShowSuccess($"Squat from {squat.DateStart.ToShortDateString()} created.");
+        }
+        catch (ArgumentException e)
+        {
+            view.ShowError(e.Message);
+        }
     }
 
     public async Task ManageSquat()
     {
-        var squats = await repository.GetAllSquatsAsync();
-        if (squats.Count == 0)
-        {
-            view.ShowError("No squat logs found.");
-        }
+        var squats = await service.GetAllAsync();
+        if (squats.Count == 0) view.ShowError("No squat logs found.");
 
         var chosenSquat = view.ShowLogsMenu(squats);
         await ShowSquatManageMenu((Squat)chosenSquat);
@@ -46,7 +50,7 @@ public class SquatsController(SquatsRepository repository)
     {
         var menu = new Dictionary<string, Func<Squat, Task>>
         {
-            ["Update"] =  UpdateSquat,
+            ["Update"] = UpdateSquat,
             ["Delete"] = DeleteSquat,
             ["Exit"] = _ => Task.CompletedTask
         };
@@ -57,14 +61,28 @@ public class SquatsController(SquatsRepository repository)
 
     private async Task DeleteSquat(Squat arg)
     {
-        _ = await repository.DeleteSquat(arg);
-        view.ShowSuccess($"Squat from {arg.DateStart.ToShortDateString()} deleted.");
+        try
+        {
+            await service.DeleteAsync(arg);
+            view.ShowSuccess($"Squat from {arg.DateStart.ToShortDateString()} deleted.");
+        }
+        catch (ArgumentException e)
+        {
+            view.ShowError(e.Message);
+        }
     }
 
     private async Task UpdateSquat(Squat arg)
     {
-        view.PromptUpsertExercise(arg);
-        var updated = await repository.UpdateSquatAsync(arg);
-        view.ShowSuccess($"Squat from {arg.DateStart.ToShortDateString()} update.");
+        try
+        {
+            view.PromptUpsertExercise(arg);
+            await service.UpdateAsync(arg);
+            view.ShowSuccess($"Squat from {arg.DateStart.ToShortDateString()} update.");
+        }
+        catch (ArgumentException e)
+        {
+            view.ShowError(e.Message);
+        }
     }
 }

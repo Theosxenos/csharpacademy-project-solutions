@@ -1,4 +1,3 @@
-using System.Globalization;
 using Spectre.Console;
 
 namespace ExerciseTracker.Views;
