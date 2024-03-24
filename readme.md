@@ -11,10 +11,25 @@ Below is a list of projects included in this repository, along with a brief desc
 - **Calculator**: _This time you’ll create a calculator with the help of Microsoft's Documentation_
 - **Habit Logger**: _Build a logger for a habit of choice. Learn how to interact with a database using SQLite and to get and validate user input_
 - **Coding Tracker**: _Track your coding hours. Learn how to deal with dates, to use separation of concerns and use your first external library to enhance your application_
+#### Intermediate
 - **Flashcards**: _Building stacks of flashcards and a study functionality. Learn to deal with linked databases using SQL Server and to use Data Transfer Objects_
 - **Drinks Info**: _Build a console app to consume an external API with HTTP Requests with C#_
 - **Phone Book**: _Now you have basic understanding of SQL, it’s time to learn the basics of Entity Framework with a CRUD Phone Book Console App_
 - **Shifts Logger**: _Build an App for shift workers to log their hours. In this app you’ll learn how to build a Web API and consume it with a Console App_
+#### Advanced
+- **Exercise Tracker**: _Learn the repository pattern, the most common design pattern for interaction with databases_
+- **Sports Results Notifier**: _Learn how to create a web crawler and send e-mails using C#_
+- **Excel Reader**: _Learn how to read data from an Excel Sheet into a real database using SQL_
+
+### MVC
+- **Habit Logger MVC**: _Build your first full-stack app with ASP.NET C# Razor Pages and ADO.NET_
+- **Movies**: _Build your first full-stack app with ASP.NET C# MVC and Entity Framework_
+- **Todo List**: _Build your first MVC application with C#, Razor Syntax, Javascript and Bootstrap_
+- **Budget**: _Build a personal finance app with multiple related tables in the back-end_
+
+### Blazor
+- **Wardrobe Inventory**: _Get started with Blazor by building an inventory for your clothes. With pictures!_
+- **Memory Game**: _Build a simple memory game where users will train their brain and track results_
 
 ### Challenge Projects
 - **Brewery API**: _Improve your .NET WebAPI skills building a Brewery API_
