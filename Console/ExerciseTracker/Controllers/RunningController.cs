@@ -40,7 +40,11 @@ public class RunningController(RunningService service)
     private async Task ManageRunning()
     {
         var exercises = await service.GetAllAsync();
-        if (exercises.Count == 0) view.ShowError("No running logs found.");
+        if (exercises.Count == 0)
+        {
+            view.ShowError("No running logs found.");
+            return;
+        }
 
         var chosenExercise = view.ShowLogsMenu(exercises);
         await ShowRunningManageMenu((Running)chosenExercise);

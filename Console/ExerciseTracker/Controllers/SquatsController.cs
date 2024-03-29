@@ -40,7 +40,11 @@ public class SquatsController(SquatsService service)
     public async Task ManageSquat()
     {
         var squats = await service.GetAllAsync();
-        if (squats.Count == 0) view.ShowError("No squat logs found.");
+        if (squats.Count == 0)
+        {
+            view.ShowError("No squat logs found.");
+            return;
+        }
 
         var chosenSquat = view.ShowLogsMenu(squats);
         await ShowSquatManageMenu((Squat)chosenSquat);
